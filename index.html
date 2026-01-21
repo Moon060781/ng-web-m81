@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>NoorGee WebMaster | Global eCommerce & Web Solutions</title>
+    <meta name="description" content="Leading web developer and eCommerce strategist specializing in Shopify, WordPress, and Custom PHP solutions.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-brown: #5d4037;
+            --brand-brown-light: #8d6e63;
+        }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            overflow-x: hidden;
+            background-color: #fdfaf9; /* Warm off-white */
+        }
+        
+        #interactive-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(93, 64, 55, 0.08) 0%, rgba(253, 250, 249, 0) 50%);
+            transition: background 0.1s ease-out;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #5d4037, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Nav Animations */
+        @keyframes slideFadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .nav-animate {
+            animation: slideFadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .logo-animate {
+            animation: slideFadeIn 0.6s ease-out forwards;
+        }
+
+        .hero-bg {
+            background: linear-gradient(rgba(253, 250, 249, 0.94), rgba(253, 250, 249, 0.85)), 
+                        url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .project-card { 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-bottom: 4px solid transparent;
+        }
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(93, 64, 55, 0.15);
+            border-bottom: 4px solid #5d4037;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #5d4037; /* Themed Brown */
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-float:hover { 
+            transform: scale(1.1) rotate(10deg); 
+            background-color: #25d366; /* Classic WhatsApp Green on hover */
+        }
+
+        .btn-brown {
+            background-color: #5d4037;
+            transition: all 0.3s ease;
+        }
+        .btn-brown:hover {
+            background-color: #3e2723;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div id="interactive-bg"></div>
+
+    <a href="https://wa.me/923323320369" target="_blank" class="whatsapp-float animate-bounce">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Header Container -->
+    <header class="relative z-50">
+        <!-- Top Bar -->
+        <div class="bg-slate-900 text-white py-2 text-[11px] md:text-xs border-b border-white/5">
+            <div class="container mx-auto px-6 flex justify-between items-center">
+                <div class="flex items-center gap-4 md:gap-8">
+                    <a href="tel:+923323320369" class="hover:text-amber-500 transition flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-amber-500"></i> +92-332-3320369
+                    </a>
+                    <a href="mailto:grapheart365@gmail.com" class="hover:text-amber-500 transition flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-amber-500"></i> grapheart365@gmail.com
+                    </a>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="https://facebook.com/NoorGeeWebMaster" target="_blank" class="hover:text-blue-400 transition">
+                        <i class="fa-brands fa-facebook"></i>
+                    </a>
+                    <span class="text-gray-600 hidden lg:block tracking-widest uppercase font-bold">NoorGee WebMaster</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
+            <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+                <div class="logo-animate">
+                    <img src="https://us.noorgee.com/wp-content/uploads/2024/12/Screenshot-2023-11-28-09.07.04-e1703271804159.png" 
+                         alt="Logo" class="h-10 md:h-12 hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="hidden md:flex items-center space-x-10 text-[13px] font-bold text-gray-600">
+                    <a href="#portfolio" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.2s;">PORTFOLIO</a>
+                    <a href="#team" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.4s;">OUR TEAM</a>
+                    <a href="#contact-form" class="nav-animate btn-brown text-white px-6 py-2.5 rounded-full shadow-lg shadow-brown-600/20" style="animation-delay: 0.6s;">HIRE ME</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-bg py-24 md:py-40 px-6 text-center">
+        <div class="container mx-auto">
+            <h1 class="text-4xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight">
+                Global Standards. <br> <span class="gradient-text">Masterful Design.</span>
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Premium web architectures for businesses across USA, UK, UAE & Pakistan.
+            </p>
+            <a href="#portfolio" class="inline-block px-12 py-4 btn-brown text-white font-bold rounded-2xl shadow-2xl">
+                Explore Projects
+            </a>
+        </div>
+    </section>
+
+    <!-- Portfolio Grid -->
+    <section id="portfolio" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold text-slate-900">Portfolio</h2>
+                <div class="w-16 h-1 bg-amber-800 mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Business ITC -->
+                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://noorgee.pk/Web/img/bic-screen.gif" alt="Business ITC" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-amber-800/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-1">Business ITC</h3>
+                        <p class="text-xs text-amber-700 font-bold mb-4 uppercase tracking-widest">Corporate Strategy</p>
+                        <p class="text-gray-500 text-xs mb-6">Demo: <a href="https://www.facebook.com/groups/271845483443038/permalink/1819346388692932/" target="_blank" class="text-amber-800 font-bold hover:underline">Watch Video</a></p>
+                        <a href="https://businessitc.com/" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                    </div>
+                </div>
+
+                <!-- NoorGee.pk -->
+                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://noorgee.pk/Dev/img/portfolio-ng-pk-02.gif" alt="NoorGee.pk" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-1">NoorGee.pk</h3>
+                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Main Hub</p>
+                        <a href="https://noorgee.pk" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                    </div>
+                </div>
+
+                <!-- NoorGee US -->
+                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://noorgee.pk/Dev/img/us-ng-site-screen.gif" alt="NoorGee US" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-1">NoorGee US</h3>
+                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">USA Market</p>
+                        <a href="https://us.noorgee.com" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                    </div>
+                </div>
+
+                <!-- KWA -->
+                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://noorgee.pk/Web/img/kwa-screen.gif" alt="KWA" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-1">KWA Welfare</h3>
+                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Welfare & Social</p>
+                        <a href="https://kwa.com.pk" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                    </div>
+                </div>
+
+                <!-- NoorGee Tools -->
+                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://noorgee.pk/Web/img/it-ng-site-tool-screen.gif" alt="Tools" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-1">NoorGee IT Tools</h3>
+                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Developer Utilities</p>
+                        <a href="https://it.noorgee.com" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section id="team" class="py-24 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900">Our Core Team</h2>
+                <div class="w-16 h-1 bg-amber-800 mx-auto mt-4"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="text-center group">
+                    <img src="https://noorgee.pk/Dev/img/athar-photo.png" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-500">
+                    <h4 class="mt-6 text-xl font-bold text-slate-900">Athar Hussain</h4>
+                    <p class="text-amber-800 text-xs font-black tracking-widest uppercase mt-2">Programmer & Developer</p>
+                </div>
+                <div class="text-center group">
+                    <img src="https://noorgee.pk/Dev/img/uae-NG-noor-Red.png" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-500">
+                    <h4 class="mt-6 text-xl font-bold text-slate-900">NoorGee</h4>
+                    <p class="text-red-700 text-xs font-black tracking-widest uppercase mt-2">Marketing & Research</p>
+                </div>
+                <div class="text-center group">
+                    <img src="https://noorgee.pk/Web/img/FSL-ng.jpg" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-500">
+                    <h4 class="mt-6 text-xl font-bold text-slate-900">Faisal Shahab</h4>
+                    <p class="text-slate-600 text-xs font-black tracking-widest uppercase mt-2">Admin & Finance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section id="contact-form" class="py-24 bg-white">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-16 shadow-2xl">
+                <h2 class="text-3xl font-bold text-white mb-8 text-center">Start a Conversation</h2>
+                <form id="contactForm" class="grid grid-cols-1 gap-6">
+                    <input type="hidden" name="site_source" value="noorgee.pk/Web">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <input type="text" name="name" placeholder="Full Name" required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
+                        <input type="email" name="email" placeholder="Email Address" required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                    <textarea name="message" rows="5" placeholder="Tell us about your project..." required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+                    <button type="submit" id="submitBtn" class="w-full py-4 btn-brown text-white font-bold rounded-2xl shadow-xl shadow-brown-600/30">Send Message</button>
+                </form>
+                <div id="formStatus" class="mt-6 hidden p-4 rounded-2xl text-center font-bold"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Footer -->
+    <footer class="bg-slate-950 text-slate-400 pt-20 pb-10 border-t border-slate-900">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-12">
+                <img src="https://us.noorgee.com/wp-content/uploads/2024/12/Screenshot-2023-11-28-09.07.04-e1703271804159.png" alt="NoorGee" class="h-10 mx-auto grayscale opacity-50 mb-8">
+                <div class="flex justify-center gap-8 text-2xl mb-10">
+                    <a href="https://facebook.com/NoorGeeWebMaster" target="_blank" class="hover:text-blue-500 transition-all transform hover:-translate-y-1">
+                        <i class="fa-brands fa-facebook"></i>
+                    </a>
+                    <a href="https://wa.me/923323320369" target="_blank" class="hover:text-green-500 transition-all transform hover:-translate-y-1">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                    <a href="mailto:grapheart365@gmail.com" class="hover:text-amber-500 transition-all transform hover:-translate-y-1">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                </div>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-10 text-sm font-bold tracking-widest text-slate-500">
+                    <span>WHATSAPP: +92-332-3320369</span>
+                    <span>EMAIL: GRAPHEART365@GMAIL.COM</span>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-slate-900/50 flex flex-col items-center gap-4">
+                <div class="text-[10px] uppercase tracking-[0.3em] font-medium text-slate-700">
+                    &copy; 2025 NoorGee WebMaster | Global Digital Excellence
+                </div>
+                <!-- Admin Access Button -->
+                <a href="admin_panel.php" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-800 text-[9px] font-bold tracking-widest text-slate-600 hover:bg-slate-900 hover:text-amber-500 transition duration-300">
+                    <i class="fa-solid fa-lock text-[8px]"></i> ADMIN ACCESS
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Interactive BG
+        const bg = document.getElementById('interactive-bg');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            bg.style.setProperty('--x', `${x}%`);
+            bg.style.setProperty('--y', `${y}%`);
+        });
+
+        // Form Submission
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('formStatus');
+            const formData = new FormData(this);
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+
+            try {
+                const response = await fetch('send_message.php', { method: 'POST', body: formData });
+                const result = await response.json();
+                status.className = `mt-6 p-4 rounded-2xl text-center font-bold ${result.success ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`;
+                status.innerText = result.message;
+                status.classList.remove('hidden');
+                if(result.success) this.reset();
+            } catch (error) {
+                status.className = 'mt-6 p-4 rounded-2xl bg-red-500/10 text-red-400 block font-bold';
+                status.innerText = 'System Error. Please try again.';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>

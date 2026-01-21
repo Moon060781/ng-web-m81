@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>NoorGee WebMaster | Global Web Solutions & Development</title>
+    <meta name="title" content="NoorGee WebMaster | Global Web Solutions & Development">
+    <meta name="description" content="NoorGee WebMaster provides expert web development in HTML, PHP, WordPress, and Shopify. Managing global eCommerce and utility platforms across USA, UK, UAE, and Pakistan.">
+    <meta name="keywords" content="Web Development, NoorGee, PHP Developer, WordPress Expert, Shopify Store, Global Web Solutions, Pakistan Web Developer">
+    <meta name="author" content="NoorGee WebMaster">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://noorgee.pk/Web/">
+    <meta property="og:title" content="NoorGee WebMaster | Global Web Solutions">
+    <meta property="og:description" content="Expert development in HTML, PHP, WordPress & Shopify. Building digital experiences across global markets.">
+    <meta property="og:image" content="https://us.noorgee.com/wp-content/uploads/2024/12/Screenshot-2023-11-28-09.07.04-e1703271804159.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://noorgee.pk/Web/">
+    <meta property="twitter:title" content="NoorGee WebMaster | Global Web Solutions">
+    <meta property="twitter:description" content="Expert development in HTML, PHP, WordPress & Shopify. Building digital experiences across global markets.">
+    <meta property="twitter:image" content="https://us.noorgee.com/wp-content/uploads/2024/12/Screenshot-2023-11-28-09.07.04-e1703271804159.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #2563eb, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero Background Image */
+        .hero-bg {
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85)), 
+                        url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        /* Card Hover Effects */
+        .project-card { transition: all 0.3s ease; }
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Skill Card Hover */
+        .skill-card { transition: all 0.3s ease; }
+        .skill-card:hover {
+            background-color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+        .skill-card:hover i { transform: scale(1.2); }
+
+        /* Floating WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            background-color: #128c7e;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/923323320369" target="_blank" class="whatsapp-float animate-bounce" title="Chat on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Top Bar Contact Info -->
+    <div class="bg-slate-900 text-white py-2 text-sm relative z-50">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-6">
+                <a href="tel:03323320369" class="hover:text-blue-300 transition flex items-center gap-2">
+                    <i class="fa-solid fa-phone text-blue-400"></i> 0332-3320369
+                </a>
+                <a href="mailto:admin@noorgee.pk" class="hover:text-blue-300 transition flex items-center gap-2">
+                    <i class="fa-solid fa-envelope text-blue-400"></i> admin@noorgee.pk
+                </a>
+            </div>
+            <div class="text-gray-400 text-xs hidden md:block">
+                Trusted Global Web Solutions Provider
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://us.noorgee.com/wp-content/uploads/2024/12/Screenshot-2023-11-28-09.07.04-e1703271804159.png" 
+                     alt="NoorGee WebMaster Logo" 
+                     class="h-10 md:h-12 object-contain">
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-600">
+                <a href="#network" class="hover:text-blue-600 transition">Global Network</a>
+                <a href="#skills" class="hover:text-blue-600 transition">Skills</a>
+                <a href="#services" class="hover:text-blue-600 transition">Services</a>
+                <a href="#contact-form" class="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-lg hover:shadow-blue-500/30">Contact Me</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg pt-20 pb-20 px-6 min-h-[70vh] flex items-center">
+        <div class="container mx-auto text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-600 text-xs font-bold tracking-widest mb-4 animate-fade-up">NOORGEE WEBMASTER</span>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-slate-900 leading-tight animate-fade-up delay-100">
+                Building Digital Experiences <br> Across <span class="gradient-text">Global Markets</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto animate-fade-up delay-200">
+                Expert development in HTML, PHP, WordPress & Shopify. From the USA to Pakistan, we create scalable solutions.
+            </p>
+            <div class="flex justify-center gap-4 animate-fade-up delay-300">
+                <a href="#network" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 hover:shadow-blue-500/30">
+                    View My Work
+                </a>
+                <a href="#contact-form" class="px-8 py-3 bg-white text-blue-600 border border-blue-200 font-semibold rounded-lg hover:bg-gray-50 transition">
+                    Send Message
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Network Grid -->
+    <section id="network" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">Our Project Network</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto mt-4 rounded-full"></div>
+                <p class="text-gray-500 mt-4">Managing eCommerce and Utility platforms across 4 continents.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- US Market -->
+                <div class="project-card bg-slate-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-100 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div class="h-12 w-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 relative z-10">
+                        <i class="fa-solid fa-flag-usa text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">US Market</h3>
+                    <p class="text-sm text-gray-500 mb-4 font-mono">us.noorgee.com</p>
+                    <a href="https://us.noorgee.com" target="_blank" class="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Visit Site <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- UK Market -->
+                <div class="project-card bg-slate-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div class="h-12 w-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4 relative z-10">
+                        <i class="fa-solid fa-sterling-sign text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">UK Market</h3>
+                    <p class="text-sm text-gray-500 mb-4 font-mono">uk.noorgee.com</p>
+                    <a href="https://uk.noorgee.com" target="_blank" class="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Visit Site <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- UAE Market -->
+                <div class="project-card bg-slate-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div class="h-12 w-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 relative z-10">
+                        <i class="fa-solid fa-building text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">UAE Market</h3>
+                    <p class="text-sm text-gray-500 mb-4 font-mono">ae.noorgee.com</p>
+                    <a href="https://ae.noorgee.com" target="_blank" class="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Visit Site <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Pakistan Market -->
+                <div class="project-card bg-slate-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div class="h-12 w-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center mb-4 relative z-10">
+                        <i class="fa-solid fa-star-and-crescent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Pakistan Store</h3>
+                    <p class="text-sm text-gray-500 mb-4 font-mono">noorgee.pk</p>
+                    <a href="https://noorgee.pk" target="_blank" class="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Visit Site <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- IT Tools -->
+                <div class="project-card bg-slate-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-purple-100 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div class="h-12 w-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 relative z-10">
+                        <i class="fa-solid fa-wrench text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">IT Tools</h3>
+                    <p class="text-sm text-gray-500 mb-4 font-mono">it.noorgee.com</p>
+                    <a href="https://it.noorgee.com" target="_blank" class="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Visit Site <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- NGO / Social Work -->
+                <div class="project-card bg-slate-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-100 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div class="h-12 w-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mb-4 relative z-10">
+                        <i class="fa-solid fa-hand-holding-heart text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Social Impact</h3>
+                    <p class="text-sm text-gray-500 mb-4 font-mono">kwa.com.pk</p>
+                    <a href="https://kwa.com.pk" target="_blank" class="text-blue-600 font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Visit Site <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Skills Section -->
+    <section id="skills" class="py-16 bg-slate-50 border-t border-gray-200">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Technical Expertise</h2>
+                <p class="text-gray-500 mt-2">Core technologies used to build powerful web solutions.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                <!-- HTML5 -->
+                <div class="skill-card bg-white p-6 rounded-xl border border-gray-100 text-center cursor-pointer group">
+                    <i class="fa-brands fa-html5 text-5xl text-orange-500 mb-3 transition-transform duration-300"></i>
+                    <h3 class="font-bold text-gray-700">HTML5</h3>
+                </div>
+                <!-- CSS3 -->
+                <div class="skill-card bg-white p-6 rounded-xl border border-gray-100 text-center cursor-pointer group">
+                    <i class="fa-brands fa-css3-alt text-5xl text-blue-500 mb-3 transition-transform duration-300"></i>
+                    <h3 class="font-bold text-gray-700">CSS3</h3>
+                </div>
+                <!-- PHP -->
+                <div class="skill-card bg-white p-6 rounded-xl border border-gray-100 text-center cursor-pointer group">
+                    <i class="fa-brands fa-php text-5xl text-indigo-500 mb-3 transition-transform duration-300"></i>
+                    <h3 class="font-bold text-gray-700">PHP</h3>
+                </div>
+                <!-- WordPress -->
+                <div class="skill-card bg-white p-6 rounded-xl border border-gray-100 text-center cursor-pointer group">
+                    <i class="fa-brands fa-wordpress text-5xl text-cyan-600 mb-3 transition-transform duration-300"></i>
+                    <h3 class="font-bold text-gray-700">WordPress</h3>
+                </div>
+                <!-- Shopify -->
+                <div class="skill-card bg-white p-6 rounded-xl border border-gray-100 text-center cursor-pointer group">
+                    <i class="fa-brands fa-shopify text-5xl text-green-500 mb-3 transition-transform duration-300"></i>
+                    <h3 class="font-bold text-gray-700">Shopify</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Expertise -->
+    <section id="services" class="py-20 bg-slate-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-20 bg-center bg-cover" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <div class="inline-block px-3 py-1 border border-blue-400 rounded-full text-blue-400 text-xs font-bold mb-4">EXPERTISE</div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Why Choose NoorGee?</h2>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        We don't just build websites; we build ecosystems. From handling complex eCommerce transactions to managing local community portals.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-400"></i> International Domain Management</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-400"></i> Secure & Fast Hosting</li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-400"></i> Custom Portfolio Design</li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800/80 backdrop-blur p-6 rounded-xl text-center border border-slate-700">
+                        <h3 class="text-3xl font-bold text-blue-400">6+</h3>
+                        <p class="text-sm text-gray-400">Active Platforms</p>
+                    </div>
+                    <div class="bg-slate-800/80 backdrop-blur p-6 rounded-xl text-center border border-slate-700">
+                        <h3 class="text-3xl font-bold text-purple-400">4</h3>
+                        <p class="text-sm text-gray-400">Countries Served</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact-form" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+                <div class="bg-slate-900 text-white p-10 md:w-1/3 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Get in Touch</h3>
+                        <p class="text-gray-400 text-sm mb-6">Fill out the form to send a message directly to our admin team.</p>
+                        <div class="space-y-4 text-sm">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-envelope text-blue-400"></i> admin@noorgee.pk</div>
+                            <div class="flex items-center gap-3"><i class="fa-brands fa-whatsapp text-green-400"></i> +92 332 3320369</div>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <p class="text-xs text-gray-500">We reply within 24 hours.</p>
+                    </div>
+                </div>
+                
+                <div class="p-10 md:w-2/3">
+                    <form id="ajaxContactForm" onsubmit="handleFormSubmit(event)">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                            <input type="text" name="name" id="userName" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                            <input type="email" name="email" id="userEmail" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                            <textarea name="message" id="userMsg" rows="4" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50"></textarea>
+                        </div>
+                        <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition flex justify-center items-center gap-2">
+                            <span>Send Message</span> <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                    <!-- Success/Error Message Container -->
+                    <div id="formStatus" class="mt-4 hidden p-4 rounded-lg text-center"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-white py-12 border-t border-slate-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-xs text-gray-600">&copy; 2025 NoorGee WebMaster. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const statusDiv = document.getElementById('formStatus');
+            const form = document.getElementById('ajaxContactForm');
+            const formData = new FormData(form);
+
+            // Prepare values for WhatsApp backup link
+            const waName = document.getElementById('userName').value;
+            const waMsg = document.getElementById('userMsg').value;
+            const waLink = `https://wa.me/923323320369?text=Hello%20NoorGee,%20I%20am%20${encodeURIComponent(waName)}.%20Message:%20${encodeURIComponent(waMsg)}`;
+
+            // Change button state
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            fetch('send_message.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(async (response) => {
+                const text = await response.text();
+                
+                // If the response contains "Fatal error" or typical PHP crash text
+                if (text.includes('Fatal error') || text.includes('Uncaught Error') || text.includes('mail()')) {
+                    throw new Error('PHP_MAIL_DISABLED');
+                }
+                
+                // If successful
+                statusDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                statusDiv.classList.add('bg-green-100', 'text-green-800', 'block');
+                
+                statusDiv.innerHTML = `
+                    <div class="font-bold text-lg mb-2">âœ… Message Saved!</div>
+                    <p class="mb-4 text-sm text-green-700">Since our email system is being updated, please click below to confirm via WhatsApp:</p>
+                    <a href="${waLink}" target="_blank" class="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:bg-green-700 transition">
+                        <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                    </a>
+                `;
+                form.reset();
+            })
+            .catch(error => {
+                // If mail() failed or network failed, show WhatsApp fallback
+                statusDiv.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                statusDiv.classList.add('bg-blue-50', 'text-blue-800', 'block', 'border', 'border-blue-200');
+                
+                statusDiv.innerHTML = `
+                    <div class="font-bold text-lg mb-2">ðŸ“¢ Quick Contact</div>
+                    <p class="mb-4 text-sm">The email server is currently undergoing maintenance. Please send your message directly via WhatsApp for an immediate response:</p>
+                    <a href="${waLink}" target="_blank" class="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:bg-green-700 transition shadow-lg">
+                        <i class="fa-brands fa-whatsapp"></i> Continue via WhatsApp
+                    </a>
+                `;
+            })
+            .finally(() => {
+                btn.innerHTML = '<span>Send Message</span> <i class="fa-solid fa-paper-plane"></i>';
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
