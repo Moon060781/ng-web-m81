@@ -1,6 +1,6 @@
 <?php
 // Simple Security
-$auth_pass = "NoorGee@2025"; 
+$auth_pass = "123"; 
 if (!isset($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_PW'] != $auth_pass) {
     header('WWW-Authenticate: Basic realm="NoorGee Admin"');
     header('HTTP/1.0 401 Unauthorized');
@@ -120,4 +120,5 @@ try {
         </div>
     </div>
 </body>
+
 </html>
