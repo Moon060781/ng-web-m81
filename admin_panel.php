@@ -56,7 +56,7 @@ try {
     <div class="max-w-6xl mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-8 rounded-3xl shadow-sm border border-slate-200 gap-6">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Unified Inbox</h1>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Message Inbox of Web NoorGee</h1>
                 <p class="text-slate-500 font-medium">Viewing <?php echo $filter == 'all' ? 'All' : $filter; ?> Messages (<?php echo count($messages); ?>)</p>
             </div>
             
@@ -122,3 +122,4 @@ try {
 </body>
 
 </html>
+
