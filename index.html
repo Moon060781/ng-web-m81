@@ -133,12 +133,12 @@
         #pageModal {
             display: none;
             position: fixed;
-            top: 150px; /* Below header */
-            bottom: 100px; /* Above footer */
+            top: 100px; /* Increased height by moving top up */
+            bottom: 50px; /* Increased height by moving bottom down */
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 1000px;
+            width: 95%; /* Increased width */
+            max-width: 1200px; /* Increased max-width */
             background: white;
             z-index: 1000;
             border-radius: 2rem;
@@ -432,7 +432,7 @@
                         <li><a href="javascript:void(0)" onclick="openModal('terms-and-conditions.html')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-file-contract text-xs"></i> Terms & Conditions</a></li>
                         <li><a href="javascript:void(0)" onclick="openModal('faq.html')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-circle-question text-xs"></i> FAQ</a></li>
                         <li><a href="javascript:void(0)" onclick="openModal('help.html')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-headset text-xs"></i> Help</a></li>
-                        <li><a href="javascript:void(0)" onclick="openModal('send_message.php')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-paper-plane text-xs"></i> Contact</a></li>
+                        <li><a href="#contact-form" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-paper-plane text-xs"></i> Contact</a></li>
                     </ul>
                 </div>
 
