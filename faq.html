@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noorgee.pk | Web FAQ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; line-height: 2.5; }
+        .accordion-content { transition: max-height 0.3s ease-out; max-height: 0; overflow: hidden; }
+        .accordion-content.active { max-height: 500px; }
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotate-icon.active { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-slate-50 text-right">
+
+    <!-- Header -->
+    <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between flex-row-reverse">
+            <div class="flex items-center gap-2 flex-row-reverse">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md">N</div>
+                <span class="font-bold text-xl text-slate-800 tracking-tight">noorgee.pk<span class="text-blue-600">/Web</span></span>
+            </div>
+            <button onclick="toggleLanguage()" class="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl font-medium hover:bg-blue-100 transition-all border border-blue-200">
+                <span id="lang-btn-text">English</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-white py-16 border-b">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 id="hero-title" class="text-3xl md:text-5xl font-black text-slate-900 mb-6 font-urdu">عام طور پر پوچھے گئے سوالات</h1>
+            <p id="hero-subtitle" class="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto font-urdu">آپ کے کاروبار کے لیے پیشہ ورانہ اور شفاف ویب سروسز۔</p>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div id="faq-container" class="space-y-4">
+            <!-- FAQs will be injected here by JS -->
+        </div>
+
+        <!-- Contact Section -->
+        <div class="mt-20 bg-white border-2 border-blue-100 rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden text-center">
+            <h2 id="cta-title" class="text-3xl font-black text-slate-900 mb-3 font-urdu">ابھی بھی کوئی سوال ہے؟</h2>
+            <p class="text-slate-500 text-lg mb-10">ہم آپ کی مدد کے لیے حاضر ہیں</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                <a href="https://wa.me/923323320369" target="_blank" class="flex flex-col items-center p-8 bg-green-50 rounded-[2rem] border border-green-100 hover:bg-green-100 transition-all shadow-sm">
+                    <div class="w-14 h-14 bg-green-500 text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-green-200 text-2xl">💬</div>
+                    <span id="btn-wa" class="font-bold text-green-700 font-urdu">واٹس ایپ پر چیٹ کریں</span>
+                </a>
+
+                <a href="http://fb.com/moon060781" target="_blank" class="flex flex-col items-center p-8 bg-blue-50 rounded-[2rem] border border-blue-100 hover:bg-blue-100 transition-all shadow-sm">
+                    <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-blue-200 text-2xl">f</div>
+                    <span id="btn-fb" class="font-bold text-blue-700 font-urdu">فیس بک پر میسج کریں</span>
+                </a>
+
+                <a href="send_message.php" class="flex flex-col items-center p-8 bg-slate-50 rounded-[2rem] border border-slate-200 hover:bg-slate-100 transition-all shadow-sm">
+                    <div class="w-14 h-14 bg-slate-800 text-white rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-slate-200 text-2xl">✉️</div>
+                    <span id="btn-msg" class="font-bold text-slate-700 font-urdu">آن لائن پیغام بھیجیں</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-12 text-center text-slate-400 text-sm border-t bg-white mt-12">
+        <p class="mb-2 font-bold text-slate-600">Contact: +92 332 3320369</p>
+        <p>&copy; 2024 Noorgee.pk - Built for Pakistan</p>
+    </footer>
+
+    <script>
+        let currentLang = 'ur';
+        const content = {
+            en: {
+                dir: 'ltr',
+                align: 'left',
+                heroTitle: "Frequently Asked Questions",
+                heroSubtitle: "Professional and transparent web services for your business.",
+                ctaTitle: "Still have questions?",
+                btnWA: "Chat on WhatsApp",
+                btnFB: "Message on Facebook",
+                btnMsg: "Send Online Message",
+                langBtn: "اردو میں دیکھیں",
+                faqs: [
+                    { q: "What is the 20k Website Package breakdown?", a: "The total cost is 20,000 PKR, which includes: Hosting (10k), Domain (5k), and Development (5k)." },
+                    { q: "Is there a monthly maintenance fee?", a: "Yes, we charge 5,000 PKR per month for ongoing maintenance and monitoring." },
+                    { q: "How long does it take to go live?", a: "Your website will be live within 2 to 10 hours once we have all details." },
+                    { q: "What do you need from me to start?", a: "We need your logo, business text, images, and contact details." }
+                ]
+            },
+            ur: {
+                dir: 'rtl',
+                align: 'right',
+                heroTitle: "عام طور پر پوچھے گئے سوالات",
+                heroSubtitle: "آپ کے کاروبار کے لیے پیشہ ورانہ اور شفاف ویب سروسز۔",
+                ctaTitle: "ابھی بھی کوئی سوال ہے؟",
+                btnWA: "واٹس ایپ پر چیٹ کریں",
+                btnFB: "فیس بک پر میسج کریں",
+                btnMsg: "آن لائن پیغام بھیجیں",
+                langBtn: "Switch to English",
+                faqs: [
+                    { q: "20 ہزار والے ویب سائٹ پیکیج کی تفصیل کیا ہے؟", a: "کل خرچہ 20,000 روپے ہے: ہوسٹنگ (10 ہزار)، ڈومین (5 ہزار)، اور ڈیولپمنٹ (5 ہزار)۔" },
+                    { q: "کیا ماہانہ دیکھ بھال کے اخراجات ہیں؟", a: "جی ہاں، دیکھ بھال اور میسجز مانیٹر کرنے کے لیے ماہانہ 5,000 روپے فیس ہے۔" },
+                    { q: "ویب سائٹ لائیو ہونے میں کتنا وقت لگتا ہے؟", a: "تمام تفصیلات ملنے کے بعد صرف 2 سے 10 گھنٹے کے اندر ویب سائٹ لائیو ہو جائے گی۔" },
+                    { q: "ویب سائٹ کے لیے ہمیں آپ کو کیا فراہم کرنا ہوگا؟", a: "ہمیں آپ کا لوگو، کام کی تحریر، تصاویر اور رابطہ کی معلومات درکار ہوں گی۔" }
+                ]
+            }
+        };
+
+        function renderFAQs() {
+            const container = document.getElementById('faq-container');
+            const data = content[currentLang];
+            container.innerHTML = data.faqs.map((faq, i) => `
+                <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                    <button onclick="toggleAccordion(${i})" class="w-full px-6 py-5 flex items-center justify-between text-slate-800 hover:bg-slate-50">
+                        <span class="text-lg font-bold ${currentLang === 'ur' ? 'font-urdu' : ''}">${faq.q}</span>
+                        <span id="icon-${i}" class="rotate-icon text-slate-400">▼</span>
+                    </button>
+                    <div id="content-${i}" class="accordion-content">
+                        <div class="px-8 pb-7 pt-2 text-slate-600 border-t border-slate-50 ${currentLang === 'ur' ? 'font-urdu' : ''}">
+                            ${faq.a}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Update other text
+            document.documentElement.dir = data.dir;
+            document.body.className = `bg-slate-50 text-${data.align}`;
+            document.getElementById('hero-title').innerText = data.heroTitle;
+            document.getElementById('hero-subtitle').innerText = data.heroSubtitle;
+            document.getElementById('cta-title').innerText = data.ctaTitle;
+            document.getElementById('btn-wa').innerText = data.btnWA;
+            document.getElementById('btn-fb').innerText = data.btnFB;
+            document.getElementById('btn-msg').innerText = data.btnMsg;
+            document.getElementById('lang-btn-text').innerText = data.langBtn;
+        }
+
+        function toggleAccordion(i) {
+            const contentDiv = document.getElementById(`content-${i}`);
+            const icon = document.getElementById(`icon-${i}`);
+            contentDiv.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ur' : 'en';
+            renderFAQs();
+        }
+
+        renderFAQs();
+    </script>
+</body>
+</html>
