@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions | NoorGee WebMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="max-w-4xl mx-auto px-6 py-12 bg-white shadow-sm my-10 rounded-lg">
+        <!-- Header -->
+        <header class="border-b pb-8 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Terms & Conditions</h1>
+            <p class="text-sm text-gray-500 font-medium">Last Updated: January 22, 2026</p>
+            <p class="mt-4 text-lg text-gray-600">Welcome to <span class="font-bold text-blue-600">NoorGee WebMaster</span>. By accessing our services, you agree to be bound by the following terms and conditions.</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="space-y-8 leading-relaxed">
+            
+            <!-- Section 1 -->
+            <section>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">1. Services & Scope</h2>
+                <p>
+                    We offer professional website development services, including our signature <strong>20k PKR Freelancer Package</strong>. 
+                    Additional services such as SEO optimization and digital marketing are available; rates for these will be quoted separately 
+                    based on the specific requirements of the project. All project scopes, timelines, and deliverables will be clearly 
+                    outlined in the initial project proposal.
+                </p>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">2. Payment Terms</h2>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li><strong>Deposit:</strong> A non-refundable <strong>75% upfront deposit</strong> is required before any design or development work commences.</li>
+                    <li><strong>Final Payment:</strong> The remaining <strong>25% balance</strong> is due upon project completion and must be cleared prior to the final website handover or "Go Live" phase.</li>
+                </ul>
+            </section>
+
+            <!-- Section 3 -->
+            <section>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">3. Liability & Data Protection</h2>
+                <p class="mb-4">
+                    At <strong>NoorGee WebMaster</strong>, we prioritize the integrity of your digital assets. We maintain regular backups of the websites we develop and manage.
+                </p>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li>We <strong>can</strong> be held liable for loss of data or loss of profits only if it is proven to be a direct result of our failure to maintain these backups as per our internal agreement.</li>
+                    <li>We are <strong>not liable</strong> for website downtime or data loss caused by third-party hosting providers, domain registrars, or external cyber-attacks.</li>
+                </ul>
+            </section>
+
+            <!-- Section 4 -->
+            <section>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">4. Client Obligations</h2>
+                <p>
+                    Clients are responsible for providing all text, images, and branding assets required for the project. 
+                    Failure to provide these materials in a timely manner may result in project delays for which NoorGee WebMaster is not responsible.
+                </p>
+            </section>
+
+            <!-- Section 5 -->
+            <section>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">5. Portfolio Rights</h2>
+                <p>
+                    NoorGee WebMaster reserves the right to display completed projects, including screenshots and links, 
+                    in our professional portfolio and marketing materials unless otherwise agreed upon in writing.
+                </p>
+            </section>
+
+        </main>
+
+        <!-- Newsletter Section -->
+        <footer class="mt-16 pt-10 border-t border-gray-200">
+            <div class="bg-gray-900 rounded-2xl p-8 md:p-12 text-center text-white">
+                <h2 class="text-2xl font-bold mb-2">Stay in the Loop</h2>
+                <p class="text-gray-400 mb-8">Subscribe to the NoorGee WebMaster newsletter for web tips and exclusive offers.</p>
+                
+                <form action="send_message.php" method="POST" class="max-w-md mx-auto">
+                    <!-- Hidden field to tell your PHP this is a newsletter signup -->
+                    <input type="hidden" name="form_type" value="newsletter">
+                    <input type="hidden" name="subject" value="New Newsletter Subscription - NoorGee WebMaster">
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="yourname@email.com" 
+                            required 
+                            class="flex-1 px-5 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        >
+                        <button 
+                            type="submit" 
+                            name="submit" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+                        >
+                            Subscribe
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4">We respect your privacy. No spam, ever.</p>
+                </form>
+            </div>
+            
+            <div class="text-center mt-8 text-gray-400 text-sm">
+                &copy; 2026 NoorGee WebMaster. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
