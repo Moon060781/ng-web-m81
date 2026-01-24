@@ -1,547 +1,211 @@
+<?php
+/**
+ * NG WebMaster - Git Deployment Tool
+ * Password: 123
+ */
+
+// 1. Enable Error Reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
+$PASSWORD = "123";
+
+// Set your specific branch name
+$TARGET_BRANCH = "main-m81";
+
+// Authentication Logic
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: deploy.php");
+    exit;
+}
+
+if (isset($_POST['password'])) {
+    if ($_POST['password'] === $PASSWORD) {
+        $_SESSION['auth'] = true;
+    } else {
+        $error = "Invalid Password";
+    }
+}
+
+$is_authenticated = isset($_SESSION['auth']) && $_SESSION['auth'] === true;
+
+// Logic to fetch the latest commit info from local git (after a pull)
+$last_commit_title = "";
+$last_commit_desc = "";
+
+if ($is_authenticated) {
+    // Get the very last commit subject
+    $last_commit_title = trim(shell_exec("git log -1 --format=%s 2>/dev/null") ?? "");
+    // Get the body/description of that commit
+    $last_commit_desc = trim(shell_exec("git log -1 --format=%b 2>/dev/null") ?? "");
+}
+
+// Git Command Execution
+$output = "";
+if ($is_authenticated && isset($_POST['action'])) {
+    $action = $_POST['action'];
+    
+    if (!function_exists('shell_exec')) {
+        $output = "Error: shell_exec() is disabled on this server.";
+    } else {
+        switch ($action) {
+            case 'pull':
+                $cmd = "git fetch origin 2>&1 && git checkout $TARGET_BRANCH 2>&1 && git pull origin $TARGET_BRANCH 2>&1";
+                $output = shell_exec($cmd);
+                break;
+            case 'force_pull':
+                $cmd = "git fetch origin 2>&1 && git reset --hard origin/$TARGET_BRANCH 2>&1 && git clean -fd 2>&1";
+                $output = shell_exec($cmd);
+                // Refresh commit info after force pull
+                $last_commit_title = trim(shell_exec("git log -1 --format=%s 2>/dev/null") ?? "");
+                $last_commit_desc = trim(shell_exec("git log -1 --format=%b 2>/dev/null") ?? "");
+                break;
+            case 'push':
+                $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Live Update: " . date('Y-m-d H:i:s');
+                $desc = !empty($_POST['commit_desc']) ? $_POST['commit_desc'] : "";
+                $full_msg = $msg . ($desc ? "\n\n" . $desc : "");
+                $safe_msg = escapeshellarg($full_msg);
+                $cmd = "git add . && git commit -m $safe_msg && git push origin $TARGET_BRANCH 2>&1";
+                $output = shell_exec($cmd);
+                break;
+            case 'revert':
+                $cmd = "git reset --hard HEAD 2>&1 && git clean -fd 2>&1";
+                $output = shell_exec($cmd);
+                break;
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>NoorGee WebMaster |   eCommerce & Web Solutions</title>
-    <meta name="description" content="Leading web developer and eCommerce strategist specializing in Shopify, WordPress, and Custom PHP solutions.">
-
+    <title>NG Deployer | Branch: <?php echo $TARGET_BRANCH; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --brand-brown: #5d4037;
-            --brand-brown-light: #8d6e63;
+        body { background: #0f172a; color: white; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .terminal-box { 
+            background: #000; 
+            border-left: 4px solid #3b82f6; 
+            box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.1);
         }
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            overflow-x: hidden;
-            background-color: #fdfaf9; /* Warm off-white */
-        }
-        
-        #interactive-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(93, 64, 55, 0.08) 0%, rgba(253, 250, 249, 0) 50%);
-            transition: background 0.1s ease-out;
-        }
-
-        .gradient-text {
-            background: linear-gradient(to right, #5d4037, #d97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Nav Animations */
-        @keyframes slideFadeIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .nav-animate {
-            animation: slideFadeIn 0.8s ease-out forwards;
-            opacity: 0;
-        }
-
-        .logo-animate {
-            animation: slideFadeIn 0.6s ease-out forwards;
-        }
-
-        .hero-bg {
-            background: linear-gradient(rgba(253, 250, 249, 0.94), rgba(253, 250, 249, 0.85)), 
-                        url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .project-card { 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            border-bottom: 4px solid transparent;
-        }
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px -12px rgba(93, 64, 55, 0.15);
-            border-bottom: 4px solid #5d4037;
-        }
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #5d4037; /* Themed Brown */
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-        .whatsapp-float:hover { 
-            transform: scale(1.1) rotate(10deg); 
-            background-color: #25d366; /* Classic WhatsApp Green on hover */
-        }
-
-        .btn-brown {
-            background-color: #5d4037;
-            transition: all 0.3s ease;
-        }
-        .btn-brown:hover {
-            background-color: #3e2723;
-            transform: translateY(-2px);
-        }
-
-        /* Hero Animations */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .hero-content-animate {
-            animation: fadeInUp 1s ease-out forwards;
-        }
-        
-        .hero-shape {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s ease-in-out infinite;
-        }
-
-        /* Modal Styles */
-        #pageModal {
-            display: none;
-            position: fixed;
-            top: 100px; /* Increased height by moving top up */
-            bottom: 50px; /* Increased height by moving bottom down */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 95%; /* Increased width */
-            max-width: 1200px; /* Increased max-width */
-            background: white;
-            z-index: 1000;
-            border-radius: 2rem;
-            box-shadow: 0 0 50px rgba(0,0,0,0.3);
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        #modalOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-        }
-        #modalIframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #5d4037;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1001;
-            transition: all 0.3s ease;
-        }
-        .modal-close:hover {
-            background: #3e2723;
-            transform: rotate(90deg);
+        .term-success { color: #4ade80; font-weight: bold; }
+        .term-error { color: #f87171; font-weight: bold; }
+        .term-info { color: #60a5fa; }
+        .input-highlight:focus {
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-color: #3b82f6 !important;
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <div id="interactive-bg"></div>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <!-- Modal Structure -->
-    <div id="modalOverlay"></div>
-    <div id="pageModal">
-        <div class="modal-close" onclick="closeModal()">
-            <i class="fa-solid fa-xmark"></i>
+    <div class="max-w-xl w-full glass rounded-3xl p-8 shadow-2xl border-t-4 border-blue-500">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-blue-400 tracking-tight">NG WebMaster <span class="text-xs align-top font-normal bg-blue-500/20 px-2 py-0.5 rounded ml-1 text-blue-300">DEPLOY</span></h1>
+            <p class="text-slate-400 text-xs uppercase tracking-widest mt-2">Active Branch: <span class="text-white font-mono font-bold"><?php echo $TARGET_BRANCH; ?></span></p>
         </div>
-        <iframe id="modalIframe" src=""></iframe>
+
+        <?php if (!$is_authenticated): ?>
+            <form method="POST" class="space-y-4">
+                <input type="password" name="password" placeholder="Admin Password" 
+                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:border-blue-500 outline-none text-center">
+                <?php if (isset($error)): ?>
+                    <p class="text-red-400 text-xs text-center font-bold"><?php echo $error; ?></p>
+                <?php endif; ?>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/40">Access Terminal</button>
+            </form>
+        <?php else: ?>
+            <div class="space-y-6">
+                <!-- Sync Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-white/5 pb-4">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="pull">
+                        <button type="submit" class="w-full h-full flex flex-col items-center justify-center bg-green-600/10 hover:bg-green-600/20 border border-green-600/30 p-4 rounded-2xl transition-all group">
+                            <i class="fas fa-cloud-download-alt text-xl text-green-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="block font-bold text-green-400 text-sm">Standard Pull</span>
+                            <span class="text-[9px] text-green-500/60 uppercase">Fetch & Merge</span>
+                        </button>
+                    </form>
+
+                    <form method="POST" onsubmit="return confirm('FORCE PULL: This will overwrite ALL local files with the GitHub version. Proceed?')">
+                        <input type="hidden" name="action" value="force_pull">
+                        <button type="submit" class="w-full h-full flex flex-col items-center justify-center bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 p-4 rounded-2xl transition-all group">
+                            <i class="fas fa-sync-alt text-xl text-blue-500 mb-2 group-hover:rotate-180 transition-transform duration-500"></i>
+                            <span class="block font-bold text-blue-400 text-sm">Force Pull</span>
+                            <span class="text-[9px] text-blue-500/60 uppercase">Overwrites Local</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Push Section -->
+                <form method="POST" class="space-y-3">
+                    <input type="hidden" name="action" value="push">
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-end ml-1">
+                            <label class="text-[10px] uppercase tracking-tighter text-blue-400 font-bold">Commit Highlight / Title</label>
+                            <span class="text-[9px] text-slate-500 italic">Current: <?php echo htmlspecialchars($last_commit_title); ?></span>
+                        </div>
+                        <input type="text" name="commit_msg" id="commit_msg" 
+                            value="<?php echo htmlspecialchars($last_commit_title); ?>"
+                            placeholder="Main Highlight (e.g. Fixed navigation bug)" 
+                            class="w-full bg-slate-900/80 border border-slate-600 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none input-highlight transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-tighter text-blue-400 font-bold ml-1">Extended Description</label>
+                        <textarea name="commit_desc" id="commit_desc" placeholder="List your detailed changes here..." rows="2"
+                            class="w-full bg-slate-900/80 border border-slate-600 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none input-highlight transition-all"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full flex items-center justify-between bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl transition-all shadow-lg shadow-blue-900/20 group">
+                        <div class="text-left">
+                            <span class="block font-bold text-white">Push to GitHub</span>
+                            <span class="text-[10px] text-blue-100/60 uppercase">Add all & Commit changes</span>
+                        </div>
+                        <i class="fas fa-cloud-upload-alt text-xl text-white group-hover:translate-y-[-2px] transition-transform"></i>
+                    </button>
+                </form>
+
+                <div class="flex gap-3">
+                    <form method="POST" onsubmit="return confirm('CRITICAL: This will PERMANENTLY delete all local changes. Continue?')" class="flex-1">
+                        <input type="hidden" name="action" value="revert">
+                        <button type="submit" class="w-full bg-red-900/20 hover:bg-red-900/40 border border-red-900/50 p-3 rounded-xl text-xs text-center text-red-400 font-bold transition-colors uppercase">
+                             Undo Local
+                        </button>
+                    </form>
+                    <a href="?logout=1" class="flex-1 bg-slate-800 hover:bg-slate-700 p-3 rounded-xl text-xs text-center text-slate-400 font-bold transition-colors uppercase">Sign Out</a>
+                </div>
+            </div>
+
+            <?php if ($output): ?>
+                <div class="mt-8">
+                    <div class="flex items-center gap-2 mb-2 ml-1">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Terminal History</label>
+                    </div>
+                    <pre class="terminal-box p-5 rounded-2xl text-[10px] md:text-[11px] font-mono leading-relaxed overflow-x-auto whitespace-pre-wrap"><?php 
+                        $highlighted = htmlspecialchars($output);
+                        $highlighted = str_ireplace('error', '<span class="term-error">error</span>', $highlighted);
+                        $highlighted = str_ireplace('fatal', '<span class="term-error">fatal</span>', $highlighted);
+                        $highlighted = str_ireplace('Aborting', '<span class="term-error">Aborting</span>', $highlighted);
+                        $highlighted = str_ireplace('HEAD is now at', '<span class="term-success">HEAD is now at</span>', $highlighted);
+                        $highlighted = str_ireplace('success', '<span class="term-success">success</span>', $highlighted);
+                        $highlighted = str_ireplace('Already up to date', '<span class="term-info">Already up to date</span>', $highlighted);
+                        echo $highlighted; 
+                    ?></pre>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
 
-    <a href="https://wa.me/923323320369" target="_blank" class="whatsapp-float animate-bounce">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
-
-    <!-- Header Container -->
-    <header class="relative z-50">
-        <!-- Top Bar -->
-        <div class="bg-slate-900 text-white py-2 text-[11px] md:text-xs border-b border-white/5">
-            <div class="container mx-auto px-6 flex justify-between items-center">
-                <div class="flex items-center gap-4 md:gap-8">
-                    <a href="tel:+923323320369" class="hover:text-amber-500 transition flex items-center gap-2">
-                        <i class="fa-solid fa-phone text-amber-500"></i> +92-332-3320369
-                    </a>
-                    <a href="mailto:admin@noorgee.pk" class="hover:text-amber-500 transition flex items-center gap-2">
-                        <i class="fa-solid fa-envelope text-amber-500"></i> admin@noorgee.pk
-                    </a>
-                </div>
-                <div class="flex items-center gap-6">
-                    <a href="https://facebook.com/NoorGeeWebMaster" target="_blank" class="hover:text-blue-400 transition">
-                        <i class="fa-brands fa-facebook"></i>
-                    </a>
-                    <span class="text-gray-600 hidden lg:block tracking-widest uppercase font-bold">NoorGee Web Master</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-            <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-                <div class="logo-animate">
-                    <img src="https://us.noorgee.com/wp-content/uploads/2024/12/Screenshot-2023-11-28-09.07.04-e1703271804159.png" 
-                         alt="Logo" class="h-10 md:h-12 hover:scale-105 transition-transform duration-300">
-                </div>
-                <div class="hidden md:flex items-center space-x-6 text-[13px] font-bold text-gray-600">
-                    <a href="#" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.1s;">HOME</a>
-                    <a href="#portfolio" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.2s;">PORTFOLIO</a>
-                    <a href="#about" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.3s;">ABOUT</a>
-                    <a href="#team" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.4s;">OUR TEAM</a>
-                    <a href="terms-and-conditions.html" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.5s;">T&C</a>
-                    <a href="faq.html" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.6s;">FAQ</a>
-                    <a href="#contact-form" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.7s;">CONTACT</a>
-                    <a href="#contact-form" class="nav-animate btn-brown text-white px-6 py-2.5 rounded-full shadow-lg shadow-brown-600/20" style="animation-delay: 0.8s;">HIRE ME</a>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Hero -->
-    <section class="hero-bg relative overflow-hidden py-24 md:py-40 px-6 text-center">
-        <!-- Animated Background Shapes -->
-        <div class="hero-shape bg-amber-200 w-64 h-64 -top-20 -left-20" style="animation-delay: 0s;"></div>
-        <div class="hero-shape bg-brown-200 w-96 h-96 -bottom-20 -right-20" style="animation-delay: -2s; background-color: #8d6e63;"></div>
-        
-        <div class="container mx-auto relative z-10">
-            <div class="hero-content-animate">
-                <h1 class="text-4xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight animate-float">
-                    NoorGee WebMaster <br> <span class="gradient-text">Masterful Devlopment</span>
-                </h1>
-                <p class="text-lg md:text-2xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0" style="animation: fadeInUp 1s ease-out 0.3s forwards;">
-                    Premium web architectures for businesses across USA, UAE & Pakistan.
-                </p>
-                <div class="opacity-0" style="animation: fadeInUp 1s ease-out 0.6s forwards;">
-                    <a href="#portfolio" class="inline-block px-12 py-4 btn-brown text-white font-bold rounded-2xl shadow-2xl hover:scale-105 transition-transform">
-                        Explore Projects
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-24 bg-slate-50">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop" alt="About NoorGee" class="rounded-[2.5rem] shadow-2xl">
-                </div>
-                <div class="md:w-1/2">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-6">About NoorGee WebMaster</h2>
-                    <div class="w-16 h-1 bg-amber-800 mb-8"></div>
-                    <p class="text-gray-600 leading-relaxed mb-6">
-                        We are a premier digital agency specializing in high-performance web solutions. With a focus on global standards and masterful design, we help businesses in the USA, UAE, and Pakistan establish a powerful online presence.
-                    </p>
-                    <p class="text-gray-600 leading-relaxed mb-8">
-                        Our expertise spans across custom PHP development, eCommerce strategies, and modern UI/UX design. We don't just build websites; we create digital experiences that drive growth.
-                    </p>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-800">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <span class="font-bold text-sm">Custom Solutions</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-800">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <span class="font-bold text-sm">Global Reach</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Grid -->
-    <section id="portfolio" class="py-24 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-20">
-                <h2 class="text-4xl font-bold text-slate-900">Portfolio</h2>
-                <div class="w-16 h-1 bg-amber-800 mx-auto mt-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Business ITC -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="noorgee.pk/Dev/img/businessitc-site-screenshot-Animation.gif" alt="Business ITC" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-amber-800/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">Business ITC</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-4 uppercase tracking-widest">Corporate Strategy</p>
-                        <p class="text-gray-500 text-xs mb-6">Demo: <a href="https://www.facebook.com/groups/271845483443038/permalink/1819346388692932/" target="_blank" class="text-amber-800 font-bold hover:underline">Watch Video</a></p>
-                        <a href="https://businessitc.com/" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-
-                <!-- NoorGee.pk -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Dev/img/portfolio-ng-pk-02.gif" alt="NoorGee.pk" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">NoorGee.pk</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Main Hub</p>
-                        <a href="https://noorgee.pk" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-
-                <!-- NoorGee US -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Dev/img/us-ng-site-screen.gif" alt="NoorGee US" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">NoorGee US</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">USA Market</p>
-                        <a href="https://us.noorgee.com" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-
-                <!-- KWA -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Web/img/kwa-screen.gif" alt="KWA" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">KWA Welfare</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Welfare & Social</p>
-                        <a href="https://kwa.com.pk" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-
-                <!-- NoorGee Tools -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Web/img/it-ng-site-tool-screen.gif" alt="Tools" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">NoorGee IT Tools</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Developer Utilities</p>
-                        <a href="https://it.noorgee.com" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team -->
-    <section id="team" class="py-24 bg-slate-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-slate-900">Our Core Team</h2>
-                <div class="w-16 h-1 bg-amber-800 mx-auto mt-4"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div class="text-center group">
-                    <img src="https://noorgee.pk/Dev/img/athar-photo.png" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-500">
-                    <h4 class="mt-6 text-xl font-bold text-slate-900">Developer Athar Hussain</h4>
-                    <p class="text-amber-800 text-xs font-black tracking-widest uppercase mt-2">Programmer & Developer</p>
-                </div>
-                <div class="text-center group">
-                    <img src="https://noorgee.pk/Dev/img/uae-NG-noor-Red.png" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-500">
-                    <h4 class="mt-6 text-xl font-bold text-slate-900">NoorGee</h4>
-                    <p class="text-red-700 text-xs font-black tracking-widest uppercase mt-2">Marketing & Research</p>
-                </div>
-                <div class="text-center group">
-                    <img src="https://noorgee.pk/Web/img/FSL-ng.jpg" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-500">
-                    <h4 class="mt-6 text-xl font-bold text-slate-900">Faisal Shahab</h4>
-                    <p class="text-slate-600 text-xs font-black tracking-widest uppercase mt-2">Admin & Finance</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Form -->
-    <section id="contact-form" class="py-24 bg-white">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-16 shadow-2xl">
-                <h2 class="text-3xl font-bold text-white mb-8 text-center">Start a Conversation</h2>
-                <form id="contactForm" class="grid grid-cols-1 gap-6">
-                    <input type="hidden" name="site_source" value="noorgee.pk/Web">
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <input type="text" name="name" placeholder="Full Name" required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
-                        <input type="email" name="email" placeholder="Email Address (Mandatory)" required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
-                    </div>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <input type="text" name="phone" placeholder="Contact Number" class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
-                        <input type="text" name="subject" placeholder="Subject" class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
-                    </div>
-                    <textarea name="message" rows="5" placeholder="Tell us about your project... (Mandatory)" required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-                    <button type="submit" id="submitBtn" class="w-full py-4 btn-brown text-white font-bold rounded-2xl shadow-xl shadow-brown-600/30">Send Message</button>
-                </form>
-                <div id="formStatus" class="mt-6 hidden p-4 rounded-2xl text-center font-bold"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-slate-950 text-slate-400 pt-20 pb-10 border-t border-slate-900">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-                <!-- Column 1: Links -->
-                <div>
-                    <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">Support & Legal</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="javascript:void(0)" onclick="openModal('terms-and-conditions.html')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-file-contract text-xs"></i> Terms & Conditions</a></li>
-                        <li><a href="javascript:void(0)" onclick="openModal('faq.html')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-circle-question text-xs"></i> FAQ</a></li>
-                        <li><a href="javascript:void(0)" onclick="openModal('help.html')" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-headset text-xs"></i> Help</a></li>
-                        <li><a href="#contact-form" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-paper-plane text-xs"></i> Contact</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 2: Partner Sites -->
-                <div>
-                    <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">Partner Sites</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="https://noorgee.pk/Web" target="_blank" class="hover:text-amber-500 transition">noorgee.pk/Web</a></li>
-                        <li><a href="https://it.noorgee.com" target="_blank" class="hover:text-amber-500 transition">it.noorgee.com</a></li>
-                        <li><a href="https://noorgee.com" target="_blank" class="hover:text-amber-500 transition">noorgee.com</a></li>
-                        <li><a href="https://us.noorgee.com" target="_blank" class="hover:text-amber-500 transition">us.noorgee.com</a></li>
-                        <li><a href="https://noorgee.pk" target="_blank" class="hover:text-amber-500 transition">noorgee.pk</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: Copyright & Info -->
-                <div class="flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">About NoorGee</h4>
-                        <p class="text-xs leading-relaxed mb-6">
-                            Global Digital Excellence providing premium web architectures for businesses across USA, UAE & Pakistan.
-                        </p>
-                        <div class="flex gap-4 text-xl mb-6">
-                            <a href="https://facebook.com/NoorGeeWebMaster" target="_blank" class="hover:text-blue-500 transition"><i class="fa-brands fa-facebook"></i></a>
-                            <a href="https://wa.me/923323320369" target="_blank" class="hover:text-green-500 transition"><i class="fa-brands fa-whatsapp"></i></a>
-                            <a href="mailto:admin@noorgee.pk" class="hover:text-amber-500 transition"><i class="fa-solid fa-envelope"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-[10px] uppercase tracking-[0.2em] font-medium text-slate-600">
-                        &copy; 2026 NoorGee WebMaster | All Rights Reserved
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-8 border-t border-slate-900/50 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-6 text-[10px] font-bold tracking-widest text-slate-700">
-                    <span>WHATSAPP: +92-332-3320369</span>
-                    <span>EMAIL: ADMIN@NOORGEE.PK</span>
-                </div>
-                <!-- Admin Access Button -->
-                <a href="admin_panel.php" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-800 text-[9px] font-bold tracking-widest text-slate-600 hover:bg-slate-900 hover:text-amber-500 transition duration-300">
-                    <i class="fa-solid fa-lock text-[8px]"></i> MESSAGEs ACCESS
-                </a>
-
-                   <!-- Deploy Button -->
-                <a href="deploy.php" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-800 text-[9px] font-bold tracking-widest text-slate-600 hover:bg-slate-900 hover:text-amber-500 transition duration-300">
-                    <i class="fa-solid fa-server text-[8px]"></i> Deploy Git
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Modal Logic
-        function openModal(url) {
-            document.getElementById('modalIframe').src = url;
-            document.getElementById('modalOverlay').style.display = 'block';
-            document.getElementById('pageModal').style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.getElementById('pageModal').style.display = 'none';
-            document.getElementById('modalIframe').src = '';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close modal on overlay click
-        document.getElementById('modalOverlay').addEventListener('click', closeModal);
-
-        // Interactive BG
-        const bg = document.getElementById('interactive-bg');
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            bg.style.setProperty('--x', `${x}%`);
-            bg.style.setProperty('--y', `${y}%`);
-        });
-
-        // Form Submission
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('formStatus');
-            const formData = new FormData(this);
-            btn.disabled = true;
-            btn.innerText = 'Sending...';
-
-            try {
-                const response = await fetch('send_message.php', { method: 'POST', body: formData });
-                const result = await response.json();
-                status.className = `mt-6 p-4 rounded-2xl text-center font-bold ${result.success ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`;
-                status.innerText = result.message;
-                status.classList.remove('hidden');
-                if(result.success) this.reset();
-            } catch (error) {
-                status.className = 'mt-6 p-4 rounded-2xl bg-red-500/10 text-red-400 block font-bold';
-                status.innerText = 'System Error. Please try again.';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Send Message';
-            }
-        });
-    </script>
 </body>
-
 </html>
