@@ -1,7 +1,7 @@
 <?php
 /**
  * NG WebMaster - Git Deployment Tool
- * Updated with Identity Diagnostics & Error Capture
+ * Updated with Identity Diagnostics & Automatic Setup
  */
 
 // 1. Enable Error Reporting
@@ -54,6 +54,16 @@ if ($is_authenticated && isset($_POST['action'])) {
         $output = "Error: shell_exec() is disabled on this server.";
     } else {
         switch ($action) {
+            case 'setup_git':
+                $new_name = escapeshellarg($_POST['git_name'] ?? 'Webmaster NG');
+                $new_email = escapeshellarg($_POST['git_email'] ?? 'admin@noorgee.pk');
+                $cmd = "git config --global user.name $new_name 2>&1 && git config --global user.email $new_email 2>&1";
+                $output = "Attempting Git Configuration...\n" . shell_exec($cmd) . "\nIdentity Updated Refreshing...";
+                // Update local variables for UI
+                $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
+                $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
+                $has_identity = (!empty($git_user_name) && !empty($git_user_email));
+                break;
             case 'pull':
                 $cmd = "git fetch origin 2>&1 && git checkout $TARGET_BRANCH 2>&1 && git pull origin $TARGET_BRANCH 2>&1";
                 $output = shell_exec($cmd);
@@ -64,14 +74,13 @@ if ($is_authenticated && isset($_POST['action'])) {
                 break;
             case 'push':
                 if (!$has_identity) {
-                    $output = "CRITICAL ERROR: Git identity (name/email) not set on server.\nRun: git config --global user.email \"you@example.com\" && git config --global user.name \"Your Name\" in your server terminal.";
+                    $output = "CRITICAL ERROR: Git identity (name/email) not set on server. Use the Setup section below.";
                 } else {
                     $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Live Update: " . date('Y-m-d H:i:s');
                     $desc = !empty($_POST['commit_desc']) ? $_POST['commit_desc'] : "";
                     $full_msg = $msg . ($desc ? "\n\n" . $desc : "");
                     $safe_msg = escapeshellarg($full_msg);
                     
-                    // Combined add, commit, and push with full error capture (2>&1)
                     $cmd = "git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1";
                     $output = shell_exec($cmd);
                 }
@@ -114,9 +123,16 @@ if ($is_authenticated && isset($_POST['action'])) {
         </div>
 
         <?php if ($is_authenticated && !$has_identity): ?>
-            <div class="bg-red-500/20 border border-red-500/50 p-3 rounded-xl mb-6 text-center">
-                <p class="text-red-400 text-[10px] font-bold uppercase tracking-widest"><i class="fas fa-exclamation-triangle mr-2"></i>Git Identity Missing</p>
-                <p class="text-slate-300 text-[9px] mt-1 italic">Commit/Push may fail. Run 'git config' on server terminal.</p>
+            <div class="bg-red-500/10 border border-red-500/30 p-5 rounded-2xl mb-6">
+                <p class="text-red-400 text-xs font-bold uppercase tracking-widest mb-3 flex items-center">
+                    <i class="fas fa-id-card mr-2"></i> Identity Setup Required
+                </p>
+                <form method="POST" class="space-y-3">
+                    <input type="hidden" name="action" value="setup_git">
+                    <input type="text" name="git_name" placeholder="Git Name (e.g. Webmaster NG)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-red-500">
+                    <input type="email" name="git_email" placeholder="Git Email (e.g. admin@noorgee.pk)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-red-500">
+                    <button type="submit" class="w-full bg-red-600/20 hover:bg-red-600/40 text-red-400 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all">Fix Identity Now</button>
+                </form>
             </div>
         <?php endif; ?>
 
