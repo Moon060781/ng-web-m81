@@ -1,7 +1,7 @@
 <?php
 /**
  * NG WebMaster - Git Deployment Tool
- * Updated with Identity Diagnostics & Automatic Setup
+ * Updated with Local Identity Setup & Permission Fix
  */
 
 // 1. Enable Error Reporting
@@ -32,7 +32,7 @@ if (isset($_POST['password'])) {
 
 $is_authenticated = isset($_SESSION['auth']) && $_SESSION['auth'] === true;
 
-// Diagnostics: Check if Git identity is set
+// Diagnostics: Check if Git identity is set (Checking both local and global)
 $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
 $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
@@ -55,36 +55,46 @@ if ($is_authenticated && isset($_POST['action'])) {
     } else {
         switch ($action) {
             case 'setup_git':
-                $new_name = escapeshellarg($_POST['git_name'] ?? 'Webmaster NG');
+                $new_name = escapeshellarg($_POST['git_name'] ?? 'Nooruddin');
                 $new_email = escapeshellarg($_POST['git_email'] ?? 'admin@noorgee.pk');
-                $cmd = "git config --global user.name $new_name 2>&1 && git config --global user.email $new_email 2>&1";
-                $output = "Attempting Git Configuration...\n" . shell_exec($cmd) . "\nIdentity Updated Refreshing...";
-                // Update local variables for UI
+                
+                // Using --local instead of --global to avoid permission issues with the web user
+                $cmd = "git config --local user.name $new_name 2>&1 && git config --local user.email $new_email 2>&1";
+                $res = shell_exec($cmd);
+                
+                $output = "Attempting Local Git Configuration...\n" . ($res ? $res : "Success: Identity applied to this repository.") . "\n\nChecking current config:\nName: " . shell_exec("git config user.name") . "Email: " . shell_exec("git config user.email");
+                
+                // Update local variables for UI immediately
                 $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
                 $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
                 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
                 break;
+
             case 'pull':
                 $cmd = "git fetch origin 2>&1 && git checkout $TARGET_BRANCH 2>&1 && git pull origin $TARGET_BRANCH 2>&1";
                 $output = shell_exec($cmd);
                 break;
+
             case 'force_pull':
                 $cmd = "git fetch origin 2>&1 && git reset --hard origin/$TARGET_BRANCH 2>&1 && git clean -fd 2>&1";
                 $output = shell_exec($cmd);
                 break;
+
             case 'push':
                 if (!$has_identity) {
-                    $output = "CRITICAL ERROR: Git identity (name/email) not set on server. Use the Setup section below.";
+                    $output = "CRITICAL ERROR: Git identity (name/email) still not detected. Please try the Setup section again with '--local' settings.";
                 } else {
                     $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Live Update: " . date('Y-m-d H:i:s');
                     $desc = !empty($_POST['commit_desc']) ? $_POST['commit_desc'] : "";
                     $full_msg = $msg . ($desc ? "\n\n" . $desc : "");
                     $safe_msg = escapeshellarg($full_msg);
                     
+                    // Add all, commit, and push
                     $cmd = "git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1";
                     $output = shell_exec($cmd);
                 }
                 break;
+
             case 'revert':
                 $cmd = "git reset --hard HEAD 2>&1 && git clean -fd 2>&1";
                 $output = shell_exec($cmd);
@@ -123,15 +133,15 @@ if ($is_authenticated && isset($_POST['action'])) {
         </div>
 
         <?php if ($is_authenticated && !$has_identity): ?>
-            <div class="bg-red-500/10 border border-red-500/30 p-5 rounded-2xl mb-6">
-                <p class="text-red-400 text-xs font-bold uppercase tracking-widest mb-3 flex items-center">
-                    <i class="fas fa-id-card mr-2"></i> Identity Setup Required
+            <div class="bg-amber-500/10 border border-amber-500/30 p-5 rounded-2xl mb-6">
+                <p class="text-amber-400 text-xs font-bold uppercase tracking-widest mb-3 flex items-center">
+                    <i class="fas fa-id-card mr-2"></i> Identity Setup Required (Local)
                 </p>
                 <form method="POST" class="space-y-3">
                     <input type="hidden" name="action" value="setup_git">
-                    <input type="text" name="git_name" placeholder="Git Name (e.g. Webmaster NG)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-red-500">
-                    <input type="email" name="git_email" placeholder="Git Email (e.g. admin@noorgee.pk)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-red-500">
-                    <button type="submit" class="w-full bg-red-600/20 hover:bg-red-600/40 text-red-400 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all">Fix Identity Now</button>
+                    <input type="text" name="git_name" placeholder="Full Name (e.g. Nooruddin)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-amber-500">
+                    <input type="email" name="git_email" placeholder="Email (e.g. admin@noorgee.pk)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-amber-500">
+                    <button type="submit" class="w-full bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all">Set Local Identity</button>
                 </form>
             </div>
         <?php endif; ?>
