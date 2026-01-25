@@ -1,301 +1,384 @@
+<?php
+session_start();
+
+// --- CONFIGURATION ---
+$ADMIN_PASSWORD = "123"; // Password to access this panel
+$DB_HOST = "localhost";
+$DB_NAME = "noorgeec_pf";
+$DB_USER = "noorgeec_wb";
+$DB_PASS = "Pf_wb_12-30";
+
+// --- AUTHENTICATION ---
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: admin_panel.php");
+    exit;
+}
+
+if (isset($_POST['login_password'])) {
+    if ($_POST['login_password'] === $ADMIN_PASSWORD) {
+        $_SESSION['admin_auth'] = true;
+    } else {
+        $error = "Invalid Password";
+    }
+}
+
+$is_authenticated = isset($_SESSION['admin_auth']) && $_SESSION['admin_auth'] === true;
+
+// --- DATABASE CONNECTION ---
+$pdo = null;
+$db_error = null;
+if ($is_authenticated) {
+    try {
+        $dsn = "mysql:host=$DB_HOST;dbname=$DB_NAME;charset=utf8mb4";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
+        $pdo = new PDO($dsn, $DB_USER, $DB_PASS, $options);
+    } catch (PDOException $e) {
+        $db_error = "Database Connection Failed: " . $e->getMessage();
+    }
+}
+
+// --- DELETE ACTION (SINGLE & BULK) ---
+if ($is_authenticated && $pdo) {
+    if (isset($_POST['delete_id'])) {
+        try {
+            $stmt = $pdo->prepare("DELETE FROM messages WHERE id = ?");
+            $stmt->execute([$_POST['delete_id']]);
+            $success_msg = "Message deleted successfully.";
+        } catch (PDOException $e) {
+            $db_error = "Failed to delete: " . $e->getMessage();
+        }
+    } elseif (isset($_POST['bulk_delete_ids']) && !empty($_POST['bulk_delete_ids'])) {
+        try {
+            $ids = explode(',', $_POST['bulk_delete_ids']);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $stmt = $pdo->prepare("DELETE FROM messages WHERE id IN ($placeholders)");
+            $stmt->execute($ids);
+            $success_msg = count($ids) . " messages deleted successfully.";
+        } catch (PDOException $e) {
+            $db_error = "Bulk delete failed: " . $e->getMessage();
+        }
+    }
+}
+
+// --- FILTER & FETCH MESSAGES ---
+$messages = [];
+$filter_source = $_GET['filter_source'] ?? 'noorgee.pk/Web';
+
+if ($is_authenticated && $pdo) {
+    try {
+        $sql = "SELECT * FROM messages";
+        $params = [];
+
+        if ($filter_source !== 'All sites') {
+            $sql .= " WHERE site_source = ?";
+            $params[] = $filter_source;
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $messages = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        $db_error = "Failed to fetch messages: " . $e->getMessage();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message Center | Admin Panel</title>
+    <title>Admin Panel | NoorGee WebMaster</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .message-card {
-            transition: all 0.2s ease;
-        }
-        .message-card.unread {
-            border-left: 4px solid #5d4037;
-            background-color: #fffaf0;
-        }
-        .selected-card {
-            background-color: #f1f5f9 !important;
-            border-color: #5d4037 !important;
-        }
-        #bulkActions {
-            transition: all 0.3s ease;
-            transform: translateY(100%);
-        }
-        #bulkActions.active {
-            transform: translateY(0);
-        }
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .table-container { background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
+        #bulkStatusBar { transition: all 0.3s ease; transform: translateY(100%); opacity: 0; pointer-events: none; }
+        #bulkStatusBar.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+<body class="min-h-screen pb-24">
 
-    <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="text-slate-500 hover:text-slate-900 transition">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </a>
-                <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-inbox text-amber-800"></i>
-                    Message Center
-                </h1>
+    <!-- LOGIN SCREEN -->
+    <?php if (!$is_authenticated): ?>
+    <div class="flex items-center justify-center min-h-screen bg-slate-900">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-slate-800">Admin Login</h1>
+                <p class="text-slate-500 text-sm">NoorGee WebMaster</p>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="text-xs font-bold px-3 py-1 bg-slate-100 rounded-full text-slate-600">
-                    Logged in as Admin
-                </span>
-            </div>
+            <form method="POST" class="space-y-4">
+                <input type="password" name="login_password" placeholder="Enter Password" class="w-full border border-gray-300 px-4 py-3 rounded-xl focus:outline-none focus:border-blue-500 transition" required autofocus>
+                <?php if (isset($error)): ?>
+                    <p class="text-red-500 text-sm text-center font-bold"><?php echo $error; ?></p>
+                <?php endif; ?>
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">Access Panel</button>
+            </form>
         </div>
-    </header>
+    </div>
+    <?php else: ?>
 
-    <main class="container mx-auto px-4 py-8 pb-32">
-        <!-- Message Controls -->
-        <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
+    <!-- DASHBOARD -->
+    <div class="container mx-auto px-4 py-8">
+        
+        <!-- Header & Filter -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 gap-6">
             <div class="flex items-center gap-4">
-                <label class="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-xl border border-slate-200 hover:border-amber-800 transition">
-                    <input type="checkbox" id="selectAll" class="w-4 h-4 accent-amber-800">
-                    <span class="text-sm font-bold">Select All</span>
-                </label>
-                <div class="text-slate-500 text-sm font-medium">
-                    Total: <span id="totalCount">3</span> messages
+                <div class="bg-blue-600 text-white p-3 rounded-xl">
+                    <i class="fas fa-inbox text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Message Inbox</h1>
+                    <p class="text-slate-500 text-xs font-medium uppercase tracking-widest">Active DB: <?php echo htmlspecialchars($DB_NAME); ?></p>
                 </div>
             </div>
+            
+            <div class="flex flex-wrap items-center gap-4">
+                <form method="GET" id="filterForm" class="flex items-center gap-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Filter Source:</label>
+                    <div class="relative">
+                        <select name="filter_source" onchange="this.form.submit()" class="appearance-none bg-slate-100 border border-slate-200 text-slate-800 py-2.5 px-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-sm cursor-pointer shadow-sm">
+                            <option value="noorgee.pk/Web" <?php echo $filter_source === 'noorgee.pk/Web' ? 'selected' : ''; ?>>noorgee.pk/Web</option>
+                            <option value="noorgee.pk/Dev" <?php echo $filter_source === 'noorgee.pk/Dev' ? 'selected' : ''; ?>>noorgee.pk/Dev</option>
+                            <option value="nm.noorgee.pk" <?php echo $filter_source === 'nm.noorgee.pk' ? 'selected' : ''; ?>>nm.noorgee.pk</option>
+                            <option value="All sites" <?php echo $filter_source === 'All sites' ? 'selected' : ''; ?>>All sites</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                            <i class="fas fa-caret-down text-xs"></i>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
+
+                <div class="flex gap-2">
+                    <a href="index.html" target="_blank" class="px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-xs hover:bg-slate-700 transition shadow-sm">
+                        <i class="fas fa-external-link-alt mr-2"></i> WEBSITE
+                    </a>
+                    <a href="?logout=1" class="px-4 py-2.5 bg-red-50 text-red-600 rounded-xl font-bold text-xs hover:bg-red-100 transition border border-red-100">
+                        LOGOUT
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <?php if ($db_error): ?>
+            <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-2xl mb-6 flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="text-sm font-medium"><?php echo htmlspecialchars($db_error); ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($success_msg)): ?>
+            <div id="successToast" class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-2xl mb-6 flex justify-between items-center shadow-sm">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="text-sm font-medium"><?php echo htmlspecialchars($success_msg); ?></span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-emerald-900 opacity-50 hover:opacity-100 transition"><i class="fas fa-times"></i></button>
+            </div>
+        <?php endif; ?>
+
+        <!-- Bulk Status Bar -->
+        <div id="bulkStatusBar" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl z-50 flex items-center gap-6 border border-slate-700">
             <div class="flex items-center gap-2">
-                <button onclick="refreshMessages()" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition">
-                    <i class="fa-solid fa-rotate"></i>
-                </button>
+                <span id="selectedCount" class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Selected</span>
             </div>
+            <div class="h-4 w-[1px] bg-slate-700"></div>
+            <form method="POST" id="bulkDeleteForm" onsubmit="return confirm('Delete selected messages permanently?');">
+                <input type="hidden" name="bulk_delete_ids" id="bulkDeleteInput">
+                <button type="submit" class="text-xs font-bold text-red-400 hover:text-red-300 transition flex items-center gap-2">
+                    <i class="fas fa-trash-alt"></i> DELETE SELECTED
+                </button>
+            </form>
+            <button onclick="clearSelection()" class="text-xs font-bold text-slate-400 hover:text-white transition">CANCEL</button>
         </div>
 
-        <!-- Messages Container -->
-        <div id="messagesList" class="space-y-4">
-            <!-- Mock Message 1 -->
-            <div class="message-card unread bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative group" data-id="1">
-                <div class="flex gap-4">
-                    <div class="pt-1">
-                        <input type="checkbox" class="msg-checkbox w-5 h-5 accent-amber-800 cursor-pointer" onchange="updateSelection()">
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex flex-wrap justify-between items-start gap-2 mb-4">
-                            <div>
-                                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                    <span class="name">Athar Hussain</span>
-                                    <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded uppercase">Unread</span>
-                                </h3>
-                                <div class="text-sm text-slate-500 mt-1 flex flex-wrap gap-x-4">
-                                    <span class="email"><i class="fa-solid fa-envelope mr-1"></i> athar@example.com</span>
-                                    <span class="phone"><i class="fa-solid fa-phone mr-1"></i> +92 332 3320369</span>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs text-slate-400 block mb-2">Jan 25, 2026 - 10:30 AM</span>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                                    <button onclick="copyInfo(this)" title="Copy Contact Info" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-600 hover:text-white transition">
-                                        <i class="fa-solid fa-copy"></i>
-                                    </button>
-                                    <button onclick="markRead(1)" title="Mark as Read" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-green-600 hover:text-white transition">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button onclick="deleteMsg(1)" title="Delete Message" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-red-600 hover:text-white transition">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="border-t border-slate-50 pt-4">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 subject">Subject: New Portfolio Inquiry</h4>
-                            <p class="text-slate-700 leading-relaxed message-text">I am interested in building a new custom PHP website for my business. Please let me know your availability.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Messages Table -->
+        <div class="table-container overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[10px] uppercase font-bold tracking-[0.1em]">
+                            <th class="p-5 w-10 text-center">
+                                <input type="checkbox" id="selectAll" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                            </th>
+                            <th class="p-5">ID & Date</th>
+                            <th class="p-5">Website Source</th>
+                            <th class="p-5">User Info</th>
+                            <th class="p-5">Subject</th>
+                            <th class="p-5 w-1/3">Message Content</th>
+                            <th class="p-5 text-right">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+                        <?php if (empty($messages)): ?>
+                            <tr>
+                                <td colspan="7" class="p-12 text-center">
+                                    <div class="text-slate-300 mb-2"><i class="fas fa-folder-open text-5xl"></i></div>
+                                    <p class="text-slate-400 italic">No messages found for "<?php echo htmlspecialchars($filter_source); ?>".</p>
+                                </td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($messages as $msg): ?>
+                            <tr class="hover:bg-slate-50/50 transition-colors group msg-row" data-id="<?php echo $msg['id']; ?>">
+                                <td class="p-5 text-center">
+                                    <input type="checkbox" class="msg-checkbox w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer" value="<?php echo $msg['id']; ?>">
+                                </td>
+                                <td class="p-5">
+                                    <div class="font-mono text-[10px] text-slate-400">#<?php echo htmlspecialchars($msg['id'] ?? '-'); ?></div>
+                                    <div class="text-[11px] text-slate-500 mt-1 font-medium"><?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?></div>
+                                </td>
+                                <td class="p-5">
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-slate-100 text-slate-600 text-[10px] rounded-lg font-bold border border-slate-200">
+                                        <?php echo htmlspecialchars($msg['site_source'] ?? 'Unknown'); ?>
+                                    </span>
+                                </td>
+                                <td class="p-5">
+                                    <div class="font-bold text-slate-800 name"><?php echo htmlspecialchars($msg['name'] ?? 'Guest'); ?></div>
+                                    <div class="text-[11px] text-blue-500 font-medium lowercase email"><?php echo htmlspecialchars($msg['email'] ?? ''); ?></div>
+                                </td>
+                                <td class="p-5 font-semibold text-slate-600 italic subject">
+                                    <?php echo htmlspecialchars($msg['subject'] ?? '(No Subject)'); ?>
+                                </td>
+                                <td class="p-5">
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-slate-600 text-xs leading-relaxed max-h-32 overflow-y-auto whitespace-pre-wrap message-body">
+                                        <?php echo htmlspecialchars($msg['message'] ?? ''); ?>
+                                    </div>
+                                </td>
+                                <td class="p-5 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <!-- Copy Info Button -->
+                                        <button onclick="copyContactInfo(this)" 
+                                           class="w-9 h-9 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Copy Contact Info">
+                                            <i class="fas fa-copy text-xs"></i>
+                                        </button>
 
-            <!-- Mock Message 2 -->
-            <div class="message-card bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative group" data-id="2">
-                <div class="flex gap-4">
-                    <div class="pt-1">
-                        <input type="checkbox" class="msg-checkbox w-5 h-5 accent-amber-800 cursor-pointer" onchange="updateSelection()">
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex flex-wrap justify-between items-start gap-2 mb-4">
-                            <div>
-                                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                    <span class="name">Noorgee Partner</span>
-                                </h3>
-                                <div class="text-sm text-slate-500 mt-1 flex flex-wrap gap-x-4">
-                                    <span class="email"><i class="fa-solid fa-envelope mr-1"></i> partner@noorgee.pk</span>
-                                    <span class="phone"><i class="fa-solid fa-phone mr-1"></i> +971 50 1234567</span>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs text-slate-400 block mb-2">Jan 24, 2026 - 02:15 PM</span>
-                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                                    <button onclick="copyInfo(this)" title="Copy Contact Info" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-blue-600 hover:text-white transition">
-                                        <i class="fa-solid fa-copy"></i>
-                                    </button>
-                                    <button onclick="deleteMsg(2)" title="Delete Message" class="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-red-600 hover:text-white transition">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="border-t border-slate-50 pt-4">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 subject">Subject: Server Migration</h4>
-                            <p class="text-slate-700 leading-relaxed message-text">We need to discuss the upcoming migration for the UAE regional servers.</p>
-                        </div>
-                    </div>
-                </div>
+                                        <!-- Forward Button (Email) -->
+                                        <a href="mailto:?subject=Fwd: <?php echo urlencode($msg['subject']); ?>&body=<?php echo urlencode("Original Message Details:\n\nFrom: " . $msg['name'] . "\nEmail: " . $msg['email'] . "\nDate: " . $msg['created_at'] . "\nSource: " . $msg['site_source'] . "\n\nMessage:\n" . $msg['message']); ?>" 
+                                           class="w-9 h-9 flex items-center justify-center bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all shadow-sm border border-emerald-100" title="Forward Message">
+                                            <i class="fas fa-share text-xs"></i>
+                                        </a>
+
+                                        <!-- Delete Form -->
+                                        <form method="POST" onsubmit="return confirm('Confirm permanent deletion of this message?');" class="inline">
+                                            <input type="hidden" name="delete_id" value="<?php echo $msg['id']; ?>">
+                                            <button type="submit" class="w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100" title="Delete Message">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </main>
-
-    <!-- Bulk Actions Floating Bar -->
-    <div id="bulkActions" class="fixed bottom-0 left-0 right-0 bg-slate-900 text-white p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.3)] z-50">
-        <div class="container mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <span class="bg-amber-800 text-white text-xs font-bold px-3 py-1 rounded-full" id="selectedCount">0 Selected</span>
-                <p class="hidden md:block text-slate-400 text-sm">Choose an action for the selected messages</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="bulkMarkRead()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-green-600 transition text-sm font-bold">
-                    <i class="fa-solid fa-check-double mr-2"></i> Mark Read
-                </a>
-                <button onclick="bulkDelete()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-red-600 transition text-sm font-bold">
-                    <i class="fa-solid fa-trash-can mr-2"></i> Delete All
-                </a>
-                <button onclick="clearSelection()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white transition text-sm font-bold">
-                    Cancel
-                </button>
-            </div>
+        
+        <div class="mt-8 text-center text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
+            &copy; <?php echo date('Y'); ?> NoorGee WebMaster Solutions | Private Admin Panel
         </div>
     </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed top-20 right-4 px-6 py-3 bg-slate-900 text-white rounded-xl shadow-2xl translate-x-[200%] transition-transform z-[60] flex items-center gap-3">
-        <i class="fa-solid fa-circle-check text-green-400"></i>
-        <span id="toastMessage">Action successful</span>
-    </div>
+    <?php endif; ?>
 
     <script>
-        // Select All functionality
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const isChecked = this.checked;
-            document.querySelectorAll('.msg-checkbox').forEach(cb => {
-                cb.checked = isChecked;
-                toggleCardHighlight(cb);
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.msg-checkbox');
+        const bulkStatusBar = document.getElementById('bulkStatusBar');
+        const selectedCount = document.getElementById('selectedCount');
+        const bulkDeleteInput = document.getElementById('bulkDeleteInput');
+
+        // Select All Toggling
+        if(selectAll) {
+            selectAll.addEventListener('change', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = selectAll.checked;
+                    updateRowHighlight(cb);
+                });
+                updateBulkStatus();
             });
-            updateSelection();
+        }
+
+        // Individual Checkbox Toggling
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                updateRowHighlight(cb);
+                updateBulkStatus();
+                
+                // Update selectAll state
+                const allChecked = Array.from(checkboxes).every(c => c.checked);
+                selectAll.checked = allChecked;
+                selectAll.indeterminate = !allChecked && Array.from(checkboxes).some(c => c.checked);
+            });
         });
 
-        function toggleCardHighlight(checkbox) {
-            const card = checkbox.closest('.message-card');
-            if (checkbox.checked) {
-                card.classList.add('selected-card');
+        function updateRowHighlight(cb) {
+            const row = cb.closest('.msg-row');
+            if(cb.checked) {
+                row.classList.add('bg-blue-50/50');
             } else {
-                card.classList.remove('selected-card');
+                row.classList.remove('bg-blue-50/50');
             }
         }
 
-        function updateSelection() {
-            const checkboxes = document.querySelectorAll('.msg-checkbox');
-            const selected = Array.from(checkboxes).filter(cb => cb.checked);
-            const selectAllCb = document.getElementById('selectAll');
+        function updateBulkStatus() {
+            const checked = Array.from(checkboxes).filter(c => c.checked);
+            const count = checked.length;
             
-            // Highlight cards
-            checkboxes.forEach(cb => toggleCardHighlight(cb));
-
-            // Update Select All state
-            selectAllCb.checked = selected.length === checkboxes.length && checkboxes.length > 0;
-            selectAllCb.indeterminate = selected.length > 0 && selected.length < checkboxes.length;
-
-            // Update bulk actions bar
-            const bar = document.getElementById('bulkActions');
-            const countLabel = document.getElementById('selectedCount');
-            
-            if (selected.length > 0) {
-                bar.classList.add('active');
-                countLabel.innerText = `${selected.length} Selected`;
+            if(count > 0) {
+                bulkStatusBar.classList.add('active');
+                selectedCount.innerText = count;
+                bulkDeleteInput.value = checked.map(c => c.value).join(',');
             } else {
-                bar.classList.remove('active');
+                bulkStatusBar.classList.remove('active');
             }
         }
 
         function clearSelection() {
-            document.querySelectorAll('.msg-checkbox').forEach(cb => cb.checked = false);
-            document.getElementById('selectAll').checked = false;
-            updateSelection();
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+                updateRowHighlight(cb);
+            });
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+            updateBulkStatus();
         }
 
-        // Copy Functionality
-        function copyInfo(btn) {
-            const card = btn.closest('.message-card');
-            const name = card.querySelector('.name').innerText;
-            const email = card.querySelector('.email').innerText.replace(/\s+/g, ' ').trim();
-            const phone = card.querySelector('.phone').innerText.replace(/\s+/g, ' ').trim();
-            const subject = card.querySelector('.subject').innerText;
-            const message = card.querySelector('.message-text').innerText;
-
-            const textToCopy = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subject}\nMessage: ${message}`;
-
-            const textArea = document.createElement("textarea");
-            textArea.value = textToCopy;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast("Contact information copied to clipboard!");
-            } catch (err) {
-                showToast("Failed to copy text.", true);
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // Action Handlers (Mock logic for frontend)
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            const msgEl = document.getElementById('toastMessage');
-            msgEl.innerText = msg;
-            toast.classList.remove('translate-x-[200%]');
-            setTimeout(() => toast.classList.add('translate-x-[200%]'), 3000);
-        }
-
-        function markRead(id) {
-            showToast(`Message #${id} marked as read`);
-            // In a real app, this would trigger an AJAX call to mark_read.php
-        }
-
-        function deleteMsg(id) {
-            if(confirm('Are you sure you want to delete this message?')) {
-                const card = document.querySelector(`.message-card[data-id="${id}"]`);
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.95)';
+        function copyContactInfo(btn) {
+            const row = btn.closest('.msg-row');
+            const name = row.querySelector('.name').innerText;
+            const email = row.querySelector('.email').innerText;
+            const subject = row.querySelector('.subject').innerText;
+            const message = row.querySelector('.message-body').innerText;
+            
+            // Note: Since 'contact-nmbr' isn't a separate column in your DB and is 
+            // combined in the message by send_message.php, it's already part of the 'message' variable.
+            
+            const content = `--- CONTACT INFO ---\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n--- MESSAGE ---\n${message}`;
+            
+            navigator.clipboard.writeText(content).then(() => {
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-xs"></i>';
+                btn.classList.replace('bg-blue-50', 'bg-emerald-50');
+                btn.classList.replace('text-blue-600', 'text-emerald-600');
+                
                 setTimeout(() => {
-                    card.remove();
-                    updateSelection();
-                    showToast("Message deleted successfully");
-                }, 300);
-            }
-        }
-
-        function bulkMarkRead() {
-            const ids = Array.from(document.querySelectorAll('.msg-checkbox:checked'))
-                            .map(cb => cb.closest('.message-card').dataset.id);
-            showToast(`Marked ${ids.length} messages as read`);
-            clearSelection();
-        }
-
-        function bulkDelete() {
-            const selected = Array.from(document.querySelectorAll('.msg-checkbox:checked'));
-            if(confirm(`Delete ${selected.length} messages permanently?`)) {
-                selected.forEach(cb => cb.closest('.message-card').remove());
-                updateSelection();
-                showToast(`Deleted ${selected.length} messages`);
-            }
-        }
-
-        function refreshMessages() {
-            location.reload();
+                    btn.innerHTML = originalContent;
+                    btn.classList.replace('bg-emerald-50', 'bg-blue-50');
+                    btn.classList.replace('text-emerald-600', 'text-blue-600');
+                }, 2000);
+            });
         }
     </script>
 </body>
