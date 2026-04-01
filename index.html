@@ -231,11 +231,12 @@
                 </div>
                 <div class="hidden md:flex items-center space-x-6 text-[13px] font-bold text-gray-600">
                     <a href="#" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.1s;">HOME</a>
+                    <a href="#services" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.15s;">SERVICES</a>
                     <a href="#portfolio" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.2s;">PORTFOLIO</a>
                     <a href="#about" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.3s;">ABOUT</a>
                     <a href="#team" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.4s;">OUR TEAM</a>
-                    <a href="terms-and-conditions.html" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.5s;">T&C</a>
-                    <a href="faq.html" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.6s;">FAQ</a>
+                    <a href="javascript:void(0)" onclick="openModal('terms-and-conditions.html')" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.5s;">T&C</a>
+                    <a href="javascript:void(0)" onclick="openModal('faq.html')" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.6s;">FAQ</a>
                     <a href="#contact-form" class="nav-animate hover:text-amber-800 transition tracking-tighter" style="animation-delay: 0.7s;">CONTACT</a>
                     <a href="#contact-form" class="nav-animate btn-brown text-white px-6 py-2.5 rounded-full shadow-lg shadow-brown-600/20" style="animation-delay: 0.8s;">HIRE ME</a>
                 </div>
@@ -254,13 +255,76 @@
                 <h1 class="text-4xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight animate-float">
                     NoorGee WebMaster <br> <span class="gradient-text">Masterful Devlopment</span>
                 </h1>
-                <p class="text-lg md:text-2xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0" style="animation: fadeInUp 1s ease-out 0.3s forwards;">
-                    Premium web architectures for businesses across USA, UAE & Pakistan.
+                <p class="text-lg md:text-2xl text-gray-500 mb-10 max-w-2xl mx-auto">
+                    Crafting high-performance digital experiences with precision and passion.
                 </p>
-                <div class="opacity-0" style="animation: fadeInUp 1s ease-out 0.6s forwards;">
-                    <a href="#portfolio" class="inline-block px-12 py-4 btn-brown text-white font-bold rounded-2xl shadow-2xl hover:scale-105 transition-transform">
-                        Explore Projects
-                    </a>
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <a href="#portfolio" class="px-10 py-4 btn-brown text-white font-bold rounded-2xl shadow-2xl shadow-brown-600/30">View My Work</a>
+                    <a href="#contact-form" class="px-10 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition">Start Project</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold text-slate-900">Our Services</h2>
+                <div class="w-16 h-1 bg-amber-800 mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Part 1: Web Solutions -->
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 hover:border-amber-800/30 transition-all duration-500 group">
+                    <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-laptop-code text-3xl text-amber-800"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">Web & Hosting Solutions</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Design & Create Portfolio Website</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Domain Buy</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Hosting Plan</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Monthly Maintenance Package</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Part 2: AI Solutions -->
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 hover:border-amber-800/30 transition-all duration-500 group">
+                    <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-robot text-3xl text-amber-800"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">AI & Automation</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>AI Content Writing</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>AI Image Generation</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>AI Video Generation</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>AI Automation</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
