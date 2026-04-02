@@ -182,6 +182,78 @@
             background: #3e2723;
             transform: rotate(90deg);
         }
+
+        /* Go to Top Button */
+        #goToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #5d4037;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 18px;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+        #goToTopBtn:hover {
+            background-color: #3e2723;
+            transform: translateY(-5px);
+        }
+
+        /* Tooltip Popup Styles */
+        .service-item {
+            position: relative;
+            cursor: pointer;
+        }
+        .service-popup {
+            visibility: hidden;
+            width: 280px;
+            background-color: #fff;
+            color: #333;
+            text-align: left;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            position: absolute;
+            z-index: 50;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 1px solid rgba(93, 64, 55, 0.1);
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+        .service-popup::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #fff transparent transparent transparent;
+        }
+        .service-item:hover .service-popup {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .service-popup img {
+            width: 100%;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #eee;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -199,6 +271,10 @@
     <a href="https://wa.me/923323320369" target="_blank" class="whatsapp-float animate-bounce">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
+
+    <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
     <!-- Header Container -->
     <header class="relative z-50">
@@ -260,7 +336,7 @@
                 </p>
                 <div class="flex flex-col md:flex-row justify-center gap-4">
                     <a href="#portfolio" class="px-10 py-4 btn-brown text-white font-bold rounded-2xl shadow-2xl shadow-brown-600/30">View My Work</a>
-                    <a href="#contact-form" class="px-10 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition">Start Project</a>
+                    <a href="javascript:void(0)" onclick="openModal('requirements.html')" class="px-10 py-4 bg-white text-slate-900 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition">Start Works</a>
                 </div>
             </div>
         </div>
@@ -282,21 +358,43 @@
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 mb-6">Web & Hosting Solutions</h3>
                     <ul class="space-y-4">
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>Design & Create Portfolio Website</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Technologies Used:</p>
+                                <p class="text-xs">HTML, CSS, JavaScript, PHP, and modern frameworks to build responsive and fast-loading portfolios.</p>
+                            </div>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>Domain Buy</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Reliable Providers:</p>
+                                <p class="text-xs mb-2">Namecheap, GoDaddy, Bluehost, and local Pakistani providers.</p>
+                                <p class="text-sm font-bold text-amber-800 mb-1">Extensions:</p>
+                                <p class="text-xs">.com, .net, .info, .biz, .bio, .pk, and more.</p>
+                            </div>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>Hosting Plan</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Server Locations:</p>
+                                <p class="text-xs mb-2">High-speed servers in Pakistan and premium foreign hosting (USA/Europe).</p>
+                                <p class="text-sm font-bold text-amber-800 mb-1">Features:</p>
+                                <p class="text-xs">Includes cPanel access, SSD space, SSL certificates, and 99.9% uptime.</p>
+                            </div>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>Monthly Maintenance Package</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Pricing:</p>
+                                <p class="text-xs mb-2">Monthly $20 or 5,000 PKR.</p>
+                                <p class="text-sm font-bold text-amber-800 mb-1">Services:</p>
+                                <p class="text-xs">File maintenance, security monitoring, visitor message management, and regular backups.</p>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -308,21 +406,37 @@
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 mb-6">AI & Automation</h3>
                     <ul class="space-y-4">
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>AI Content Writing</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">AI Content Writing</p>
+                                <img src="img/ng-ai-content.jpg" alt="AI Content Writing Preview">
+                            </div>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>AI Image Generation</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">AI Image Generation</p>
+                                <img src="img/ng-ai-img.jpg" alt="AI Image Generation Preview">
+                            </div>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>AI Video Generation</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">AI Video Generation</p>
+                                <img src="img/ng-ai-vid.jpg" alt="AI Video Generation Preview">
+                            </div>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-600">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
                             <i class="fa-solid fa-check text-amber-600"></i>
                             <span>AI Automation</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">AI Automation</p>
+                                <img src="img/ng-ai-automat.jpg" alt="AI Automation Preview">
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -580,6 +694,22 @@
             bg.style.setProperty('--x', `${x}%`);
             bg.style.setProperty('--y', `${y}%`);
         });
+
+        // Go to Top Logic
+        let mybutton = document.getElementById("goToTopBtn");
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        function topFunction() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
 
         // Form Submission
         document.getElementById('contactForm').addEventListener('submit', async function(e) {
