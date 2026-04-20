@@ -170,7 +170,7 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
                                 <option value="">Select commit...</option>
                                 <?php foreach ($commit_history as $c): ?>
                                     <option value="<?php echo $c['hash']; ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>">
-                                        <?php echo $c['date']; ?> - <?php echo htmlspecialchars($c['subject']); ?>
+                                        [<?php echo substr($c['hash'], 0, 7); ?>] <?php echo $c['date']; ?> - <?php echo htmlspecialchars($c['subject']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
