@@ -1,7 +1,7 @@
 <?php
 /**
  * NG WebMaster - Git Deployment Tool
- * Updated with Local Identity Setup & Permission Fix
+ * Updated with Restore, Commit History, and Navigation Links
  */
 
 // 1. Enable Error Reporting
@@ -32,18 +32,10 @@ if (isset($_POST['password'])) {
 
 $is_authenticated = isset($_SESSION['auth']) && $_SESSION['auth'] === true;
 
-// Diagnostics: Check if Git identity is set (Checking both local and global)
+// Diagnostics: Check if Git identity is set
 $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
 $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
-
-// Logic to fetch the latest commit info
-$last_commit_title = "";
-$last_commit_desc = "";
-if ($is_authenticated) {
-    $last_commit_title = trim(shell_exec("git log -1 --format=%s 2>/dev/null") ?? "");
-    $last_commit_desc = trim(shell_exec("git log -1 --format=%b 2>/dev/null") ?? "");
-}
 
 // Git Command Execution
 $output = "";
@@ -57,14 +49,9 @@ if ($is_authenticated && isset($_POST['action'])) {
             case 'setup_git':
                 $new_name = escapeshellarg($_POST['git_name'] ?? 'Nooruddin');
                 $new_email = escapeshellarg($_POST['git_email'] ?? 'admin@noorgee.pk');
-                
-                // Using --local instead of --global to avoid permission issues with the web user
                 $cmd = "git config --local user.name $new_name 2>&1 && git config --local user.email $new_email 2>&1";
                 $res = shell_exec($cmd);
-                
                 $output = "Attempting Local Git Configuration...\n" . ($res ? $res : "Success: Identity applied to this repository.") . "\n\nChecking current config:\nName: " . shell_exec("git config user.name") . "Email: " . shell_exec("git config user.email");
-                
-                // Update local variables for UI immediately
                 $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
                 $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
                 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
@@ -82,29 +69,61 @@ if ($is_authenticated && isset($_POST['action'])) {
 
             case 'push':
                 if (!$has_identity) {
-                    $output = "CRITICAL ERROR: Git identity (name/email) still not detected. Please try the Setup section again with '--local' settings.";
+                    $output = "CRITICAL ERROR: Git identity (name/email) still not detected.";
                 } else {
                     $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Live Update: " . date('Y-m-d H:i:s');
                     $desc = !empty($_POST['commit_desc']) ? $_POST['commit_desc'] : "";
                     $full_msg = $msg . ($desc ? "\n\n" . $desc : "");
                     $safe_msg = escapeshellarg($full_msg);
-                    
-                    // Add all, commit, and push
                     $cmd = "git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1";
                     $output = shell_exec($cmd);
                 }
                 break;
 
-            case 'revert':
+            case 'revert_last':
+                // Revert the last commit on the current branch
+                $cmd = "git revert --no-edit HEAD 2>&1 && git push origin $TARGET_BRANCH 2>&1";
+                $output = "Attempting to revert last commit and push...\n" . shell_exec($cmd);
+                break;
+
+            case 'restore_commit':
+                $commit_hash = escapeshellarg($_POST['commit_hash'] ?? '');
+                if (!empty($commit_hash)) {
+                    // Reset to a specific commit and push (force push might be needed if going back in history)
+                    $cmd = "git reset --hard $commit_hash 2>&1 && git push origin $TARGET_BRANCH --force 2>&1";
+                    $output = "Restoring to commit $commit_hash...\n" . shell_exec($cmd);
+                }
+                break;
+
+            case 'undo_local':
                 $cmd = "git reset --hard HEAD 2>&1 && git clean -fd 2>&1";
                 $output = shell_exec($cmd);
                 break;
         }
     }
-    // Refresh commit info after actions
-    $last_commit_title = trim(shell_exec("git log -1 --format=%s 2>/dev/null") ?? "");
-    $last_commit_desc = trim(shell_exec("git log -1 --format=%b 2>/dev/null") ?? "");
 }
+
+// Fetch commit history for the dropdown
+$commit_history = [];
+if ($is_authenticated) {
+    // Get last 10 commits with hash, subject, and body
+    $history_raw = shell_exec("git log -10 --format='%H|%s|%b' 2>/dev/null");
+    if ($history_raw) {
+        $lines = explode("\n", trim($history_raw));
+        foreach ($lines as $line) {
+            if (empty($line)) continue;
+            list($hash, $subject, $body) = explode('|', $line, 3);
+            $commit_history[] = [
+                'hash' => $hash,
+                'subject' => $subject,
+                'body' => $body
+            ];
+        }
+    }
+}
+
+$last_commit_title = $commit_history[0]['subject'] ?? "";
+$last_commit_desc = $commit_history[0]['body'] ?? "";
 ?>
 
 <!DOCTYPE html>
@@ -124,7 +143,17 @@ if ($is_authenticated && isset($_POST['action'])) {
         .term-info { color: #60a5fa; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Navigation Links -->
+    <div class="max-w-xl w-full mb-4 flex justify-between px-4">
+        <a href="index.html" class="text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center">
+            <i class="fas fa-home mr-2"></i> Home Page
+        </a>
+        <a href="send_message.php" class="text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center">
+            <i class="fas fa-envelope mr-2"></i> Message Page
+        </a>
+    </div>
 
     <div class="max-w-xl w-full glass rounded-3xl p-8 shadow-2xl border-t-4 border-blue-500">
         <div class="text-center mb-6">
@@ -156,6 +185,7 @@ if ($is_authenticated && isset($_POST['action'])) {
             </form>
         <?php else: ?>
             <div class="space-y-6">
+                <!-- Deployment Actions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-white/5 pb-4">
                     <form method="POST">
                         <input type="hidden" name="action" value="pull">
@@ -174,6 +204,7 @@ if ($is_authenticated && isset($_POST['action'])) {
                     </form>
                 </div>
 
+                <!-- Push Changes -->
                 <form method="POST" class="space-y-3">
                     <input type="hidden" name="action" value="push">
                     <div class="space-y-2">
@@ -190,15 +221,46 @@ if ($is_authenticated && isset($_POST['action'])) {
                     </button>
                 </form>
 
+                <!-- Restore / Revert Section -->
+                <div class="bg-slate-900/50 border border-slate-700 p-5 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[10px] uppercase text-blue-400 font-bold ml-1">Restore & History</label>
+                        <form method="POST" onsubmit="return confirm('Revert last commit changes?')">
+                            <input type="hidden" name="action" value="revert_last">
+                            <button type="submit" class="bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase transition-all">
+                                <i class="fas fa-undo mr-1"></i> Revert Last
+                            </button>
+                        </form>
+                    </div>
+
+                    <form method="POST" class="space-y-3">
+                        <input type="hidden" name="action" value="restore_commit">
+                        <select name="commit_hash" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs focus:border-blue-500 outline-none" onchange="document.getElementById('commit_details').innerText = this.options[this.selectedIndex].getAttribute('data-body')">
+                            <option value="">Select a commit to restore...</option>
+                            <?php foreach ($commit_history as $commit): ?>
+                                <option value="<?php echo $commit['hash']; ?>" data-body="<?php echo htmlspecialchars($commit['body']); ?>">
+                                    <?php echo substr($commit['hash'], 0, 7); ?> - <?php echo htmlspecialchars($commit['subject']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div id="commit_details" class="text-[10px] text-slate-400 italic px-2 min-h-[1rem]"></div>
+                        <button type="submit" class="w-full bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all">
+                            Restore Selected Version
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Footer Actions -->
                 <div class="flex gap-3">
                     <form method="POST" onsubmit="return confirm('Undo all local changes?')" class="flex-1">
-                        <input type="hidden" name="action" value="revert">
+                        <input type="hidden" name="action" value="undo_local">
                         <button type="submit" class="w-full bg-red-900/20 hover:bg-red-900/40 border border-red-900/50 p-3 rounded-xl text-xs text-red-400 font-bold uppercase tracking-tight">Undo Local</button>
                     </form>
                     <a href="?logout=1" class="flex-1 bg-slate-800 hover:bg-slate-700 p-3 rounded-xl text-xs text-slate-400 font-bold uppercase text-center tracking-tight">Sign Out</a>
                 </div>
             </div>
 
+            <!-- Terminal Output -->
             <?php if ($output): ?>
                 <div class="mt-8">
                     <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Terminal History</label>
