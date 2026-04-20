@@ -1,21 +1,17 @@
 <?php
 /**
  * NG WebMaster - Git Deployment Tool
- * Updated with Restore, Commit History, and Navigation Links
+ * Optimized UX: Compact Single-Page Layout
  */
 
-// 1. Enable Error Reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
 $PASSWORD = "123";
-
-// Set your specific branch name
 $TARGET_BRANCH = "main-m81";
 
-// Authentication Logic
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: deploy.php");
@@ -32,253 +28,189 @@ if (isset($_POST['password'])) {
 
 $is_authenticated = isset($_SESSION['auth']) && $_SESSION['auth'] === true;
 
-// Diagnostics: Check if Git identity is set
 $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
 $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
 
-// Git Command Execution
 $output = "";
 if ($is_authenticated && isset($_POST['action'])) {
     $action = $_POST['action'];
-    
     if (!function_exists('shell_exec')) {
-        $output = "Error: shell_exec() is disabled on this server.";
+        $output = "Error: shell_exec() is disabled.";
     } else {
         switch ($action) {
             case 'setup_git':
                 $new_name = escapeshellarg($_POST['git_name'] ?? 'Nooruddin');
                 $new_email = escapeshellarg($_POST['git_email'] ?? 'admin@noorgee.pk');
-                $cmd = "git config --local user.name $new_name 2>&1 && git config --local user.email $new_email 2>&1";
-                $res = shell_exec($cmd);
-                $output = "Attempting Local Git Configuration...\n" . ($res ? $res : "Success: Identity applied to this repository.") . "\n\nChecking current config:\nName: " . shell_exec("git config user.name") . "Email: " . shell_exec("git config user.email");
+                shell_exec("git config --local user.name $new_name 2>&1 && git config --local user.email $new_email 2>&1");
+                $output = "Identity updated.";
                 $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
                 $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
                 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
                 break;
-
             case 'pull':
-                $cmd = "git fetch origin 2>&1 && git checkout $TARGET_BRANCH 2>&1 && git pull origin $TARGET_BRANCH 2>&1";
-                $output = shell_exec($cmd);
+                $output = shell_exec("git fetch origin 2>&1 && git checkout $TARGET_BRANCH 2>&1 && git pull origin $TARGET_BRANCH 2>&1");
                 break;
-
             case 'force_pull':
-                $cmd = "git fetch origin 2>&1 && git reset --hard origin/$TARGET_BRANCH 2>&1 && git clean -fd 2>&1";
-                $output = shell_exec($cmd);
+                $output = shell_exec("git fetch origin 2>&1 && git reset --hard origin/$TARGET_BRANCH 2>&1 && git clean -fd 2>&1");
                 break;
-
             case 'push':
                 if (!$has_identity) {
-                    $output = "CRITICAL ERROR: Git identity (name/email) still not detected.";
+                    $output = "Identity missing.";
                 } else {
-                    $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Live Update: " . date('Y-m-d H:i:s');
+                    $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Update: " . date('Y-m-d H:i:s');
                     $desc = !empty($_POST['commit_desc']) ? $_POST['commit_desc'] : "";
-                    $full_msg = $msg . ($desc ? "\n\n" . $desc : "");
-                    $safe_msg = escapeshellarg($full_msg);
-                    $cmd = "git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1";
-                    $output = shell_exec($cmd);
+                    $safe_msg = escapeshellarg($msg . ($desc ? "\n\n" . $desc : ""));
+                    $output = shell_exec("git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1");
                 }
                 break;
-
             case 'revert_last':
-                // Revert the last commit on the current branch
-                $cmd = "git revert --no-edit HEAD 2>&1 && git push origin $TARGET_BRANCH 2>&1";
-                $output = "Attempting to revert last commit and push...\n" . shell_exec($cmd);
+                $output = shell_exec("git revert --no-edit HEAD 2>&1 && git push origin $TARGET_BRANCH 2>&1");
                 break;
-
             case 'restore_commit':
-                $commit_hash = escapeshellarg($_POST['commit_hash'] ?? '');
-                if (!empty($commit_hash)) {
-                    // Reset to a specific commit and push (force push might be needed if going back in history)
-                    $cmd = "git reset --hard $commit_hash 2>&1 && git push origin $TARGET_BRANCH --force 2>&1";
-                    $output = "Restoring to commit $commit_hash...\n" . shell_exec($cmd);
-                }
+                $hash = escapeshellarg($_POST['commit_hash'] ?? '');
+                if (!empty($hash)) $output = shell_exec("git reset --hard $hash 2>&1 && git push origin $TARGET_BRANCH --force 2>&1");
                 break;
-
             case 'undo_local':
-                $cmd = "git reset --hard HEAD 2>&1 && git clean -fd 2>&1";
-                $output = shell_exec($cmd);
+                $output = shell_exec("git reset --hard HEAD 2>&1 && git clean -fd 2>&1");
                 break;
         }
     }
 }
 
-// Fetch commit history for the dropdown
 $commit_history = [];
 if ($is_authenticated) {
-    // Get last 10 commits with hash, subject, and body using a more unique delimiter
     $delimiter = "|||";
     $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%b' 2>/dev/null");
     if ($history_raw) {
-        $lines = explode("\n", trim($history_raw));
-        foreach ($lines as $line) {
+        foreach (explode("\n", trim($history_raw)) as $line) {
             if (empty($line)) continue;
             $parts = explode($delimiter, $line);
-            $commit_history[] = [
-                'hash' => $parts[0] ?? '',
-                'subject' => $parts[1] ?? '',
-                'body' => $parts[2] ?? ''
-            ];
+            $commit_history[] = ['hash' => $parts[0] ?? '', 'subject' => $parts[1] ?? '', 'body' => $parts[2] ?? ''];
         }
     }
 }
-
 $last_commit_title = $commit_history[0]['subject'] ?? "";
 $last_commit_desc = $commit_history[0]['body'] ?? "";
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NG Deployer | Branch: <?php echo $TARGET_BRANCH; ?></title>
+    <title>NG Deployer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: white; font-family: 'Inter', sans-serif; }
+        body { background: #0f172a; color: white; font-family: 'Inter', sans-serif; overflow: hidden; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .terminal-box { background: #000; border-left: 4px solid #3b82f6; box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.1); }
-        .term-success { color: #4ade80; font-weight: bold; }
-        .term-error { color: #f87171; font-weight: bold; }
-        .term-info { color: #60a5fa; }
+        .terminal-box { background: #000; border-left: 3px solid #3b82f6; height: 120px; overflow-y: auto; }
+        .input-field { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); }
+        .btn-action { transition: all 0.2s; }
+        .btn-action:hover { transform: translateY(-1px); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
-
-    <!-- Navigation Links -->
-    <div class="max-w-xl w-full mb-4 flex justify-between px-4">
-        <a href="index.html" class="text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center">
-            <i class="fas fa-home mr-2"></i> Home Page
-        </a>
-        <a href="send_message.php" class="text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center">
-            <i class="fas fa-envelope mr-2"></i> Message Page
-        </a>
-    </div>
-
-    <div class="max-w-xl w-full glass rounded-3xl p-8 shadow-2xl border-t-4 border-blue-500">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-blue-400 tracking-tight">NG WebMaster <span class="text-xs align-top font-normal bg-blue-500/20 px-2 py-0.5 rounded ml-1 text-blue-300">DEPLOY</span></h1>
-            <p class="text-slate-400 text-xs uppercase tracking-widest mt-2">Active Branch: <span class="text-white font-mono font-bold"><?php echo $TARGET_BRANCH; ?></span></p>
+<body class="h-screen flex items-center justify-center p-2">
+    <div class="w-full max-w-4xl glass rounded-2xl p-4 shadow-2xl border-t-2 border-blue-500 flex flex-col gap-3">
+        <!-- Header & Nav -->
+        <div class="flex justify-between items-center border-b border-white/5 pb-2">
+            <div class="flex items-center gap-4">
+                <h1 class="text-lg font-bold text-blue-400">NG WebMaster <span class="text-[10px] bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300">DEPLOY</span></h1>
+                <div class="flex gap-3 text-[11px] font-bold">
+                    <a href="index.html" class="text-slate-400 hover:text-blue-400"><i class="fas fa-home mr-1"></i>Home</a>
+                    <a href="send_message.php" class="text-slate-400 hover:text-blue-400"><i class="fas fa-envelope mr-1"></i>Message</a>
+                </div>
+            </div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400">Branch: <span class="text-white font-mono"><?php echo $TARGET_BRANCH; ?></span></div>
         </div>
 
-        <?php if ($is_authenticated && !$has_identity): ?>
-            <div class="bg-amber-500/10 border border-amber-500/30 p-5 rounded-2xl mb-6">
-                <p class="text-amber-400 text-xs font-bold uppercase tracking-widest mb-3 flex items-center">
-                    <i class="fas fa-id-card mr-2"></i> Identity Setup Required (Local)
-                </p>
-                <form method="POST" class="space-y-3">
-                    <input type="hidden" name="action" value="setup_git">
-                    <input type="text" name="git_name" placeholder="Full Name (e.g. Nooruddin)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-amber-500">
-                    <input type="email" name="git_email" placeholder="Email (e.g. admin@noorgee.pk)" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-amber-500">
-                    <button type="submit" class="w-full bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all">Set Local Identity</button>
-                </form>
-            </div>
-        <?php endif; ?>
-
         <?php if (!$is_authenticated): ?>
-            <form method="POST" class="space-y-4">
-                <input type="password" name="password" placeholder="Admin Password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:border-blue-500 outline-none text-center">
-                <?php if (isset($error)): ?>
-                    <p class="text-red-400 text-xs text-center font-bold"><?php echo $error; ?></p>
-                <?php endif; ?>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold transition-all">Access Terminal</button>
+            <form method="POST" class="py-10 max-w-xs mx-auto w-full space-y-3">
+                <input type="password" name="password" placeholder="Password" class="w-full input-field rounded-lg px-4 py-2 text-center outline-none focus:border-blue-500">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-lg font-bold text-sm">Access</button>
             </form>
         <?php else: ?>
-            <div class="space-y-6">
-                <!-- Deployment Actions -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-white/5 pb-4">
-                    <form method="POST">
-                        <input type="hidden" name="action" value="pull">
-                        <button type="submit" class="w-full h-full flex flex-col items-center justify-center bg-green-600/10 hover:bg-green-600/20 border border-green-600/30 p-4 rounded-2xl transition-all group">
-                            <i class="fas fa-cloud-download-alt text-xl text-green-500 mb-2"></i>
-                            <span class="block font-bold text-green-400 text-sm">Standard Pull</span>
-                        </button>
-                    </form>
-
-                    <form method="POST" onsubmit="return confirm('FORCE PULL: Overwrite local changes?')">
-                        <input type="hidden" name="action" value="force_pull">
-                        <button type="submit" class="w-full h-full flex flex-col items-center justify-center bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 p-4 rounded-2xl transition-all group">
-                            <i class="fas fa-sync-alt text-xl text-blue-500 mb-2"></i>
-                            <span class="block font-bold text-blue-400 text-sm">Force Pull</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Push Changes -->
-                <form method="POST" class="space-y-3">
-                    <input type="hidden" name="action" value="push">
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase text-blue-400 font-bold ml-1">Commit Highlight</label>
-                        <input type="text" name="commit_msg" value="<?php echo htmlspecialchars($last_commit_title); ?>" class="w-full bg-slate-900/80 border border-slate-600 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase text-blue-400 font-bold ml-1">Extended Description</label>
-                        <textarea name="commit_desc" rows="2" class="w-full bg-slate-900/80 border border-slate-600 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
-                    </div>
-                    <button type="submit" class="w-full flex items-center justify-between bg-blue-600 hover:bg-blue-500 p-4 rounded-2xl transition-all shadow-lg shadow-blue-900/20">
-                        <div class="text-left font-bold text-white">Push to GitHub <span class="text-[9px] block opacity-50 uppercase">Update remote repo</span></div>
-                        <i class="fas fa-cloud-upload-alt text-xl text-white"></i>
-                    </button>
-                </form>
-
-                <!-- Restore / Revert Section -->
-                <div class="bg-slate-900/50 border border-slate-700 p-5 rounded-2xl space-y-4">
-                    <div class="flex items-center justify-between">
-                        <label class="text-[10px] uppercase text-blue-400 font-bold ml-1">Restore & History</label>
-                        <form method="POST" onsubmit="return confirm('Revert last commit changes?')">
-                            <input type="hidden" name="action" value="revert_last">
-                            <button type="submit" class="bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 px-3 py-1 rounded-lg text-[10px] font-bold uppercase transition-all">
-                                <i class="fas fa-undo mr-1"></i> Revert Last
+            <div class="grid grid-cols-12 gap-4">
+                <!-- Left Column: Actions -->
+                <div class="col-span-5 space-y-3">
+                    <!-- Pull Actions -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <form method="POST"><input type="hidden" name="action" value="pull">
+                            <button type="submit" class="w-full py-2 bg-green-600/10 hover:bg-green-600/20 border border-green-600/30 rounded-xl text-[11px] font-bold text-green-400 btn-action">
+                                <i class="fas fa-download mb-1 block text-sm"></i> Pull
+                            </button>
+                        </form>
+                        <form method="POST" onsubmit="return confirm('Force Pull?')"><input type="hidden" name="action" value="force_pull">
+                            <button type="submit" class="w-full py-2 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 rounded-xl text-[11px] font-bold text-blue-400 btn-action">
+                                <i class="fas fa-sync mb-1 block text-sm"></i> Force
                             </button>
                         </form>
                     </div>
 
-                    <form method="POST" class="space-y-3">
-                        <input type="hidden" name="action" value="restore_commit">
-                        <select name="commit_hash" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs focus:border-blue-500 outline-none" onchange="document.getElementById('commit_details').innerText = this.options[this.selectedIndex].getAttribute('data-body')">
-                            <option value="">Select a commit to restore...</option>
-                            <?php foreach ($commit_history as $commit): ?>
-                                <option value="<?php echo $commit['hash']; ?>" data-body="<?php echo htmlspecialchars($commit['body']); ?>">
-                                    <?php echo substr($commit['hash'], 0, 7); ?> - <?php echo htmlspecialchars($commit['subject']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <div id="commit_details" class="text-[10px] text-slate-400 italic px-2 min-h-[1rem]"></div>
-                        <button type="submit" class="w-full bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all">
-                            Restore Selected Version
+                    <!-- Restore/Revert -->
+                    <div class="bg-slate-900/40 border border-slate-700/50 p-3 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-blue-400 uppercase">Restore</span>
+                            <form method="POST" onsubmit="return confirm('Revert last?')"><input type="hidden" name="action" value="revert_last">
+                                <button type="submit" class="text-[9px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">Revert Last</button>
+                            </form>
+                        </div>
+                        <form method="POST" class="space-y-2">
+                            <input type="hidden" name="action" value="restore_commit">
+                            <select name="commit_hash" class="w-full input-field rounded-lg px-2 py-1.5 text-[10px] outline-none" onchange="document.getElementById('c_desc').innerText = this.options[this.selectedIndex].getAttribute('data-body')">
+                                <option value="">Select commit...</option>
+                                <?php foreach ($commit_history as $c): ?>
+                                    <option value="<?php echo $c['hash']; ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>"><?php echo substr($c['hash'],0,7)." - ".htmlspecialchars($c['subject']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div id="c_desc" class="text-[9px] text-slate-500 italic truncate h-3"></div>
+                            <button type="submit" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 py-1.5 rounded-lg text-[10px] font-bold uppercase border border-blue-500/30">Restore</button>
+                        </form>
+                    </div>
+
+                    <!-- Footer Links -->
+                    <div class="flex gap-2">
+                        <form method="POST" onsubmit="return confirm('Undo local?')" class="flex-1"><input type="hidden" name="action" value="undo_local">
+                            <button type="submit" class="w-full bg-red-900/10 hover:bg-red-900/20 border border-red-900/30 py-1.5 rounded-lg text-[10px] text-red-400 font-bold uppercase">Undo Local</button>
+                        </form>
+                        <a href="?logout=1" class="flex-1 bg-slate-800 hover:bg-slate-700 py-1.5 rounded-lg text-[10px] text-slate-400 font-bold uppercase text-center">Sign Out</a>
+                    </div>
+                </div>
+
+                <!-- Right Column: Push & Terminal -->
+                <div class="col-span-7 space-y-3">
+                    <form method="POST" class="space-y-2">
+                        <input type="hidden" name="action" value="push">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Highlight</label>
+                                <input type="text" name="commit_msg" value="<?php echo htmlspecialchars($last_commit_title); ?>" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Description</label>
+                                <input type="text" name="commit_desc" value="<?php echo htmlspecialchars($last_commit_desc); ?>" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
+                            Push to GitHub <i class="fas fa-cloud-upload-alt"></i>
                         </button>
                     </form>
-                </div>
 
-                <!-- Footer Actions -->
-                <div class="flex gap-3">
-                    <form method="POST" onsubmit="return confirm('Undo all local changes?')" class="flex-1">
-                        <input type="hidden" name="action" value="undo_local">
-                        <button type="submit" class="w-full bg-red-900/20 hover:bg-red-900/40 border border-red-900/50 p-3 rounded-xl text-xs text-red-400 font-bold uppercase tracking-tight">Undo Local</button>
-                    </form>
-                    <a href="?logout=1" class="flex-1 bg-slate-800 hover:bg-slate-700 p-3 rounded-xl text-xs text-slate-400 font-bold uppercase text-center tracking-tight">Sign Out</a>
+                    <!-- Terminal -->
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-slate-500 uppercase ml-1">Terminal Output</label>
+                        <pre class="terminal-box p-3 rounded-xl text-[10px] font-mono leading-tight whitespace-pre-wrap"><?php 
+                            if ($output) {
+                                $h = htmlspecialchars($output);
+                                $h = str_ireplace(['error','fatal','aborting'], '<span class="text-red-400">$&</span>', $h);
+                                $h = str_ireplace(['success','head is now at'], '<span class="text-green-400">$&</span>', $h);
+                                echo $h;
+                            } else { echo '<span class="text-slate-600">Waiting for action...</span>'; }
+                        ?></pre>
+                    </div>
                 </div>
             </div>
-
-            <!-- Terminal Output -->
-            <?php if ($output): ?>
-                <div class="mt-8">
-                    <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Terminal History</label>
-                    <pre class="terminal-box p-5 rounded-2xl text-[10px] font-mono leading-relaxed overflow-x-auto whitespace-pre-wrap"><?php 
-                        $highlighted = htmlspecialchars($output);
-                        $highlighted = str_ireplace('error', '<span class="term-error">error</span>', $highlighted);
-                        $highlighted = str_ireplace('fatal', '<span class="term-error">fatal</span>', $highlighted);
-                        $highlighted = str_ireplace('Aborting', '<span class="term-error">Aborting</span>', $highlighted);
-                        $highlighted = str_ireplace('HEAD is now at', '<span class="term-success">HEAD is now at</span>', $highlighted);
-                        $highlighted = str_ireplace('success', '<span class="term-success">success</span>', $highlighted);
-                        $highlighted = str_ireplace('Already up to date', '<span class="term-info">Already up to date</span>', $highlighted);
-                        echo $highlighted; 
-                    ?></pre>
-                </div>
-            <?php endif; ?>
         <?php endif; ?>
     </div>
-
 </body>
 </html>
