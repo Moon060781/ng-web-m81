@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>NoorGee WebMaster |   eCommerce & Web Solutions</title>
+    <title>NoorGee WebMaster | eCommerce & Web Solutions</title>
     <meta name="description" content="Leading web developer and eCommerce strategist specializing in Shopify, WordPress, and Custom PHP solutions.">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lucide/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/dist/lenis.min.js"></script>
     <style>
         :root {
             --brand-brown: #5d4037;
+            --brand-brown-dark: #3e2723;
             --brand-brown-light: #8d6e63;
+            --soft-shadow: rgba(0, 0, 0, 0.05);
         }
         body { 
             font-family: 'Poppins', sans-serif; 
@@ -21,6 +25,9 @@
             background-color: #fdfaf9; /* Warm off-white */
         }
         
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; line-height: 2.2; }
+
         #interactive-bg {
             position: fixed;
             top: 0;
@@ -133,12 +140,12 @@
         #pageModal {
             display: none;
             position: fixed;
-            top: 100px; /* Increased height by moving top up */
-            bottom: 50px; /* Increased height by moving bottom down */
+            top: 100px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            width: 95%; /* Increased width */
-            max-width: 1200px; /* Increased max-width */
+            width: 95%;
+            max-width: 1200px;
             background: white;
             z-index: 1000;
             border-radius: 2rem;
@@ -253,6 +260,85 @@
             border-radius: 0.5rem;
             margin-top: 0.5rem;
             border: 1px solid #eee;
+        }
+
+        /* New Portfolio Gallery Styles */
+        .filter-btn {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+        .filter-btn.active {
+            color: white;
+        }
+        .filter-bg {
+            position: absolute;
+            height: 100%;
+            background: var(--brand-brown);
+            border-radius: 9999px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+        .portfolio-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px var(--soft-shadow);
+        }
+        .portfolio-card:hover {
+            transform: scale(1.05) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(93, 64, 55, 0.12);
+        }
+        .portfolio-card img {
+            transition: transform 0.7s ease;
+        }
+        .portfolio-card:hover img {
+            transform: scale(1.1);
+        }
+        .portfolio-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            padding: 2rem;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .portfolio-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-overlay-p {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+        }
+        .modal-content-p {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            background: white;
+            border-radius: 2rem;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+            scrollbar-width: none;
+        }
+        .modal-content-p::-webkit-scrollbar { display: none; }
+        .portfolio-modal.active .modal-content-p {
+            transform: translateY(0);
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-gallery-item {
+            animation: fadeInScale 0.5s ease forwards;
+        }
+        .hidden-item {
+            display: none;
         }
     </style>
 </head>
@@ -479,74 +565,135 @@
         </div>
     </section>
 
-    <!-- Portfolio Grid -->
-    <section id="portfolio" class="py-24 bg-white">
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24 bg-white font-inter overflow-hidden">
         <div class="container mx-auto px-6">
-            <div class="text-center mb-20">
-                <h2 class="text-4xl font-bold text-slate-900">Portfolio</h2>
-                <div class="w-16 h-1 bg-amber-800 mx-auto mt-4"></div>
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Our Masterpieces</h2>
+                <div class="w-20 h-1.5 bg-amber-800 mx-auto rounded-full mb-8"></div>
+                
+                <!-- Filter Tabs -->
+                <div class="relative inline-flex bg-slate-100 p-1.5 rounded-full border border-slate-200">
+                    <div id="filter-bg" class="filter-bg" style="width: 160px; left: 6px;"></div>
+                    <button onclick="filterGallery('web', this)" class="filter-btn active px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-colors duration-300" data-width="160">
+                        <i data-lucide="laptop" class="inline-block w-4 h-4 mr-2 mb-0.5"></i>Web Projects
+                    </button>
+                    <button onclick="filterGallery('ai', this)" class="filter-btn px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-colors duration-300" data-width="140">
+                        <i data-lucide="bot" class="inline-block w-4 h-4 mr-2 mb-0.5"></i>AI Work
+                    </button>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Business ITC -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Web/img/businessitc-site-screenshot-Animation.gif" alt="Business ITC" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-amber-800/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">Business ITC</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-4 uppercase tracking-widest">Corporate Strategy</p>
-                        <p class="text-gray-500 text-xs mb-6">Demo: <a href="https://www.facebook.com/groups/271845483443038/permalink/1819346388692932/" target="_blank" class="text-amber-800 font-bold hover:underline">Watch Video</a></p>
-                        <a href="https://businessitc.com/" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-
-                <!-- NoorGee.pk -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Dev/img/portfolio-ng-pk-02.gif" alt="NoorGee.pk" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">NoorGee.pk</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Main Hub</p>
-                        <a href="https://noorgee.pk" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+            <!-- Gallery Grid -->
+            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Web Projects -->
+                <div class="portfolio-item web animate-gallery-item" data-category="web">
+                    <div class="portfolio-card bg-white rounded-2xl overflow-hidden group cursor-pointer" onclick="openPortfolioModal('web-1')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://noorgee.pk/Web/img/businessitc-site-screenshot-Animation.gif" alt="Business ITC" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900">Business ITC</h3>
+                                <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-1 rounded-md font-bold uppercase tracking-tighter">Web & Hosting</span>
+                            </div>
+                            <p class="text-gray-500 text-sm line-clamp-2">Business growth consultant, audit work, and I.T. solutions like CRM integration.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- NoorGee US -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Dev/img/us-ng-site-screen.gif" alt="NoorGee US" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">NoorGee US</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">USA Market</p>
-                        <a href="https://us.noorgee.com" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
-                    </div>
-                </div>
-
-                <!-- KWA -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Web/img/kwa-screen.gif" alt="KWA" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">KWA Welfare</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Welfare & Social</p>
-                        <a href="https://kwa.com.pk" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                <div class="portfolio-item web animate-gallery-item" data-category="web">
+                    <div class="portfolio-card bg-white rounded-2xl overflow-hidden group cursor-pointer" onclick="openPortfolioModal('web-2')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://noorgee.pk/Dev/img/portfolio-ng-pk-02.gif" alt="NoorGee.pk" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900">NoorGee.pk</h3>
+                                <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-1 rounded-md font-bold uppercase tracking-tighter">Main Hub</span>
+                            </div>
+                            <p class="text-gray-500 text-sm line-clamp-2">Main site for all my works on internet, showcasing skills and projects.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- NoorGee Tools -->
-                <div class="project-card bg-slate-50 rounded-[2rem] overflow-hidden border border-gray-100 group">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="https://noorgee.pk/Web/img/it-ng-site-tool-screen.gif" alt="Tools" class="w-full h-full object-cover">
+                <div class="portfolio-item web animate-gallery-item" data-category="web">
+                    <div class="portfolio-card bg-white rounded-2xl overflow-hidden group cursor-pointer" onclick="openPortfolioModal('web-3')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://noorgee.pk/Dev/img/us-ng-site-screen.gif" alt="US NoorGee" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900">US NoorGee</h3>
+                                <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-1 rounded-md font-bold uppercase tracking-tighter">E-commerce</span>
+                            </div>
+                            <p class="text-gray-500 text-sm line-clamp-2">E-commerce store in United States specializing in leather products via dropshipping.</p>
+                        </div>
                     </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold mb-1">NoorGee IT Tools</h3>
-                        <p class="text-xs text-amber-700 font-bold mb-6 uppercase tracking-widest">Developer Utilities</p>
-                        <a href="https://it.noorgee.com" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">Visit Site</a>
+                </div>
+
+                <!-- AI Work (Hidden by default) -->
+                <div class="portfolio-item ai hidden-item animate-gallery-item" data-category="ai">
+                    <div class="portfolio-card bg-white rounded-2xl overflow-hidden group cursor-pointer" onclick="openPortfolioModal('ai-1')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://noorgee.pk/Web/img/NoorGee%20Logo%201756693576%20(1).jpg" alt="AI Image Gen" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900">AI Image Generation</h3>
+                                <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-1 rounded-md font-bold uppercase tracking-tighter">AI & Automation</span>
+                            </div>
+                            <p class="text-gray-500 text-sm line-clamp-2">Showcasing advanced AI image generation skills with custom prompts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item ai hidden-item animate-gallery-item" data-category="ai">
+                    <div class="portfolio-card bg-white rounded-2xl overflow-hidden group cursor-pointer" onclick="openPortfolioModal('ai-2')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://noorgee.pk/Web/img/NG%20UK%20blue%20baner.png" alt="AI Banner Gen" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900">AI Banner Design</h3>
+                                <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-1 rounded-md font-bold uppercase tracking-tighter">AI & Automation</span>
+                            </div>
+                            <p class="text-gray-500 text-sm line-clamp-2">High-end AI generated banners for e-commerce and corporate branding.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item ai hidden-item animate-gallery-item" data-category="ai">
+                    <div class="portfolio-card bg-white rounded-2xl overflow-hidden group cursor-pointer" onclick="openPortfolioModal('ai-3')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="https://noorgee.pk/Web/img/us-ng-ecomerce.jpg" alt="AI Automation" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900">AI Writing Automation</h3>
+                                <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-1 rounded-md font-bold uppercase tracking-tighter">AI & Automation</span>
+                            </div>
+                            <p class="text-gray-500 text-sm line-clamp-2">Automated blog writing and content strategy using advanced AI models.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -667,23 +814,175 @@
         </div>
     </footer>
 
+    <!-- Portfolio Modal -->
+    <div id="portfolio-modal" class="portfolio-modal">
+        <div class="modal-overlay-p" onclick="closePortfolioModal()"></div>
+        <div class="modal-content-p">
+            <button onclick="closePortfolioModal()" class="absolute top-6 right-6 z-50 bg-white/80 backdrop-blur-md w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors">
+                <i data-lucide="x" class="w-6 h-6 text-slate-900"></i>
+            </button>
+            <div id="modal-body-p" class="p-0"></div>
+        </div>
+    </div>
+
     <script>
-        // Modal Logic
+        // 1. Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 2. Lenis Smooth Scroll Initialization
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true
+        });
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // 3. Gallery Filtering Logic
+        function filterGallery(category, btn) {
+            const items = document.querySelectorAll('.portfolio-item');
+            const filterBg = document.getElementById('filter-bg');
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const btnWidth = btn.getAttribute('data-width');
+            const btnOffset = btn.offsetLeft;
+            filterBg.style.width = `${btnWidth}px`;
+            filterBg.style.left = `${btnOffset}px`;
+            items.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    if (item.getAttribute('data-category') === category) {
+                        item.classList.remove('hidden-item');
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        }, 50);
+                    } else {
+                        item.classList.add('hidden-item');
+                    }
+                }, 300);
+            });
+        }
+
+        // 4. Modal Data & Logic
+        const portfolioData = {
+            'web-1': {
+                title: 'Business ITC',
+                category: 'Web & Hosting Solutions',
+                image: 'https://noorgee.pk/Web/img/businessitc-site-screenshot-Animation.gif',
+                goals: 'Make site for Present their works to enterprise industrialists and service providers who are Non-Tech Savvy.',
+                goalsUrdu: 'غیر تکنیکی کاروباری افراد اور سروس فراہم کنندگان کے لیے ان کے کام کو پیش کرنے کے لیے ویب سائٹ بنانا۔',
+                tech: ['HTML', 'CSS', 'PHP', 'CRM Integration'],
+                link: 'https://businessitc.com/'
+            },
+            'web-2': {
+                title: 'NoorGee.pk',
+                category: 'Web & Hosting Solutions',
+                image: 'https://noorgee.pk/Dev/img/portfolio-ng-pk-02.gif',
+                goals: 'Main hub for all digital works, showcasing skills and providing a central point for client acquisition.',
+                goalsUrdu: 'تمام ڈیجیٹل کاموں کے لیے مرکزی مرکز، مہارتوں کی نمائش اور کلائنٹ کے حصول کے لیے ایک مرکزی نقطہ فراہم کرنا۔',
+                tech: ['Tailwind CSS', 'JavaScript', 'PHP', 'UI/UX Design'],
+                link: 'https://noorgee.pk'
+            },
+            'web-3': {
+                title: 'US NoorGee',
+                category: 'Web & Hosting Solutions',
+                image: 'https://noorgee.pk/Dev/img/us-ng-site-screen.gif',
+                goals: 'Develop a high-converting WordPress WooCommerce store for US consumers, specializing in dropshipping leather products.',
+                goalsUrdu: 'امریکی صارفین کے لیے ایک اعلیٰ تبادلوں والا ورڈپریس ای کامرس اسٹور تیار کرنا، جو چمڑے کی مصنوعات کی ڈراپ شپنگ میں مہارت رکھتا ہو۔',
+                tech: ['WordPress', 'WooCommerce', 'Dropshipping', 'SEO'],
+                link: 'https://us.noorgee.com'
+            },
+            'ai-1': {
+                title: 'AI Image Generation',
+                category: 'AI & Automation',
+                image: 'https://noorgee.pk/Web/img/NoorGee%20Logo%201756693576%20(1).jpg',
+                goals: 'Showcase advanced AI image generation capabilities for branding and creative marketing assets.',
+                goalsUrdu: 'برانڈنگ اور تخلیقی مارکیٹنگ کے اثاثوں کے لیے جدید ترین AI امیج جنریشن کی صلاحیتوں کی نمائش۔',
+                tech: ['Midjourney', 'DALL-E 3', 'Stable Diffusion', 'Prompt Engineering'],
+                link: '#'
+            },
+            'ai-2': {
+                title: 'AI Banner Design',
+                category: 'AI & Automation',
+                image: 'https://noorgee.pk/Web/img/NG%20UK%20blue%20baner.png',
+                goals: 'Creating high-end e-commerce banners using AI to reduce production time while maintaining premium quality.',
+                goalsUrdu: 'پریمیم کوالٹی کو برقرار رکھتے ہوئے پروڈکشن کے وقت کو کم کرنے کے لیے AI کا استعمال کرتے ہوئے ہائی اینڈ ای کامرس بینرز بنانا۔',
+                tech: ['AI Graphic Design', 'Photoshop AI', 'Visual Strategy'],
+                link: '#'
+            },
+            'ai-3': {
+                title: 'AI Writing Automation',
+                category: 'AI & Automation',
+                image: 'https://noorgee.pk/Web/img/us-ng-ecomerce.jpg',
+                goals: 'Automating content creation for blogs and social media to ensure consistent brand voice and SEO performance.',
+                goalsUrdu: 'مستقل برانڈ وائس اور SEO کارکردگی کو یقینی بنانے کے لیے بلاگز اور سوشل میڈیا کے لیے مواد کی تخلیق کو خودکار بنانا۔',
+                tech: ['OpenAI API', 'Python', 'Automation Workflows', 'SEO Writing'],
+                link: 'https://blog.noorgee.com'
+            }
+        };
+
+        function openPortfolioModal(id) {
+            const data = portfolioData[id];
+            const modal = document.getElementById('portfolio-modal');
+            const body = document.getElementById('modal-body-p');
+            body.innerHTML = `
+                <div class="flex flex-col lg:flex-row h-full">
+                    <div class="lg:w-3/5 h-64 lg:h-full bg-slate-100">
+                        <img src="${data.image}" class="w-full h-full object-cover" alt="${data.title}">
+                    </div>
+                    <div class="lg:w-2/5 p-8 md:p-12 flex flex-col justify-center">
+                        <span class="text-amber-800 font-bold uppercase tracking-widest text-xs mb-4">${data.category}</span>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">${data.title}</h2>
+                        <div class="mb-8">
+                            <h4 class="text-sm font-bold text-slate-900 uppercase tracking-tighter mb-3 flex items-center">
+                                <i data-lucide="target" class="w-4 h-4 mr-2"></i> Project Goals
+                            </h4>
+                            <p class="text-gray-600 leading-relaxed mb-4">${data.goals}</p>
+                            <p class="font-urdu text-slate-800 text-lg border-r-4 border-amber-800 pr-4">${data.goalsUrdu}</p>
+                        </div>
+                        <div class="mb-10">
+                            <h4 class="text-sm font-bold text-slate-900 uppercase tracking-tighter mb-3 flex items-center">
+                                <i data-lucide="layers" class="w-4 h-4 mr-2"></i> Technologies
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${data.tech.map(t => `<span class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                        <a href="${data.link}" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-amber-800 transition-colors shadow-xl shadow-slate-900/20">
+                            Live Preview <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closePortfolioModal() {
+            const modal = document.getElementById('portfolio-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Existing Modal Logic
         function openModal(url) {
             document.getElementById('modalIframe').src = url;
             document.getElementById('modalOverlay').style.display = 'block';
             document.getElementById('pageModal').style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            document.body.style.overflow = 'hidden';
         }
-
         function closeModal() {
             document.getElementById('modalOverlay').style.display = 'none';
             document.getElementById('pageModal').style.display = 'none';
-            document.getElementById('modalIframe').src = '';
             document.body.style.overflow = 'auto';
         }
-
-        // Close modal on overlay click
         document.getElementById('modalOverlay').addEventListener('click', closeModal);
 
         // Interactive BG
@@ -698,7 +997,6 @@
         // Go to Top Logic
         let mybutton = document.getElementById("goToTopBtn");
         window.onscroll = function() {scrollFunction()};
-
         function scrollFunction() {
             if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
                 mybutton.style.display = "block";
@@ -706,7 +1004,6 @@
                 mybutton.style.display = "none";
             }
         }
-
         function topFunction() {
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
@@ -719,7 +1016,6 @@
             const formData = new FormData(this);
             btn.disabled = true;
             btn.innerText = 'Sending...';
-
             try {
                 const response = await fetch('send_message.php', { method: 'POST', body: formData });
                 const result = await response.json();
@@ -735,7 +1031,13 @@
                 btn.innerText = 'Send Message';
             }
         });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closePortfolioModal();
+            }
+        });
     </script>
 </body>
-
 </html>
