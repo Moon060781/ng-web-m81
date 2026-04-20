@@ -106,17 +106,18 @@ if ($is_authenticated && isset($_POST['action'])) {
 // Fetch commit history for the dropdown
 $commit_history = [];
 if ($is_authenticated) {
-    // Get last 10 commits with hash, subject, and body
-    $history_raw = shell_exec("git log -10 --format='%H|%s|%b' 2>/dev/null");
+    // Get last 10 commits with hash, subject, and body using a more unique delimiter
+    $delimiter = "|||";
+    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%b' 2>/dev/null");
     if ($history_raw) {
         $lines = explode("\n", trim($history_raw));
         foreach ($lines as $line) {
             if (empty($line)) continue;
-            list($hash, $subject, $body) = explode('|', $line, 3);
+            $parts = explode($delimiter, $line);
             $commit_history[] = [
-                'hash' => $hash,
-                'subject' => $subject,
-                'body' => $body
+                'hash' => $parts[0] ?? '',
+                'subject' => $parts[1] ?? '',
+                'body' => $parts[2] ?? ''
             ];
         }
     }
