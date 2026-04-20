@@ -1126,9 +1126,18 @@
         }
 
         // Initial Render
-        window.onload = () => {
-            renderGallery('web');
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded, initializing gallery...');
+            try {
+                if (typeof renderGallery === 'function') {
+                    renderGallery('web');
+                } else {
+                    console.error('renderGallery function not found');
+                }
+            } catch (e) {
+                console.error('Error during initial gallery render:', e);
+            }
+        });
 
         // Existing Modal Logic
         function openModal(url) {
