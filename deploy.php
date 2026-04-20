@@ -1,7 +1,7 @@
 <?php
 /**
  * NG WebMaster - Git Deployment Tool
- * Optimized UX: Compact Single-Page Layout
+ * Optimized UX: Compact Single-Page Layout with Date/Time & Descriptions
  */
 
 ini_set('display_errors', 1);
@@ -81,12 +81,18 @@ if ($is_authenticated && isset($_POST['action'])) {
 $commit_history = [];
 if ($is_authenticated) {
     $delimiter = "|||";
-    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%b' 2>/dev/null");
+    // Format: Hash | Subject | Date | Body
+    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%ad$delimiter%b' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null");
     if ($history_raw) {
         foreach (explode("\n", trim($history_raw)) as $line) {
             if (empty($line)) continue;
             $parts = explode($delimiter, $line);
-            $commit_history[] = ['hash' => $parts[0] ?? '', 'subject' => $parts[1] ?? '', 'body' => $parts[2] ?? ''];
+            $commit_history[] = [
+                'hash' => $parts[0] ?? '',
+                'subject' => $parts[1] ?? '',
+                'date' => $parts[2] ?? '',
+                'body' => trim($parts[3] ?? '')
+            ];
         }
     }
 }
@@ -104,10 +110,13 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
     <style>
         body { background: #0f172a; color: white; font-family: 'Inter', sans-serif; overflow: hidden; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .terminal-box { background: #000; border-left: 3px solid #3b82f6; height: 120px; overflow-y: auto; }
+        .terminal-box { background: #000; border-left: 3px solid #3b82f6; height: 110px; overflow-y: auto; }
         .input-field { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(71, 85, 105, 0.5); }
         .btn-action { transition: all 0.2s; }
         .btn-action:hover { transform: translateY(-1px); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="h-screen flex items-center justify-center p-2">
@@ -150,21 +159,23 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
                     <!-- Restore/Revert -->
                     <div class="bg-slate-900/40 border border-slate-700/50 p-3 rounded-xl space-y-2">
                         <div class="flex justify-between items-center">
-                            <span class="text-[10px] font-bold text-blue-400 uppercase">Restore</span>
+                            <span class="text-[10px] font-bold text-blue-400 uppercase">Restore History</span>
                             <form method="POST" onsubmit="return confirm('Revert last?')"><input type="hidden" name="action" value="revert_last">
                                 <button type="submit" class="text-[9px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">Revert Last</button>
                             </form>
                         </div>
                         <form method="POST" class="space-y-2">
                             <input type="hidden" name="action" value="restore_commit">
-                            <select name="commit_hash" class="w-full input-field rounded-lg px-2 py-1.5 text-[10px] outline-none" onchange="document.getElementById('c_desc').innerText = this.options[this.selectedIndex].getAttribute('data-body')">
+                            <select name="commit_hash" class="w-full input-field rounded-lg px-2 py-1.5 text-[10px] outline-none" onchange="document.getElementById('c_desc').innerText = this.options[this.selectedIndex].getAttribute('data-body') || 'No extended description.'">
                                 <option value="">Select commit...</option>
                                 <?php foreach ($commit_history as $c): ?>
-                                    <option value="<?php echo $c['hash']; ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>"><?php echo substr($c['hash'],0,7)." - ".htmlspecialchars($c['subject']); ?></option>
+                                    <option value="<?php echo $c['hash']; ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>">
+                                        <?php echo $c['date']; ?> - <?php echo htmlspecialchars($c['subject']); ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
-                            <div id="c_desc" class="text-[9px] text-slate-500 italic truncate h-3"></div>
-                            <button type="submit" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 py-1.5 rounded-lg text-[10px] font-bold uppercase border border-blue-500/30">Restore</button>
+                            <div id="c_desc" class="text-[9px] text-slate-400 italic h-8 overflow-y-auto px-1 leading-tight">Select a commit to see details.</div>
+                            <button type="submit" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 py-1.5 rounded-lg text-[10px] font-bold uppercase border border-blue-500/30">Restore Version</button>
                         </form>
                     </div>
 
@@ -183,11 +194,11 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
                         <input type="hidden" name="action" value="push">
                         <div class="grid grid-cols-2 gap-2">
                             <div class="space-y-1">
-                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Highlight</label>
+                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Commit Highlight</label>
                                 <input type="text" name="commit_msg" value="<?php echo htmlspecialchars($last_commit_title); ?>" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500">
                             </div>
                             <div class="space-y-1">
-                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Description</label>
+                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Extended Description</label>
                                 <input type="text" name="commit_desc" value="<?php echo htmlspecialchars($last_commit_desc); ?>" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500">
                             </div>
                         </div>
