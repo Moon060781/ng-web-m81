@@ -549,22 +549,13 @@
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Our Masterpieces</h2>
                 <div class="w-20 h-1.5 bg-amber-800 mx-auto rounded-full mb-8"></div>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-12">Explore our premium portfolio of web solutions and AI-driven projects.</p>
                 
-                <!-- Filter Tabs -->
-                <div class="relative inline-flex bg-slate-100 p-1.5 rounded-full border border-slate-200">
-                    <div id="filter-bg" class="filter-bg" style="width: 160px; left: 6px;"></div>
-                    <button onclick="filterGallery('web', this)" class="filter-btn active px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-colors duration-300" data-width="160">
-                        <i data-lucide="laptop" class="inline-block w-4 h-4 mr-2 mb-0.5"></i>Web Projects
-                    </button>
-                    <button onclick="filterGallery('ai', this)" class="filter-btn px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-colors duration-300" data-width="140">
-                        <i data-lucide="bot" class="inline-block w-4 h-4 mr-2 mb-0.5"></i>AI Work
-                    </button>
-                </div>
-            </div>
-
-            <!-- Gallery Grid -->
-            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Items will be injected by JS -->
+                <!-- View Portfolio Button -->
+                <button onclick="openGalleryOverlay()" class="inline-flex items-center justify-center gap-3 px-12 py-5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-amber-800 transition-all duration-300 shadow-2xl shadow-slate-900/20 hover:shadow-amber-800/30 hover:scale-105">
+                    <i data-lucide="gallery" class="w-5 h-5"></i>
+                    View Full Portfolio
+                </button>
             </div>
         </div>
     </section>
@@ -694,6 +685,42 @@
             </div>
         </div>
     </footer>
+
+    <!-- Full-Screen Gallery Overlay -->
+    <div id="gallery-overlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md hidden flex flex-col">
+        <!-- Gallery Header -->
+        <div class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 py-6">
+            <div class="container mx-auto px-6 flex justify-between items-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white">Our Portfolio Gallery</h2>
+                <button onclick="closeGalleryOverlay()" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all duration-300">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Gallery Content -->
+        <div class="flex-1 overflow-y-auto py-12">
+            <div class="container mx-auto px-6">
+                <!-- Filter Tabs -->
+                <div class="flex justify-center mb-12">
+                    <div class="relative inline-flex bg-slate-800/50 p-1.5 rounded-full border border-slate-700">
+                        <div id="gallery-filter-bg" class="filter-bg" style="width: 160px; left: 6px; background: var(--brand-brown);"></div>
+                        <button onclick="filterGalleryOverlay('web', this)" class="filter-btn active px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-colors duration-300 text-white" data-width="160">
+                            <i data-lucide="laptop" class="inline-block w-4 h-4 mr-2 mb-0.5"></i>Web Projects
+                        </button>
+                        <button onclick="filterGalleryOverlay('ai', this)" class="filter-btn px-8 py-3 rounded-full text-sm font-bold tracking-wider uppercase transition-colors duration-300 text-slate-400" data-width="140">
+                            <i data-lucide="bot" class="inline-block w-4 h-4 mr-2 mb-0.5"></i>AI Work
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div id="gallery-overlay-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Items will be injected by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Portfolio Modal -->
     <div id="portfolio-modal" class="portfolio-modal">
@@ -1059,6 +1086,79 @@
             lucide.createIcons();
         }
 
+        // 4.5 Gallery Overlay Functions
+        function openGalleryOverlay() {
+            const overlay = document.getElementById('gallery-overlay');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            renderGalleryOverlay('web');
+            lucide.createIcons();
+        }
+
+        function closeGalleryOverlay() {
+            const overlay = document.getElementById('gallery-overlay');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function renderGalleryOverlay(category) {
+            const grid = document.getElementById('gallery-overlay-grid');
+            grid.innerHTML = '';
+            
+            const filtered = portfolioData.filter(item => item.category === category);
+            
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'portfolio-item animate-gallery-item';
+                card.innerHTML = `
+                    <div class="portfolio-card bg-slate-800 rounded-2xl overflow-hidden group cursor-pointer border border-slate-700" onclick="openPortfolioModal('${item.id}')">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                                <span class="text-white font-bold flex items-center">View Details <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-white">${item.title}</h3>
+                                <span class="text-[10px] ${item.category === 'web' ? 'bg-amber-900/50 text-amber-300' : 'bg-blue-900/50 text-blue-300'} px-2 py-1 rounded-md font-bold uppercase tracking-tighter">
+                                    ${item.category === 'web' ? 'Web & Hosting' : 'AI & Automation'}
+                                </span>
+                            </div>
+                            <p class="text-slate-400 text-sm line-clamp-2">${item.shortDesc}</p>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterGalleryOverlay(category, btn) {
+            const filterBg = document.getElementById('gallery-filter-bg');
+            const buttons = document.querySelectorAll('#gallery-overlay .filter-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            buttons.forEach(b => b.classList.add('text-slate-400'));
+            btn.classList.add('active');
+            btn.classList.remove('text-slate-400');
+            btn.classList.add('text-white');
+            const btnWidth = btn.getAttribute('data-width');
+            const btnOffset = btn.offsetLeft;
+            filterBg.style.width = `${btnWidth}px`;
+            filterBg.style.left = `${btnOffset}px`;
+            
+            const grid = document.getElementById('gallery-overlay-grid');
+            grid.style.opacity = '0';
+            grid.style.transform = 'translateY(20px)';
+            grid.style.transition = 'all 0.3s ease';
+            
+            setTimeout(() => {
+                renderGalleryOverlay(category);
+                grid.style.opacity = '1';
+                grid.style.transform = 'translateY(0)';
+            }, 300);
+        }
+
         // 5. Gallery Filtering Logic
         function filterGallery(category, btn) {
             const filterBg = document.getElementById('filter-bg');
@@ -1211,6 +1311,14 @@
             if (e.key === 'Escape') {
                 closeModal();
                 closePortfolioModal();
+                closeGalleryOverlay();
+            }
+        });
+
+        // Close gallery overlay when clicking outside
+        document.getElementById('gallery-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGalleryOverlay();
             }
         });
     </script>
