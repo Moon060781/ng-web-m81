@@ -333,6 +333,42 @@
         .animate-gallery-item {
             animation: fadeInUp 0.6s ease-out forwards;
         }
+
+<!-- Gallary Portfolio: style start -->
+
+    .masterpiece-hide {
+        transition: all 0.9s cubic-bezier(0.7, 0, 0.3, 1);
+        transform: scaleX(0);
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+    }
+    .masterpiece-show {
+        transform: scaleX(1);
+        opacity: 1;
+        max-height: 20000px;
+        padding: 40px 0;
+    }
+    .portfolio-card {
+        background: #1e293b;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: 0.4s;
+    }
+    .portfolio-card:hover {
+        border-color: #3b82f6;
+        transform: translateY(-8px);
+    }
+    .tech-tag {
+        font-size: 10px;
+        background: rgba(59, 132, 246, 0.1);
+        color: #60a5fa;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin: 2px;
+        display: inline-block;
+    }
+        <!-- Gallary Portfolio: style end -->
+        
     </style>
 </head>
 <body>
@@ -618,6 +654,31 @@
         .live-preview-button-p:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(59, 130, 246, 0.4); background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); }
     </style>
 
+<!-- Gallary Portfolio: Section start -->
+<section class="bg-slate-900 py-16 text-white text-center min-h-screen">
+    <div class="container mx-auto px-4">
+        <h2 class="text-5xl font-bold mb-4" style="font-family: 'Noto Nastaliq Urdu', serif;">Our Masterpieces</h2>
+        <p class="text-gray-400 mb-8">ایکسپلوور کریں ہمارے تمام ویب اور اے آئی پروجیکٹس</p>
+        
+        <button id="toggle-btn" class="bg-blue-600 hover:bg-blue-700 px-12 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl mb-10">
+            <span id="btn-text"><i class="fas fa-door-open mr-2"></i> Explore All 25 Masterpieces</span>
+        </button>
+
+        <div id="masterpiece-container" class="masterpiece-hide">
+            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <button onclick="filterItems('all')" class="filter-tab active bg-blue-600 px-6 py-2 rounded-full text-sm">All Work</button>
+                <button onclick="filterItems('web')" class="filter-tab bg-slate-800 px-6 py-2 rounded-full text-sm hover:bg-slate-700">Web & Hosting</button>
+                <button onclick="filterItems('ai')" class="filter-tab bg-slate-800 px-6 py-2 rounded-full text-sm hover:bg-slate-700">AI & Automation</button>
+            </div>
+
+            <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Gallary Portfolio: Section end -->
+    
     <!-- Team -->
     <section id="team" class="py-24 bg-slate-50">
         <div class="container mx-auto px-6">
@@ -1530,6 +1591,95 @@
         document.addEventListener('DOMContentLoaded', () => {
             initMasterpieces();
         });
+
+
+
+<!-- Gallary Portfolio: Script start -->
+
+const fullPortfolio = [
+    // Category A: Web & Hosting Solutions
+    { id: 1, title: "Business & IT Consultant", cat: "web", desc: "Digital audit & CRM integration.", goal: "For enterprise industrialist and non-tech providers.", link: "https://businessitc.com/", tech: "Web, CRM", media: "https://via.placeholder.com/400x250?text=Business+IT", type: "img" },
+    { id: 2, title: "NoorGee Main Site", cat: "web", desc: "Main portal for all internet works.", goal: "Showcasing skills and professional portfolio.", link: "https://noorgee.com", tech: "Web, Personal", media: "https://via.placeholder.com/400x250?text=NoorGee+Main", type: "img" },
+    { id: 3, title: "US NoorGee Store", cat: "web", desc: "E-commerce store for USA.", goal: "Dropshipping leather products for US consumers.", link: "https://us.noorgee.com", tech: "WordPress, Woo", media: "https://via.placeholder.com/400x250?text=US+Store", type: "img" },
+    { id: 4, title: "UK NoorGee Store", cat: "web", desc: "E-commerce store for UK market.", goal: "Shopify based dropshipping.", link: "https://uk.noorgee.com", tech: "Shopify, E-com", media: "https://via.placeholder.com/400x250?text=UK+Store", type: "img" },
+    { id: 5, title: "UAE NoorGee Store", cat: "web", desc: "E-commerce store for Middle East.", goal: "Expansion into UAE market.", link: "https://ae.noorgee.com", tech: "Shopify", media: "https://via.placeholder.com/400x250?text=UAE+Store", type: "img" },
+    { id: 6, title: "PK NoorGee E-Com", cat: "web", desc: "Pakistani local dropshipping site.", goal: "Household items for local market.", link: "https://noorgee.pk", tech: "WordPress", media: "https://via.placeholder.com/400x250?text=PK+Store", type: "img" },
+    { id: 7, title: "Web & AI Services", cat: "web", desc: "Service landing page.", goal: "Lead generation for AI/Web services.", link: "https://noorgee.pk/Web/", tech: "HTML, Tailwind", media: "https://via.placeholder.com/400x250?text=Services", type: "img" },
+    { id: 8, title: "NoorGee Hosting", cat: "web", desc: "Reseller hosting platform.", goal: "Selling hosting & domains.", link: "https://noorgee.com/hosting", tech: "WHMCS, Hosting", media: "https://via.placeholder.com/400x250?text=Hosting", type: "img" },
+    { id: 9, title: "NG SMS Panel", cat: "web", desc: "Bulk SMS marketing tool.", goal: "Marketing automation for clients.", link: "https://noorgee.com/sms", tech: "API, PHP", media: "https://via.placeholder.com/400x250?text=SMS+Panel", type: "img" },
+    { id: 10, title: "LMS NoorGee", cat: "web", desc: "Learning Management System.", goal: "Selling AI courses online.", link: "https://lms.noorgee.com", tech: "LMS, WordPress", media: "https://via.placeholder.com/400x250?text=LMS", type: "img" },
+    { id: 11, title: "Tools NoorGee", cat: "web", desc: "Useful web utility tools.", goal: "SEO and utility for developers.", link: "https://tools.noorgee.com", tech: "JS, Tools", media: "https://via.placeholder.com/400x250?text=Tools", type: "img" },
+    { id: 12, title: "SaaS NoorGee", cat: "web", desc: "Software as a service hub.", goal: "Cloud based application solutions.", link: "https://saas.noorgee.com", tech: "SaaS, Cloud", media: "https://via.placeholder.com/400x250?text=SaaS", type: "img" },
+    { id: 13, title: "Digital Marketing Portal", cat: "web", desc: "SEO & Ads management page.", goal: "Ranking services for clients.", link: "https://noorgee.pk/marketing", tech: "SEO, Ads", media: "https://via.placeholder.com/400x250?text=Marketing", type: "img" },
+
+    // Category B: AI & Automation
+    { id: 14, title: "AI Image & Post Gen", cat: "ai", desc: "Creative AI posters.", goal: "Social media visual automation.", link: "#", tech: "Stable Diffusion, Midjourney", media: "https://via.placeholder.com/400x250?text=AI+Posts", type: "img" },
+    { id: 15, title: "AI Urdu Chatbot", cat: "ai", desc: "Customer support in Urdu.", goal: "Automated local support.", link: "#", tech: "GPT-4, Urdu NLP", media: "https://via.placeholder.com/400x250?text=Urdu+Bot", type: "img" },
+    { id: 16, title: "Bad vs Good Prompt", cat: "ai", desc: "AI prompting visualization.", goal: "Training on AI interaction.", link: "#", tech: "Prompt Eng", media: "/home/noorgeec/noorgee.pk/Web/img/Bad Prompt vs. Good Prompt.mp4", type: "video" },
+    { id: 17, title: "NG Leather UGC", cat: "ai", desc: "Product presentation via AI.", goal: "Commercial bag presentation.", link: "#", tech: "Character Swap AI", media: "/home/noorgeec/noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4", type: "video" },
+    { id: 18, title: "Kangaroo Bag Play", cat: "ai", desc: "AI video generation.", goal: "Creative product marketing.", link: "#", tech: "Sora/Kling AI", media: "/home/noorgeec/noorgee.pk/Web/img/kangaroo ng bag_playing_202508300730_ql3s0.mp4", type: "video" },
+    { id: 19, title: "Stylish Avatar Gen", cat: "ai", desc: "New Year avatar project.", goal: "Advanced image generation.", link: "#", tech: "Flux/DALL-E", media: "/home/noorgeec/noorgee.pk/Web/img/ig ng new yer.png", type: "img" },
+    { id: 20, title: "Kids Education Poster", cat: "ai", desc: "Infographic about moral edu.", goal: "Educational roadmaps.", link: "#", tech: "Canva AI", media: "/home/noorgeec/noorgee.pk/Web/img/kids infogrph ur.png", type: "img" },
+    { id: 21, title: "E-com Banner Gen", cat: "ai", desc: "Brown environment product banner.", goal: "Image & Banner design.", link: "#", tech: "Gen AI", media: "/home/noorgeec/noorgee.pk/Web/img/us-ng-ecomerce.jpg", type: "img" },
+    { id: 22, title: "Blog NoorGee Com", cat: "ai", desc: "English AI blog writing.", goal: "Writing automation.", link: "https://blog.noorgee.com", tech: "Automation", media: "https://via.placeholder.com/400x250?text=Eng+Blog", type: "img" },
+    { id: 23, title: "Blog NoorGee Pk", cat: "ai", desc: "Urdu AI blog writing.", goal: "Auto Urdu content.", link: "https://blog.noorgee.pk", tech: "Urdu AI", media: "https://via.placeholder.com/400x250?text=Urdu+Blog", type: "img" },
+    { id: 24, title: "Social Media Automation", cat: "ai", desc: "Zapier/Python automation.", goal: "Auto posting for clients.", link: "#", tech: "Zapier, API", media: "https://via.placeholder.com/400x250?text=Automation", type: "img" },
+    { id: 25, title: "Custom AI Assistant", cat: "ai", desc: "Personalized GPT for business.", goal: "Data analysis automation.", link: "#", tech: "LangChain", media: "https://via.placeholder.com/400x250?text=AI+Assistant", type: "img" }
+];
+
+const container = document.getElementById('masterpiece-container');
+const toggleBtn = document.getElementById('toggle-btn');
+const grid = document.getElementById('portfolio-grid');
+
+toggleBtn.onclick = () => {
+    container.classList.toggle('masterpiece-show');
+    const isOpen = container.classList.contains('masterpiece-show');
+    toggleBtn.innerHTML = isOpen ? 
+        '<span><i class="fas fa-door-closed mr-2"></i> Close Masterpieces</span>' : 
+        '<span><i class="fas fa-door-open mr-2"></i> Explore All 25 Masterpieces</span>';
+    if(isOpen) renderItems('all');
+};
+
+function renderItems(filter) {
+    grid.innerHTML = '';
+    const items = filter === 'all' ? fullPortfolio : fullPortfolio.filter(x => x.cat === filter);
+    
+    items.forEach(item => {
+        const card = `
+            <div class="portfolio-card rounded-2xl overflow-hidden group">
+                <div class="h-52 bg-black relative overflow-hidden">
+                    ${item.type === 'video' ? 
+                        `<video src="${item.media}" class="w-full h-full object-cover" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` :
+                        `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">`
+                    }
+                    <div class="absolute top-3 right-3 bg-blue-600 text-[10px] px-2 py-1 rounded shadow-lg uppercase font-bold">${item.cat}</div>
+                </div>
+                <div class="p-6 text-left">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-blue-400 transition">${item.title}</h3>
+                    <p class="text-gray-400 text-sm mb-4 h-12 overflow-hidden">${item.desc}</p>
+                    <div class="mb-4">
+                        ${item.tech.split(',').map(t => `<span class="tech-tag">${t.trim()}</span>`).join('')}
+                    </div>
+                    <a href="${item.link}" target="_blank" class="inline-block text-blue-500 font-bold text-sm hover:translate-x-2 transition">View Details →</a>
+                </div>
+            </div>
+        `;
+        grid.innerHTML += card;
+    });
+}
+
+function filterItems(cat) {
+    // Update active tab style
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('bg-blue-600'));
+    event.target.classList.add('bg-blue-600');
+    renderItems(cat);
+}
+        <!-- Gallary Portfolio: Script end -->
+
+
+
+
+        
     </script>
 </body>
 </html>
