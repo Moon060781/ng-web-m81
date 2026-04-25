@@ -1,0 +1,45 @@
+GITHUB PAGES DEPLOYMENT SETUP
+==============================
+
+1. ENABLE GITHUB PAGES
+   - Go to Repository Settings
+   - Navigate to Pages section
+   - Select "Deploy from a branch"
+   - Choose "main" branch and "/" (root) folder
+   - Click Save
+
+2. DEPLOYMENT URL
+   https://moon060781-bot.github.io/ng-web-m81
+
+3. FEATURES INCLUDED
+   - Our Masterpieces Portfolio Section
+   - GSAP Sliding-Door Animation
+   - Responsive 3-Column Grid
+   - Interactive Project Modals
+   - Lazy-Loaded Media
+   - Category Filtering
+   - Bilingual Support (English & Urdu)
+
+4. FILES ADDED
+   - index.html (updated with Masterpieces component)
+   - masterpieces.html (standalone version)
+   - MASTERPIECES_GUIDE.md (integration guide)
+   - _config.yml (GitHub Pages config)
+   - .nojekyll (disables Jekyll)
+   - GITHUB_PAGES_SETUP.txt (this file)
+
+5. CUSTOMIZATION
+   Edit the masterpiecesProjects array in index.html to add your projects
+
+6. BROWSER SUPPORT
+   Chrome, Firefox, Safari, Edge (latest versions)
+   Mobile browsers (iOS Safari, Chrome Mobile)
+
+7. PERFORMANCE
+   - All assets are lazy-loaded
+   - Images and videos are optimized
+   - GSAP animations are smooth and efficient
+   - CDN-hosted dependencies
+
+8. SUPPORT
+   See MASTERPIECES_GUIDE.md for detailed integration instructions

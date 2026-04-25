@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Masterpieces - Portfolio Section</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --blue-900: #1e3a8a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eff6ff 100%);
+            color: var(--slate-900);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* ========================================
+           MASTERPIECES CONTAINER
+           ======================================== */
+
+        .masterpieces-container {
+            width: 100%;
+            margin: 4rem 0;
+            padding: 0 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .masterpieces-container {
+                margin: 6rem 0;
+                padding: 0 2rem;
+            }
+        }
+
+        /* ========================================
+           HEADER - SLIDING DOORS
+           ======================================== */
+
+        .masterpieces-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            height: 200px;
+        }
+
+        @media (min-width: 768px) {
+            .masterpieces-header {
+                height: 280px;
+            }
+        }
+
+        .door {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .door::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        .door-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .door-left {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-right: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .door-right {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-left: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .masterpieces-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: -0.02em;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            .masterpieces-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* ========================================
+           EXPLORE BUTTON
+           ======================================== */
+
+        .explore-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.75rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .explore-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .button-arrow {
+            transition: transform 0.3s ease;
+            stroke-width: 2.5;
+        }
+
+        .explore-button:hover .button-arrow {
+            transform: translateX(4px);
+        }
+
+        /* ========================================
+           EXPANDED CONTENT
+           ======================================== */
+
+        .masterpieces-content {
+            margin-top: 3rem;
+        }
+
+        .masterpieces-content.hidden {
+            display: none;
+        }
+
+        /* ========================================
+           CATEGORY TABS
+           ======================================== */
+
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--slate-600);
+            border: 2px solid var(--slate-300);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab:hover {
+            border-color: var(--blue-500);
+            color: var(--blue-600);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* ========================================
+           PORTFOLIO GRID
+           ======================================== */
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (min-width: 768px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2.5rem;
+            }
+        }
+
+        /* ========================================
+           PORTFOLIO ITEM
+           ======================================== */
+
+        .portfolio-item {
+            cursor: pointer;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(0);
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .portfolio-media {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%;
+            overflow: hidden;
+            background: var(--slate-200);
+        }
+
+        .media-image,
+        .media-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-item:hover .media-image,
+        .portfolio-item:hover .media-video {
+            transform: scale(1.05);
+        }
+
+        .media-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-item:hover .media-overlay {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .play-icon {
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            width: 48px;
+            height: 48px;
+        }
+
+        .portfolio-item:hover .play-icon {
+            opacity: 1;
+        }
+
+        .portfolio-info {
+            padding: 1.5rem;
+        }
+
+        .portfolio-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin: 0 0 0.5rem 0;
+            line-height: 1.3;
+        }
+
+        .portfolio-category {
+            font-size: 0.875rem;
+            color: var(--blue-600);
+            font-weight: 600;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ========================================
+           CLOSE BUTTON
+           ======================================== */
+
+        .close-gallery-button {
+            display: block;
+            margin: 2rem auto 0;
+            padding: 0.875rem 2rem;
+            background: transparent;
+            color: var(--slate-600);
+            border: 2px solid var(--slate-300);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .close-gallery-button:hover {
+            border-color: var(--slate-600);
+            color: var(--slate-900);
+            background: var(--slate-50);
+        }
+
+        /* ========================================
+           MODAL
+           ======================================== */
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-backdrop.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1.5rem;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 767px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .modal-close-button {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--slate-900);
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 1.5rem;
+        }
+
+        .modal-close-button:hover {
+            background: white;
+            transform: rotate(90deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-media {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            background: var(--slate-100);
+            overflow: hidden;
+            border-radius: 1.5rem 0 0 1.5rem;
+        }
+
+        @media (max-width: 767px) {
+            .modal-media {
+                border-radius: 1.5rem 1.5rem 0 0;
+                min-height: 300px;
+            }
+        }
+
+        .modal-image,
+        .modal-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .modal-info {
+                padding: 2.5rem;
+            }
+        }
+
+        .modal-title {
+            font-size: 1.875rem;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .modal-description {
+            font-size: 1rem;
+            color: var(--slate-600);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .modal-section {
+            border-top: 2px solid var(--slate-200);
+            padding-top: 1.5rem;
+        }
+
+        .modal-section-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--blue-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0 0 0.75rem 0;
+        }
+
+        .modal-section-content {
+            font-size: 0.95rem;
+            color: var(--slate-600);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+            color: var(--blue-700);
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .live-preview-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.75rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            font-family: 'Inter', sans-serif;
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        .live-preview-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        @media (max-width: 640px) {
+            .masterpieces-title {
+                font-size: 1.5rem;
+            }
+
+            .explore-button {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-info {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="masterpieces-container">
+            <!-- Collapsed State - Sliding Doors -->
+            <div class="masterpieces-header" id="masterpiecesHeader">
+                <!-- Left Door -->
+                <div class="door door-left" id="doorLeft">
+                    <div class="door-content">
+                        <h2 class="masterpieces-title">Our Masterpieces</h2>
+                    </div>
+                </div>
+
+                <!-- Right Door -->
+                <div class="door door-right" id="doorRight">
+                    <div class="door-content">
+                        <button class="explore-button" id="exploreBtn">
+                            <span>Explore Our Work</span>
+                            <svg class="button-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 10h10M15 10l-3-3M15 10l-3 3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expanded State - Gallery Grid -->
+            <div class="masterpieces-content hidden" id="masterpiecesContent">
+                <!-- Category Tabs -->
+                <div class="category-tabs">
+                    <button class="tab active" data-category="web">Web & Hosting</button>
+                    <button class="tab" data-category="ai">AI & Automation</button>
+                </div>
+
+                <!-- Portfolio Grid -->
+                <div class="portfolio-grid" id="portfolioGrid"></div>
+
+                <!-- Close Button -->
+                <button class="close-gallery-button" id="closeGalleryBtn">Close Gallery</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Backdrop -->
+    <div class="modal-backdrop hidden" id="modalBackdrop">
+        <div class="modal-content" id="modalContent">
+            <button class="modal-close-button" id="modalCloseBtn">✕</button>
+        </div>
+    </div>
+
+    <script>
+        // Portfolio Data
+        const portfolioProjects = [
+            {
+                id: 'web-1',
+                titleEn: 'Noorgee Main Site',
+                categoryEn: 'Web & Hosting',
+                descriptionEn: 'Premium portfolio and business showcase for Noorgee brand',
+                goalsEn: 'Establish professional online presence with SEO optimization and fast loading',
+                techStack: ['React', 'Tailwind CSS', 'Node.js', 'MongoDB'],
+                mediaType: 'image',
+                mediaUrl: 'https://via.placeholder.com/400x300?text=Noorgee+Main+Site',
+                liveLink: 'https://noorgee.pk',
+                category: 'web',
+            },
+            {
+                id: 'web-2',
+                titleEn: 'US Ecommerce Platform',
+                categoryEn: 'Web & Hosting',
+                descriptionEn: 'Full-featured ecommerce store for US market with payment integration',
+                goalsEn: 'Drive online sales with secure checkout and inventory management',
+                techStack: ['Next.js', 'Stripe', 'PostgreSQL', 'Redis'],
+                mediaType: 'image',
+                mediaUrl: 'https://via.placeholder.com/400x300?text=US+Ecommerce',
+                liveLink: 'https://us.noorgee.com',
+                category: 'web',
+            },
+            {
+                id: 'ai-1',
+                titleEn: 'AI Image Generation',
+                categoryEn: 'AI & Automation',
+                descriptionEn: 'Advanced AI image generation for product visualization and marketing',
+                goalsEn: 'Generate high-quality product images and marketing visuals instantly',
+                techStack: ['Stable Diffusion', 'Python', 'FastAPI', 'CUDA'],
+                mediaType: 'image',
+                mediaUrl: 'https://via.placeholder.com/400x300?text=AI+Image+Gen',
+                category: 'ai',
+            },
+            {
+                id: 'ai-2',
+                titleEn: 'UGC Video Production',
+                categoryEn: 'AI & Automation',
+                descriptionEn: 'AI-powered user-generated content videos for product marketing',
+                goalsEn: 'Create authentic product demonstrations with AI avatars',
+                techStack: ['D-ID', 'RunwayML', 'FFmpeg', 'Node.js'],
+                mediaType: 'video',
+                mediaUrl: 'https://via.placeholder.com/400x300?text=UGC+Video',
+                category: 'ai',
+            },
+        ];
+
+        let isExpanded = false;
+        let activeCategory = 'web';
+
+        // DOM Elements
+        const exploreBtn = document.getElementById('exploreBtn');
+        const closeGalleryBtn = document.getElementById('closeGalleryBtn');
+        const masterpiecesContent = document.getElementById('masterpiecesContent');
+        const portfolioGrid = document.getElementById('portfolioGrid');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const modalContent = document.getElementById('modalContent');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const doorLeft = document.getElementById('doorLeft');
+        const doorRight = document.getElementById('doorRight');
+        const categoryTabs = document.querySelectorAll('.tab');
+
+        // Toggle Gallery
+        exploreBtn.addEventListener('click', toggleGallery);
+        closeGalleryBtn.addEventListener('click', toggleGallery);
+
+        function toggleGallery() {
+            isExpanded = !isExpanded;
+
+            if (isExpanded) {
+                // Opening animation
+                gsap.to(doorLeft, {
+                    x: -50,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: 'power2.inOut',
+                });
+
+                gsap.to(doorRight, {
+                    x: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: 'power2.inOut',
+                });
+
+                masterpiecesContent.classList.remove('hidden');
+                gsap.to(masterpiecesContent, {
+                    opacity: 1,
+                    duration: 0.8,
+                    delay: 0.2,
+                    ease: 'power2.inOut',
+                });
+
+                renderPortfolio();
+                animateGridItems();
+            } else {
+                // Closing animation
+                gsap.to(doorLeft, {
+                    x: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power2.inOut',
+                });
+
+                gsap.to(doorRight, {
+                    x: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power2.inOut',
+                });
+
+                gsap.to(masterpiecesContent, {
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'power2.inOut',
+                    onComplete: () => {
+                        masterpiecesContent.classList.add('hidden');
+                    },
+                });
+            }
+        }
+
+        // Category Filtering
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                activeCategory = e.target.dataset.category;
+                renderPortfolio();
+                animateGridItems();
+            });
+        });
+
+        // Render Portfolio Grid
+        function renderPortfolio() {
+            const filtered = portfolioProjects.filter(p => p.category === activeCategory);
+            portfolioGrid.innerHTML = filtered.map(project => `
+                <div class="portfolio-item" onclick="openModal('${project.id}')">
+                    <div class="portfolio-media">
+                        ${project.mediaType === 'image'
+                            ? `<img src="${project.mediaUrl}" alt="${project.titleEn}" loading="lazy" class="media-image">`
+                            : `<video src="${project.mediaUrl}" class="media-video" muted loop></video>`
+                        }
+                        <div class="media-overlay">
+                            ${project.mediaType === 'video'
+                                ? `<svg class="play-icon" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>`
+                                : ''
+                            }
+                        </div>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">${project.titleEn}</h3>
+                        <p class="portfolio-category">${project.categoryEn}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Animate Grid Items
+        function animateGridItems() {
+            const items = document.querySelectorAll('.portfolio-item');
+            gsap.fromTo(
+                items,
+                { opacity: 0, y: 20 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    ease: 'power2.out',
+                    delay: 0.4,
+                }
+            );
+        }
+
+        // Modal Functions
+        function openModal(projectId) {
+            const project = portfolioProjects.find(p => p.id === projectId);
+            if (!project) return;
+
+            const modalHTML = `
+                <button class="modal-close-button" onclick="closeModal()">✕</button>
+                <div class="modal-media">
+                    ${project.mediaType === 'image'
+                        ? `<img src="${project.mediaUrl}" alt="${project.titleEn}" class="modal-image">`
+                        : `<video src="${project.mediaUrl}" controls class="modal-video" autoplay muted></video>`
+                    }
+                </div>
+                <div class="modal-info">
+                    <h2 class="modal-title">${project.titleEn}</h2>
+                    <p class="modal-description">${project.descriptionEn}</p>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Project Goals</h3>
+                        <p class="modal-section-content">${project.goalsEn}</p>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Technologies Used</h3>
+                        <div class="tech-badges">
+                            ${project.techStack.map(tech => `<span class="tech-badge">${tech}</span>`).join('')}
+                        </div>
+                    </div>
+                    ${project.liveLink ? `
+                        <a href="${project.liveLink}" target="_blank" rel="noopener noreferrer" class="live-preview-button">
+                            <span>View Live</span>
+                        </a>
+                    ` : ''}
+                </div>
+            `;
+
+            modalContent.innerHTML = modalHTML;
+            modalBackdrop.classList.remove('hidden');
+
+            gsap.fromTo(
+                modalContent,
+                { opacity: 0, scale: 0.95 },
+                { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out' }
+            );
+
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modalBackdrop.classList.add('hidden');
+            document.body.style.overflow = 'unset';
+        }
+
+        // Close modal on backdrop click
+        modalBackdrop.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop) closeModal();
+        });
+
+        // Initial render
+        renderPortfolio();
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# GitHub Pages Configuration
+title: NoorGee WebMaster - Premium Web Solutions
+description: Leading web developer specializing in eCommerce, AI automation, and custom PHP solutions
+url: https://moon060781-bot.github.io/ng-web-m81
+baseurl: /ng-web-m81
+theme: null
+plugins: []
+markdown: kramdown
