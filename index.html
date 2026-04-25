@@ -1379,11 +1379,157 @@
                 closeGalleryOverlay();
             }
         });
-    </script>
-</body>
+
         // Masterpieces Component Integration
         const masterpiecesProjects = [
-            { id: "web-1", titleEn: "Noorgee Main Site", categoryEn: "Web & Hosting", descriptionEn: "Premium portfolio and business showcase", goalsEn: "Establish professional online presence with SEO optimization", techStack: ["React", "Tailwind CSS", "Node.js", "MongoDB"], mediaType: "image", mediaUrl: "https://noorgee.pk/Web/img/portfolio ng pk 02.gif", liveLink: "https://noorgee.pk", category: "web" }
+            { id: 'web-1', titleEn: 'Noorgee Main Site', categoryEn: 'Web & Hosting', descriptionEn: 'Premium portfolio and business showcase', goalsEn: 'Establish professional online presence with SEO optimization', techStack: ['React', 'Tailwind CSS', 'Node.js', 'MongoDB'], mediaType: 'image', mediaUrl: 'https://noorgee.pk/Web/img/portfolio ng pk 02.gif', liveLink: 'https://noorgee.pk', category: 'web' },
+            { id: 'web-2', titleEn: 'US Ecommerce Platform', categoryEn: 'Web & Hosting', descriptionEn: 'Full-featured ecommerce store for US market', goalsEn: 'Drive online sales with secure checkout and inventory management', techStack: ['Next.js', 'Stripe', 'PostgreSQL', 'Redis'], mediaType: 'image', mediaUrl: 'https://noorgee.pk/Web/img/us-ng-ecomerce.jpg', liveLink: 'https://us.noorgee.com', category: 'web' },
+            { id: 'ai-1', titleEn: 'AI Image Generation', categoryEn: 'AI & Automation', descriptionEn: 'Advanced AI image generation for product visualization', goalsEn: 'Generate high-quality product images and marketing visuals instantly', techStack: ['Stable Diffusion', 'Python', 'FastAPI', 'CUDA'], mediaType: 'image', mediaUrl: 'https://noorgee.pk/Web/img/NoorGee Logo 1756693576 (1).jpg', category: 'ai' },
+            { id: 'ai-2', titleEn: 'UGC Video Production', categoryEn: 'AI & Automation', descriptionEn: 'AI-powered user-generated content videos', goalsEn: 'Create authentic product demonstrations with AI avatars', techStack: ['D-ID', 'RunwayML', 'FFmpeg', 'Node.js'], mediaType: 'video', mediaUrl: 'https://noorgee.pk/Web/img/kangaroo ng bag_playing_202508300730_ql3s0.mp4', category: 'ai' }
         ];
-        document.addEventListener("DOMContentLoaded", () => { if (document.getElementById("masterpieces-root")) { initMasterpieces(); } });
+
+        let masterpiecesExpanded = false;
+        let masterpiecesActiveCategory = 'web';
+
+        function initMasterpieces() {
+            const root = document.getElementById('masterpieces-root');
+            if (!root) return;
+            
+            root.innerHTML = `
+                <div class="masterpieces-container">
+                    <div class="masterpieces-header" id="masterpiecesHeader">
+                        <div class="door door-left" id="doorLeft">
+                            <div class="door-content">
+                                <h2 class="masterpieces-title">Our Masterpieces</h2>
+                            </div>
+                        </div>
+                        <div class="door door-right" id="doorRight">
+                            <div class="door-content">
+                                <button class="explore-button" id="exploreBtn">
+                                    <span>Explore Our Work</span>
+                                    <svg class="button-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 10h10M15 10l-3-3M15 10l-3 3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="masterpieces-content hidden" id="masterpiecesContent">
+                        <div class="category-tabs">
+                            <button class="tab active" data-category="web">Web & Hosting</button>
+                            <button class="tab" data-category="ai">AI & Automation</button>
+                        </div>
+                        <div class="portfolio-grid" id="portfolioGrid"></div>
+                        <button class="close-gallery-button" id="closeGalleryBtn">Close Gallery</button>
+                    </div>
+                </div>
+            `;
+
+            const exploreBtn = document.getElementById('exploreBtn');
+            const closeGalleryBtn = document.getElementById('closeGalleryBtn');
+            const masterpiecesContent = document.getElementById('masterpiecesContent');
+            const portfolioGrid = document.getElementById('portfolioGrid');
+            const doorLeft = document.getElementById('doorLeft');
+            const doorRight = document.getElementById('doorRight');
+            const categoryTabs = document.querySelectorAll('.tab');
+
+            exploreBtn.addEventListener('click', toggleMasterpiecesGallery);
+            closeGalleryBtn.addEventListener('click', toggleMasterpiecesGallery);
+
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    masterpiecesActiveCategory = e.target.dataset.category;
+                    renderMasterpiecesPortfolio();
+                    animateMasterpiecesGridItems();
+                });
+            });
+
+            function toggleMasterpiecesGallery() {
+                masterpiecesExpanded = !masterpiecesExpanded;
+                if (masterpiecesExpanded) {
+                    gsap.to(doorLeft, { x: -50, opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+                    gsap.to(doorRight, { x: 50, opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+                    masterpiecesContent.classList.remove('hidden');
+                    gsap.to(masterpiecesContent, { opacity: 1, duration: 0.8, delay: 0.2, ease: 'power2.inOut' });
+                    renderMasterpiecesPortfolio();
+                    animateMasterpiecesGridItems();
+                } else {
+                    gsap.to(doorLeft, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.inOut' });
+                    gsap.to(doorRight, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.inOut' });
+                    gsap.to(masterpiecesContent, { opacity: 0, duration: 0.6, ease: 'power2.inOut', onComplete: () => { masterpiecesContent.classList.add('hidden'); } });
+                }
+            }
+
+            function renderMasterpiecesPortfolio() {
+                const filtered = masterpiecesProjects.filter(p => p.category === masterpiecesActiveCategory);
+                portfolioGrid.innerHTML = filtered.map(project => `
+                    <div class="portfolio-item" onclick="openMasterpiecesModal('${project.id}')">
+                        <div class="portfolio-media">
+                            ${project.mediaType === 'image' ? `<img src="${project.mediaUrl}" alt="${project.titleEn}" loading="lazy" class="media-image">` : `<video src="${project.mediaUrl}" class="media-video" muted loop></video>`}
+                            <div class="media-overlay">
+                                ${project.mediaType === 'video' ? `<svg class="play-icon" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>` : ''}
+                            </div>
+                        </div>
+                        <div class="portfolio-info">
+                            <h3 class="portfolio-title">${project.titleEn}</h3>
+                            <p class="portfolio-category">${project.categoryEn}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function animateMasterpiecesGridItems() {
+                const items = document.querySelectorAll('.portfolio-item');
+                gsap.fromTo(items, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out', delay: 0.4 });
+            }
+        }
+
+        window.openMasterpiecesModal = function(projectId) {
+            const project = masterpiecesProjects.find(p => p.id === projectId);
+            if (!project) return;
+            const modal = document.getElementById('portfolio-modal');
+            modal.innerHTML = `
+                <div class="modal-overlay-p" onclick="closeMasterpiecesModal()"></div>
+                <div class="modal-content-p">
+                    <button class="modal-close-p" onclick="closeMasterpiecesModal()">✕</button>
+                    <div class="modal-body-p">
+                        <div class="modal-media-p">
+                            ${project.mediaType === 'image' ? `<img src="${project.mediaUrl}" alt="${project.titleEn}" class="modal-image-p">` : `<video src="${project.mediaUrl}" controls class="modal-video-p" autoplay muted></video>`}
+                        </div>
+                        <div class="modal-info-p">
+                            <h2 class="modal-title-p">${project.titleEn}</h2>
+                            <p class="modal-description-p">${project.descriptionEn}</p>
+                            <div class="modal-section-p">
+                                <h3 class="modal-section-title-p">Project Goals</h3>
+                                <p class="modal-section-content-p">${project.goalsEn}</p>
+                            </div>
+                            <div class="modal-section-p">
+                                <h3 class="modal-section-title-p">Technologies Used</h3>
+                                <div class="tech-badges-p">
+                                    ${project.techStack.map(tech => `<span class="tech-badge-p">${tech}</span>`).join('')}
+                                </div>
+                            </div>
+                            ${project.liveLink ? `<a href="${project.liveLink}" target="_blank" rel="noopener noreferrer" class="live-preview-button-p">View Live <i data-lucide="external-link" class="w-4 h-4"></i></a>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        };
+
+        window.closeMasterpiecesModal = function() {
+            const modal = document.getElementById('portfolio-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMasterpieces();
+        });
+    </script>
+</body>
 </html>
