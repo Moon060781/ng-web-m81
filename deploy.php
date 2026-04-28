@@ -81,8 +81,8 @@ if ($is_authenticated && isset($_POST['action'])) {
 $commit_history = [];
 if ($is_authenticated) {
     $delimiter = "|||";
-    // Format: Hash | Subject | Date | Body
-    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%ad$delimiter%b' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null");
+    // Format: Hash | Subject | Date | Body | UnixTimestamp
+    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%ad$delimiter%b$delimiter%at' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null");
     if ($history_raw) {
         foreach (explode("\n", trim($history_raw)) as $line) {
             if (empty($line)) continue;
@@ -91,13 +91,31 @@ if ($is_authenticated) {
                 'hash' => $parts[0] ?? '',
                 'subject' => $parts[1] ?? '',
                 'date' => $parts[2] ?? '',
-                'body' => trim($parts[3] ?? '')
+                'body' => trim($parts[3] ?? ''),
+                'timestamp' => $parts[4] ?? 0
             ];
         }
     }
 }
 $last_commit_title = $commit_history[0]['subject'] ?? "";
 $last_commit_desc = $commit_history[0]['body'] ?? "";
+$last_commit_time = $commit_history[0]['timestamp'] ?? 0;
+
+// Status logic: Check if local matches remote
+$status_message = "Unknown";
+$status_color = "text-slate-400";
+if ($is_authenticated) {
+    shell_exec("git fetch origin 2>/dev/null");
+    $local_hash = trim(shell_exec("git rev-parse HEAD 2>/dev/null"));
+    $remote_hash = trim(shell_exec("git rev-parse origin/$TARGET_BRANCH 2>/dev/null"));
+    if ($local_hash === $remote_hash) {
+        $status_message = "Applied";
+        $status_color = "text-green-400";
+    } else {
+        $status_message = "Pending / Not Applied";
+        $status_color = "text-orange-400";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,9 +146,13 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
                 <div class="flex gap-3 text-[11px] font-bold">
                     <a href="index.html" class="text-slate-400 hover:text-blue-400"><i class="fas fa-home mr-1"></i>Home</a>
                     <a href="send_message.php" class="text-slate-400 hover:text-blue-400"><i class="fas fa-envelope mr-1"></i>Message</a>
+                    <button onclick="location.reload()" class="text-slate-400 hover:text-blue-400"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>
                 </div>
             </div>
-            <div class="text-[10px] uppercase tracking-wider text-slate-400">Branch: <span class="text-white font-mono"><?php echo $TARGET_BRANCH; ?></span></div>
+            <div class="flex items-center gap-4">
+                <div class="text-[10px] uppercase tracking-wider text-slate-400">Status: <span class="font-mono <?php echo $status_color; ?>"><?php echo $status_message; ?></span></div>
+                <div class="text-[10px] uppercase tracking-wider text-slate-400">Branch: <span class="text-white font-mono"><?php echo $TARGET_BRANCH; ?></span></div>
+            </div>
         </div>
 
         <?php if (!$is_authenticated): ?>
@@ -192,14 +214,17 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
                 <div class="col-span-7 space-y-3">
                     <form method="POST" class="space-y-2">
                         <input type="hidden" name="action" value="push">
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-1 gap-2">
                             <div class="space-y-1">
-                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Commit Highlight</label>
-                                <input type="text" name="commit_msg" value="<?php echo htmlspecialchars($last_commit_title); ?>" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500">
+                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1 flex justify-between">
+                                    <span>Commit Highlight</span>
+                                    <span id="time-remaining" class="text-slate-500 lowercase font-normal"></span>
+                                </label>
+                                <textarea name="commit_msg" rows="2" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_title); ?></textarea>
                             </div>
                             <div class="space-y-1">
                                 <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Extended Description</label>
-                                <input type="text" name="commit_desc" value="<?php echo htmlspecialchars($last_commit_desc); ?>" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500">
+                                <textarea name="commit_desc" rows="10" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
                             </div>
                         </div>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
@@ -223,5 +248,24 @@ $last_commit_desc = $commit_history[0]['body'] ?? "";
             </div>
         <?php endif; ?>
     </div>
+    <script>
+        const lastUpdate = <?php echo $last_commit_time; ?>;
+        function updateTime() {
+            if (!lastUpdate) return;
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - lastUpdate;
+            
+            let timeStr = "";
+            if (diff < 60) timeStr = diff + "s ago";
+            else if (diff < 3600) timeStr = Math.floor(diff / 60) + "m ago";
+            else if (diff < 86400) timeStr = Math.floor(diff / 3600) + "h ago";
+            else timeStr = Math.floor(diff / 86400) + "d ago";
+            
+            const el = document.getElementById('time-remaining');
+            if (el) el.innerText = "Last update: " + timeStr;
+        }
+        setInterval(updateTime, 10000);
+        updateTime();
+    </script>
 </body>
 </html>
