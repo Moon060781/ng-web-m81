@@ -247,6 +247,78 @@
             background-color: var(--brand-brown);
             color: white;
         }
+
+        /* New Tabbed Sidebar Layout */
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-height: 600px;
+        }
+        @media (min-width: 1024px) {
+            .gallery-container {
+                flex-direction: row;
+            }
+        }
+        .sidebar {
+            width: 100%;
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--soft-shadow);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        @media (min-width: 1024px) {
+            .sidebar {
+                width: 300px;
+                position: sticky;
+                top: 100px;
+            }
+        }
+        .sidebar-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .sidebar-btn:hover {
+            background: #f8fafc;
+            color: var(--brand-brown);
+        }
+        .sidebar-btn.active {
+            background: #fdf2f2;
+            color: var(--brand-brown);
+            border-color: #fee2e2;
+        }
+        .main-gallery {
+            flex: 1;
+        }
+        .tab-line {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+        .tab-item {
+            padding: 0.5rem 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 9999px;
+        }
+        .tab-item.active {
+            background: var(--brand-brown);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -474,18 +546,29 @@
 
             <!-- Integrated Gallery Container -->
             <div id="gallery-wrapper" class="hidden mt-16 opacity-0">
-                <!-- Filters -->
-                <div class="flex flex-wrap justify-center gap-4 mb-12">
-                    <button onclick="filterGallery('all')" class="filter-btn active px-8 py-2.5 rounded-full border border-slate-300 text-sm font-bold text-slate-700 transition-all">All Projects</button>
-                    <button onclick="filterGallery('web')" class="filter-btn px-8 py-2.5 rounded-full border border-slate-300 text-sm font-bold text-slate-700 transition-all">Web & Hosting</button>
-                    <button onclick="filterGallery('ai')" class="filter-btn px-8 py-2.5 rounded-full border border-slate-300 text-sm font-bold text-slate-700 transition-all">AI & Automation</button>
+                <!-- Tab Line -->
+                <div class="tab-line">
+                    <button onclick="switchTab('ai')" id="tab-ai" class="tab-item active">AI Works</button>
+                    <button onclick="switchTab('web')" id="tab-web" class="tab-item">Web Development</button>
                 </div>
 
-                <!-- Grid -->
-                <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Cards will be injected here -->
+                <div class="gallery-container">
+                    <!-- Sidebar -->
+                    <aside class="sidebar">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 px-4">Project List</h3>
+                        <div id="project-sidebar-list">
+                            <!-- Sidebar buttons injected here -->
+                        </div>
+                    </aside>
+
+                    <!-- Main Gallery -->
+                    <div class="main-gallery">
+                        <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Cards will be injected here -->
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>>
         </div>
     </section>
 
@@ -699,7 +782,7 @@
                 gsap.to(galleryWrapper, { opacity: 1, y: 0, duration: 0.8 });
                 toggleBtn.innerHTML = '<span class="relative z-10 flex items-center gap-3"><i class="fas fa-door-closed"></i> گیلری بند کریں</span>';
                 toggleBtn.classList.replace('bg-amber-800', 'bg-red-800');
-                renderItems('all');
+                switchTab('ai');
             } else {
                 gsap.to(galleryWrapper, { opacity: 0, y: 20, duration: 0.5, onComplete: () => {
                     galleryWrapper.classList.add('hidden');
@@ -737,14 +820,40 @@
             });
         }
 
-        function filterGallery(cat) {
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('active', 'text-white');
-                b.classList.add('text-slate-700');
-            });
-            event.target.classList.add('active', 'text-white');
-            event.target.classList.remove('text-slate-700');
+        let currentTab = 'ai';
+
+        function switchTab(cat) {
+            currentTab = cat;
+            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${cat}`).classList.add('active');
+            renderSidebar(cat);
             renderItems(cat);
+        }
+
+        function renderSidebar(cat) {
+            const sidebarList = document.getElementById('project-sidebar-list');
+            sidebarList.innerHTML = '';
+            const filtered = portfolioData.filter(i => i.cat === cat);
+            
+            filtered.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'sidebar-btn';
+                btn.innerHTML = `<i class="fas fa-chevron-right mr-2 text-[10px] opacity-50"></i> ${item.title}`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    openModal(item.id);
+                };
+                sidebarList.appendChild(btn);
+            });
+        }
+
+        // Initialize with AI works
+        renderSidebar('ai');
+        renderItems('ai');
+
+        function filterGallery(cat) {
+            switchTab(cat);
         }
 
         function openModal(id) {
