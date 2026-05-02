@@ -219,16 +219,6 @@
             margin-top: 0.5rem;
             border: 1px solid #eee;
         }
-
-        /* Loading Spinner */
-        #gallery-loader {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-        }
     </style>
 </head>
 <body>
@@ -445,32 +435,14 @@
             <h2 class="text-5xl font-bold mb-4 text-slate-900">Find your inspiration in NG Port Folio</h2>
             <p class="text-gray-500 mb-12">ایکسپلوور کریں ہمارے تمام ویب اور اے آئی پروجیکٹس کا مجموعہ</p>
 
-            <!-- Toggle Button (The Door) -->
-            <button id="toggle-gallery" class="group relative px-12 py-5 bg-amber-800 text-white font-bold rounded-full overflow-hidden transition-all hover:scale-105 shadow-2xl z-20">
-                <span id="btn-text" class="relative z-10 flex items-center gap-3">
+            <!-- Direct Link Button to Masterpieces -->
+            <a href="https://noorgee.pk/Web/masterpieces.html" class="inline-block group relative px-12 py-5 bg-amber-800 text-white font-bold rounded-full overflow-hidden transition-all hover:scale-105 shadow-2xl z-20">
+                <span class="relative z-10 flex items-center gap-3">
                     <i class="fas fa-door-open"></i> تمام 25 پروجیکٹس دیکھیں
                 </span>
-            </button>
+            </a>
         </div>
     </section>
-
-    <!-- Masterpieces Modal Popup -->
-    <div id="gallery-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-10 opacity-0 transition-opacity duration-300">
-        <div class="relative w-full h-full max-w-[90vw] max-h-[90vh] bg-white rounded-[2rem] overflow-hidden shadow-2xl">
-            <!-- Close Button -->
-            <button id="close-gallery" class="absolute top-5 right-5 z-[110] w-12 h-12 bg-amber-800 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 transition-colors">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            
-            <!-- Loader -->
-            <div id="gallery-loader" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-amber-800">
-                <i class="fas fa-circle-notch fa-spin text-5xl"></i>
-            </div>
-            
-            <!-- Iframe Section -->
-            <iframe id="masterpieces-frame" src="" class="w-full h-full border-none opacity-0 transition-opacity duration-500"></iframe>
-        </div>
-    </div>
 
     <!-- Team -->
     <section id="team" class="py-24 bg-white">
@@ -617,54 +589,6 @@
                 const y = (e.clientY / window.innerHeight) * 100;
                 bg.style.setProperty('--x', `${x}%`);
                 bg.style.setProperty('--y', `${y}%`);
-            });
-
-            // Portfolio Modal Logic
-            const modal = document.getElementById('gallery-modal');
-            const galleryLoader = document.getElementById('gallery-loader');
-            const openBtn = document.getElementById('toggle-gallery');
-            const closeBtn = document.getElementById('close-gallery');
-            const iframe = document.getElementById('masterpieces-frame');
-
-            iframe.onload = () => {
-                galleryLoader.style.display = 'none';
-                iframe.style.opacity = '1';
-            };
-
-            const openModal = () => {
-                modal.classList.remove('hidden');
-                galleryLoader.style.display = 'block';
-                iframe.style.opacity = '0';
-                iframe.src = "https://noorgee.pk/Web/masterpieces.html";
-                
-                // Disable scrolling
-                if (lenisInstance) lenisInstance.stop();
-                document.body.style.overflow = 'hidden';
-
-                gsap.to(modal, { opacity: 1, duration: 0.3 });
-            };
-
-            const closeModal = () => {
-                gsap.to(modal, { 
-                    opacity: 0, 
-                    duration: 0.3, 
-                    onComplete: () => {
-                        modal.classList.add('hidden');
-                        iframe.src = ""; // Unload media
-                        
-                        // Re-enable scrolling
-                        if (lenisInstance) lenisInstance.start();
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-            };
-
-            openBtn.addEventListener('click', openModal);
-            closeBtn.addEventListener('click', closeModal);
-
-            // Close modal on background click
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
             });
 
             // Go to Top Button
