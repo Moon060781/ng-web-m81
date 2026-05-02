@@ -81,10 +81,12 @@ if ($is_authenticated && isset($_POST['action'])) {
 $commit_history = [];
 if ($is_authenticated) {
     $delimiter = "|||";
+    $record_delimiter = "===END_COMMIT===";
     // Format: Hash | Subject | Date | Body | UnixTimestamp
-    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%ad$delimiter%b$delimiter%at' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null");
+    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%ad$delimiter%b$delimiter%at$record_delimiter' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null");
     if ($history_raw) {
-        foreach (explode("\n", trim($history_raw)) as $line) {
+        foreach (explode($record_delimiter, trim($history_raw)) as $line) {
+            $line = trim($line);
             if (empty($line)) continue;
             $parts = explode($delimiter, $line);
             $commit_history[] = [
@@ -142,23 +144,23 @@ if ($is_authenticated) {
         <!-- Header & Nav -->
         <div class="flex justify-between items-center border-b border-white/5 pb-2">
             <div class="flex items-center gap-4">
-                <h1 class="text-lg font-bold text-blue-400">NG WebMaster <span class="text-[10px] bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300">DEPLOY</span></h1>
-                <div class="flex gap-3 text-[11px] font-bold">
+                <h1 class="text-xl font-bold text-blue-400">NG WebMaster <span class="text-xs bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300">DEPLOY</span></h1>
+                <div class="flex gap-3 text-sm font-bold">
                     <a href="index.html" class="text-slate-400 hover:text-blue-400"><i class="fas fa-home mr-1"></i>Home</a>
                     <a href="send_message.php" class="text-slate-400 hover:text-blue-400"><i class="fas fa-envelope mr-1"></i>Message</a>
                     <button onclick="location.reload()" class="text-slate-400 hover:text-blue-400"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <div class="text-[10px] uppercase tracking-wider text-slate-400">Status: <span class="font-mono <?php echo $status_color; ?>"><?php echo $status_message; ?></span></div>
-                <div class="text-[10px] uppercase tracking-wider text-slate-400">Branch: <span class="text-white font-mono"><?php echo $TARGET_BRANCH; ?></span></div>
+                <div class="text-xs uppercase tracking-wider text-slate-400">Status: <span class="font-mono <?php echo $status_color; ?>"><?php echo $status_message; ?></span></div>
+                <div class="text-xs uppercase tracking-wider text-slate-400">Branch: <span class="text-white font-mono"><?php echo $TARGET_BRANCH; ?></span></div>
             </div>
         </div>
 
         <?php if (!$is_authenticated): ?>
             <form method="POST" class="py-10 max-w-xs mx-auto w-full space-y-3">
-                <input type="password" name="password" placeholder="Password" class="w-full input-field rounded-lg px-4 py-2 text-center outline-none focus:border-blue-500">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-lg font-bold text-sm">Access</button>
+                <input type="password" name="password" placeholder="Password" class="w-full input-field rounded-lg px-4 py-2 text-center text-sm outline-none focus:border-blue-500">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-lg font-bold text-base">Access</button>
             </form>
         <?php else: ?>
             <div class="grid grid-cols-12 gap-4">
@@ -167,13 +169,13 @@ if ($is_authenticated) {
                     <!-- Pull Actions -->
                     <div class="grid grid-cols-2 gap-2">
                         <form method="POST"><input type="hidden" name="action" value="pull">
-                            <button type="submit" class="w-full py-2 bg-green-600/10 hover:bg-green-600/20 border border-green-600/30 rounded-xl text-[11px] font-bold text-green-400 btn-action">
-                                <i class="fas fa-download mb-1 block text-sm"></i> Pull
+                            <button type="submit" class="w-full py-2 bg-green-600/10 hover:bg-green-600/20 border border-green-600/30 rounded-xl text-xs font-bold text-green-400 btn-action">
+                                <i class="fas fa-download mb-1 block text-base"></i> Pull
                             </button>
                         </form>
                         <form method="POST" onsubmit="return confirm('Force Pull?')"><input type="hidden" name="action" value="force_pull">
-                            <button type="submit" class="w-full py-2 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 rounded-xl text-[11px] font-bold text-blue-400 btn-action">
-                                <i class="fas fa-sync mb-1 block text-sm"></i> Force
+                            <button type="submit" class="w-full py-2 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 rounded-xl text-xs font-bold text-blue-400 btn-action">
+                                <i class="fas fa-sync mb-1 block text-base"></i> Force
                             </button>
                         </form>
                     </div>
@@ -181,14 +183,14 @@ if ($is_authenticated) {
                     <!-- Restore/Revert -->
                     <div class="bg-slate-900/40 border border-slate-700/50 p-3 rounded-xl space-y-2">
                         <div class="flex justify-between items-center">
-                            <span class="text-[10px] font-bold text-blue-400 uppercase">Restore History</span>
+                            <span class="text-xs font-bold text-blue-400 uppercase">Restore History</span>
                             <form method="POST" onsubmit="return confirm('Revert last?')"><input type="hidden" name="action" value="revert_last">
-                                <button type="submit" class="text-[9px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">Revert Last</button>
+                                <button type="submit" class="text-[11px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">Revert Last</button>
                             </form>
                         </div>
                         <form method="POST" class="space-y-2">
                             <input type="hidden" name="action" value="restore_commit">
-                            <select name="commit_hash" class="w-full input-field rounded-lg px-2 py-1.5 text-[10px] outline-none" onchange="document.getElementById('c_desc').innerText = this.options[this.selectedIndex].getAttribute('data-body') || 'No extended description.'">
+                            <select name="commit_hash" class="w-full input-field rounded-lg px-2 py-1.5 text-xs outline-none" onchange="document.getElementById('c_desc').innerText = this.options[this.selectedIndex].getAttribute('data-body') || 'No extended description.'">
                                 <option value="">Select commit...</option>
                                 <?php foreach ($commit_history as $c): ?>
                                     <option value="<?php echo $c['hash']; ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>">
@@ -196,17 +198,17 @@ if ($is_authenticated) {
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <div id="c_desc" class="text-[9px] text-slate-400 italic h-8 overflow-y-auto px-1 leading-tight">Select a commit to see details.</div>
-                            <button type="submit" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 py-1.5 rounded-lg text-[10px] font-bold uppercase border border-blue-500/30">Restore Version</button>
+                            <div id="c_desc" class="text-xs text-slate-400 italic h-20 overflow-y-auto px-1 leading-relaxed whitespace-pre-wrap">Select a commit to see details.</div>
+                            <button type="submit" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 py-2 rounded-lg text-xs font-bold uppercase border border-blue-500/30">Restore Version</button>
                         </form>
                     </div>
 
                     <!-- Footer Links -->
                     <div class="flex gap-2">
                         <form method="POST" onsubmit="return confirm('Undo local?')" class="flex-1"><input type="hidden" name="action" value="undo_local">
-                            <button type="submit" class="w-full bg-red-900/10 hover:bg-red-900/20 border border-red-900/30 py-1.5 rounded-lg text-[10px] text-red-400 font-bold uppercase">Undo Local</button>
+                            <button type="submit" class="w-full bg-red-900/10 hover:bg-red-900/20 border border-red-900/30 py-2 rounded-lg text-xs text-red-400 font-bold uppercase">Undo Local</button>
                         </form>
-                        <a href="?logout=1" class="flex-1 bg-slate-800 hover:bg-slate-700 py-1.5 rounded-lg text-[10px] text-slate-400 font-bold uppercase text-center">Sign Out</a>
+                        <a href="?logout=1" class="flex-1 bg-slate-800 hover:bg-slate-700 py-2 rounded-lg text-xs text-slate-400 font-bold uppercase text-center flex items-center justify-center">Sign Out</a>
                     </div>
                 </div>
 
@@ -216,26 +218,26 @@ if ($is_authenticated) {
                         <input type="hidden" name="action" value="push">
                         <div class="grid grid-cols-1 gap-2">
                             <div class="space-y-1">
-                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1 flex justify-between">
+                                <label class="text-xs font-bold text-blue-400 uppercase ml-1 flex justify-between">
                                     <span>Commit Highlight</span>
                                     <span id="time-remaining" class="text-slate-500 lowercase font-normal"></span>
                                 </label>
-                                <textarea name="commit_msg" rows="2" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_title); ?></textarea>
+                                <textarea name="commit_msg" rows="2" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_title); ?></textarea>
                             </div>
                             <div class="space-y-1">
-                                <label class="text-[9px] font-bold text-blue-400 uppercase ml-1">Extended Description</label>
-                                <textarea name="commit_desc" rows="10" class="w-full input-field rounded-lg px-3 py-1.5 text-[11px] outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
+                                <label class="text-xs font-bold text-blue-400 uppercase ml-1">Extended Description</label>
+                                <textarea name="commit_desc" rows="8" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
                             Push to GitHub <i class="fas fa-cloud-upload-alt"></i>
                         </button>
                     </form>
 
                     <!-- Terminal -->
                     <div class="space-y-1">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase ml-1">Terminal Output</label>
-                        <pre class="terminal-box p-3 rounded-xl text-[10px] font-mono leading-tight whitespace-pre-wrap"><?php 
+                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Terminal Output</label>
+                        <pre class="terminal-box p-3 rounded-xl text-xs font-mono leading-relaxed whitespace-pre-wrap"><?php 
                             if ($output) {
                                 $h = htmlspecialchars($output);
                                 $h = str_ireplace(['error','fatal','aborting'], '<span class="text-red-400">$&</span>', $h);
