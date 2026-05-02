@@ -191,6 +191,84 @@
          JAVASCRIPT LOGIC & DATA
     =========================================== -->
     <script>
+        // --- GEMINI API INTEGRATION SETUP ---
+        const apiKey = ""; // API key is populated securely by the environment at runtime
+
+        async function fetchGeminiContent(prompt, retries = 5) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+            
+            // Exponential backoff strategy
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "No insights generated.";
+                } catch (error) {
+                    if (i === retries) throw error; // If out of retries, bubble up the error
+                    await new Promise(resolve => setTimeout(resolve, delays[i])); // Wait and retry
+                }
+            }
+        }
+
+        // Global function to trigger the AI marketing pitch generation
+        window.generateMarketingPitch = async function(projectId) {
+            const project = portfolioData.find(p => p.id === projectId);
+            if (!project) return;
+            
+            const btn = document.getElementById(`btn-pitch-${projectId}`);
+            const resultContainer = document.getElementById(`pitch-result-${projectId}`);
+            const loadingIndicator = document.getElementById(`pitch-loading-${projectId}`);
+            
+            // Update UI State for Loading
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            resultContainer.classList.add('hidden');
+            loadingIndicator.classList.remove('hidden');
+            
+            const promptContext = `
+                Act as a professional tech and business marketer.
+                Write a highly engaging, 2-sentence elevator pitch and 3 relevant hashtags to promote the following portfolio project on social media platforms like LinkedIn or X (Twitter). Make it sound exciting and professional.
+                
+                Project Title: ${project.title}
+                Project Description: ${project.desc}
+                Primary Goals: ${project.goals}
+            `;
+            
+            try {
+                const responseText = await fetchGeminiContent(promptContext);
+                
+                // Simple parser to make **bold** markdown tags actual HTML bold tags
+                const formattedResponse = responseText
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900">$1</strong>')
+                    .replace(/\n/g, '<br>');
+                    
+                resultContainer.innerHTML = formattedResponse;
+                resultContainer.classList.remove('hidden');
+            } catch (error) {
+                resultContainer.innerHTML = `<span class="text-red-500">Failed to connect to the AI Marketing Assistant. Please try again.</span>`;
+                resultContainer.classList.remove('hidden');
+            } finally {
+                // Restore UI State
+                loadingIndicator.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        };
+
         // 1. Data Extracted from your CSV Spreadsheet
         const portfolioData = [
             // --- WEB PROJECTS (Category A) ---
@@ -200,7 +278,8 @@
                 desc: 'A client offering business growth consultant, audit work, and I.T. solutions like CRM integration and digital audit reports.', 
                 goals: 'Make site to present their works to enterprise industrialists and service providers who are Non-Tech Savvy.', 
                 link: 'https://businessitc.com/', 
-                tech: ['Web Site', 'Business', 'Consultant']
+                tech: ['Web Site', 'Business', 'Consultant'],
+                image: 'https://noorgee.pk/Web/img/bic-screen.gif'
             },
             { 
                 id: 2, category: 'web', 
@@ -216,7 +295,8 @@
                 desc: 'E-commerce store for the United States consumer.', 
                 goals: 'Develop in WordPress WooCommerce for US consumers. Working by dropshipping specially leather products.', 
                 link: 'https://us.noorgee.com', 
-                tech: ['WooCommerce', 'Dropshipping', 'US Market']
+                tech: ['WooCommerce', 'Dropshipping', 'US Market'],
+                image: 'https://noorgee.pk/Web/img/ng-us_claud.gif'
             },
             { 
                 id: 4, category: 'web', 
@@ -240,7 +320,8 @@
                 desc: 'E-commerce store in Pakistan.', 
                 goals: 'Develop in WordPress WooCommerce for Pakistani consumers. Dropshipping household items.', 
                 link: 'https://noorgee.pk', 
-                tech: ['WooCommerce', 'Local Market']
+                tech: ['WooCommerce', 'Local Market'],
+                image: 'https://noorgee.pk/Web/img/ng-pk_claud.gif'
             },
             { 
                 id: 7, category: 'web', 
@@ -264,7 +345,8 @@
                 desc: 'Online gadgets and utility tools.', 
                 goals: 'Provide useful scripts and gadgets for daily online usage.', 
                 link: 'https://it.noorgee.com', 
-                tech: ['Web Tools', 'Utility']
+                tech: ['Web Tools', 'Utility'],
+                image: 'https://noorgee.pk/Web/img/it-ng-site-tool-screen.gif'
             },
             { 
                 id: 10, category: 'web', 
@@ -272,7 +354,8 @@
                 desc: 'Pakistani NGO platform.', 
                 goals: 'Approach local & international donors to support our cause for human helping.', 
                 link: 'https://kwa.com.pk', 
-                tech: ['NGO Site', 'Donations']
+                tech: ['NGO Site', 'Donations'],
+                image: 'https://noorgee.pk/Web/img/kwa-screen.gif'
             },
             { 
                 id: 11, category: 'web', 
@@ -389,7 +472,7 @@
                 itemDiv.className = `list-item p-4 mb-2 rounded-xl cursor-pointer ${index === 0 ? 'active' : ''}`;
                 
                 // Icon selection based on category
-                const icon = category === 'web' ? '🌐' : '✨';
+                const icon = category === 'web' ? '🌐' : '💡';
 
                 itemDiv.innerHTML = `
                     <div class="flex items-start gap-3">
@@ -433,6 +516,16 @@
                 ? 'bg-gradient-to-br from-blue-500 to-indigo-600' 
                 : 'bg-gradient-to-br from-purple-500 to-pink-600';
 
+            // Check if project has a specific image, otherwise use the gradient placeholder
+            const headerGraphicHTML = project.image
+                ? `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-100 flex items-center justify-center">
+                     <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
+                   </div>`
+                : `<div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
+                    <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+                    <span class="text-5xl md:text-7xl font-bold text-white/80 tracking-widest">${initials}</span>
+                </div>`;
+
             // Check if link is valid or just a '#'
             const linkButtonHTML = project.link !== '#' 
                 ? `<a href="${project.link}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-colors shadow-md">
@@ -445,10 +538,7 @@
 
             previewContainer.innerHTML = `
                 <!-- Graphic Header -->
-                <div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
-                    <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-                    <span class="text-5xl md:text-7xl font-bold text-white/80 tracking-widest">${initials}</span>
-                </div>
+                ${headerGraphicHTML}
 
                 <!-- Content Area -->
                 <div class="p-6 md:p-8 flex-1 flex flex-col">
@@ -467,6 +557,35 @@
                         <div class="mb-8 p-4 bg-amber-50/50 rounded-xl border border-amber-100">
                             <h4 class="text-sm uppercase tracking-wider font-bold text-amber-600 mb-2">Project Goals</h4>
                             <p class="text-slate-700 leading-relaxed">${project.goals}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- NEW: Gemini AI Marketing Assistant Section -->
+                    <div class="mb-8 p-5 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 opacity-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="currentColor" class="text-indigo-600"><path d="M11.5 2L13.8 8.2H20.5L15.1 12.1L17.1 18.5L11.5 14.6L5.9 18.5L7.9 12.1L2.5 8.2H9.2L11.5 2Z"/></svg>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3 relative z-10">
+                            <div>
+                                <h4 class="text-sm uppercase tracking-wider font-bold text-indigo-700 flex items-center gap-2">
+                                    AI Marketing Assistant
+                                </h4>
+                                <p class="text-xs text-indigo-500 mt-1">Struggling to describe this project to clients? Let AI generate an elevator pitch.</p>
+                            </div>
+                            
+                            <button onclick="generateMarketingPitch(${project.id})" id="btn-pitch-${project.id}" class="shrink-0 group relative px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-semibold tracking-wide hover:bg-indigo-700 transition-all shadow-md focus:outline-none flex items-center justify-center gap-2">
+                                ✨ Generate Pitch
+                            </button>
+                        </div>
+                        
+                        <!-- AI Result Display Area -->
+                        <div id="pitch-loading-${project.id}" class="hidden py-4 text-center text-indigo-500 text-sm font-medium animate-pulse relative z-10">
+                            ✨ Crafting the perfect pitch...
+                        </div>
+                        
+                        <div id="pitch-result-${project.id}" class="hidden mt-4 pt-4 border-t border-indigo-100 text-slate-700 text-sm leading-relaxed relative z-10">
+                            <!-- Dynamic AI content will load here -->
                         </div>
                     </div>
 
