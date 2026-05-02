@@ -9,7 +9,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@lucide/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/dist/lenis.min.js"></script>
+    <!-- Updated Lenis CDN link to resolve module/reference errors -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
@@ -544,45 +545,12 @@
                 </span>
             </button>
 
-            <!-- Integrated Gallery Container -->
-            <div id="gallery-wrapper" class="hidden mt-16 opacity-0">
-                <!-- Tab Line -->
-                <div class="tab-line">
-                    <button onclick="switchTab('ai')" id="tab-ai" class="tab-item active">AI Works</button>
-                    <button onclick="switchTab('web')" id="tab-web" class="tab-item">Web Development</button>
-                </div>
-
-                <div class="gallery-container">
-                    <!-- Sidebar -->
-                    <aside class="sidebar">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 px-4">Project List</h3>
-                        <div id="project-sidebar-list">
-                            <!-- Sidebar buttons injected here -->
-                        </div>
-                    </aside>
-
-                    <!-- Main Gallery -->
-                    <div class="main-gallery">
-                        <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <!-- Cards will be injected here -->
-                        </div>
-                    </div>
-                </div>
+            <!-- Embedded Masterpieces Gallery -->
+            <div id="gallery-wrapper" class="hidden mt-16 opacity-0 w-full h-[85vh] min-h-[600px] rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-200">
+                <iframe id="masterpieces-frame" src="" class="w-full h-full border-none bg-white"></iframe>
             </div>
         </div>
     </section>
-
-    <!-- Portfolio Modal -->
-    <div id="portfolio-modal" onclick="closeModal()">
-        <div class="modal-container" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-5 right-5 z-50 bg-white/80 w-10 h-10 rounded-full shadow-lg flex items-center justify-center hover:bg-slate-200 transition">
-                <i class="fa-solid fa-times text-xl"></i>
-            </button>
-            <div id="modal-content" class="flex flex-col md:flex-row w-full h-full">
-                <!-- Content Injected here -->
-            </div>
-        </div>
-    </div>
     <!-- ========================================== -->
 
     <!-- Team -->
@@ -741,164 +709,31 @@
         }
 
         // =====================================
-        // Portfolio Data (All 25 Items) & Logic
+        // Portfolio Gallery Iframe Embed Logic
         // =====================================
-        const portfolioData = [
-            { id: 1, cat: 'web', title: "Business & IT Consultant", desc: "Digital audit & CRM integration.", goal: "For enterprise industrialist and non-tech providers.", link: "https://businessitc.com/", tech: "Web, CRM", media: "https://via.placeholder.com/800x600/1e293b/ffffff?text=Business+IT+Consultant", type: "img" },
-            { id: 2, cat: 'web', title: "NoorGee Main Site", desc: "Main portal for all internet works.", goal: "Showcasing skills and professional portfolio.", link: "https://noorgee.com", tech: "Web, Personal", media: "https://noorgee.pk/Dev/img/portfolio-ng-pk-02.gif", type: "img" },
-            { id: 3, cat: 'web', title: "US NoorGee Store", desc: "E-commerce store for USA.", goal: "Dropshipping leather products for US consumers.", link: "https://us.noorgee.com", tech: "WordPress, Woo", media: "https://noorgee.pk/Dev/img/us-ng-site-screen.gif", type: "img" },
-            { id: 4, cat: 'web', title: "UK NoorGee Store", desc: "E-commerce store for UK market.", goal: "Shopify based dropshipping.", link: "https://uk.noorgee.com", tech: "Shopify, E-com", media: "https://noorgee.pk/Web/img/uk-ng-site-screen.gif", type: "img" },
-            { id: 5, cat: 'web', title: "UAE NoorGee Store", desc: "E-commerce store for Middle East.", goal: "Expansion into UAE market.", link: "https://ae.noorgee.com", tech: "Shopify", media: "https://noorgee.pk/Web/img/ae-ng-site-screen.gif", type: "img" },
-            { id: 6, cat: 'web', title: "PK NoorGee E-Com", desc: "Pakistani local dropshipping site.", goal: "Household items for local market.", link: "https://noorgee.pk", tech: "WordPress", media: "https://noorgee.pk/Web/img/pk-ng-site-screen.gif", type: "img" },
-            { id: 7, cat: 'web', title: "Web & AI Services", desc: "Service landing page.", goal: "Lead generation for AI/Web services.", link: "https://noorgee.pk/Web/", tech: "HTML, Tailwind", media: "https://noorgee.pk/Web/img/ng-web-design.jpg", type: "img" },
-            { id: 8, cat: 'web', title: "NoorGee Hosting", desc: "Reseller hosting platform.", goal: "Selling hosting & domains.", link: "https://noorgee.com/hosting", tech: "WHMCS, Hosting", media: "https://via.placeholder.com/800x600/1e293b/ffffff?text=Hosting+Platform", type: "img" },
-            { id: 9, cat: 'web', title: "NG SMS Panel", desc: "Bulk SMS marketing tool.", goal: "Marketing automation for clients.", link: "https://noorgee.com/sms", tech: "API, PHP", media: "https://via.placeholder.com/800x600/1e293b/ffffff?text=SMS+Panel", type: "img" },
-            { id: 10, cat: 'web', title: "LMS NoorGee", desc: "Learning Management System.", goal: "Selling AI courses online.", link: "https://lms.noorgee.com", tech: "LMS, WordPress", media: "https://via.placeholder.com/800x600/1e293b/ffffff?text=LMS+Portal", type: "img" },
-            { id: 11, cat: 'web', title: "Tools NoorGee", desc: "Useful web utility tools.", goal: "SEO and utility for developers.", link: "https://tools.noorgee.com", tech: "JS, Tools", media: "https://noorgee.pk/Web/img/it-ng-site-tool-screen.gif", type: "img" },
-            { id: 12, cat: 'web', title: "Karsaian Welfare", desc: "Pakistani NGO Website.", goal: "Approach donors for human helping cause.", link: "https://kwa.com.pk", tech: "NGO, Site", media: "https://noorgee.pk/Web/img/kwa-site-screen.gif", type: "img" },
-            { id: 13, cat: 'web', title: "Noor Media Solution", desc: "Photography & Videography Portfolio.", goal: "Showcase event services.", link: "https://nm.noorgee.pk", tech: "Portfolio, Media", media: "https://noorgee.pk/Web/img/nm-site-screen.gif", type: "img" },
-            { id: 14, cat: 'ai', title: "AI Image & Post Gen", desc: "Creative AI posters.", goal: "Social media visual automation.", link: "#", tech: "Stable Diffusion", media: "https://noorgee.pk/Web/img/NoorGee%20Logo%201756693576%20(1).jpg", type: "img" },
-            { id: 15, cat: 'ai', title: "UK Ecommerce Banner", desc: "AI generated banner.", goal: "Banner designing using AI.", link: "#", tech: "Gen AI", media: "https://noorgee.pk/Web/img/NG%20UK%20blue%20baner.png", type: "img" },
-            { id: 16, cat: 'ai', title: "Bad vs Good Prompt", desc: "AI prompting visualization.", goal: "Training on AI interaction.", link: "#", tech: "Prompt Eng", media: "https://noorgee.pk/Web/img/Bad%20Prompt%20vs.%20Good%20Prompt.mp4", type: "video" },
-            { id: 17, cat: 'ai', title: "NG Leather UGC", desc: "Product presentation via AI.", goal: "Commercial bag presentation.", link: "#", tech: "Character Swap AI", media: "https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4", type: "video" },
-            { id: 18, cat: 'ai', title: "Kangaroo Bag Play", desc: "AI video generation.", goal: "Creative product marketing.", link: "#", tech: "Sora/Kling AI", media: "https://noorgee.pk/Web/img/kangaroo%20ng%20bag_playing_202508300730_ql3s0.mp4", type: "video" },
-            { id: 19, cat: 'ai', title: "Stylish Avatar Gen", desc: "New Year avatar project.", goal: "Advanced image generation.", link: "#", tech: "Flux/DALL-E", media: "https://noorgee.pk/Web/img/ig%20ng%20new%20yer.png", type: "img" },
-            { id: 20, cat: 'ai', title: "Kids Education Poster", desc: "Infographic about moral edu.", goal: "Educational roadmaps.", link: "#", tech: "Canva AI", media: "https://noorgee.pk/Web/img/kids%20infogrph%20ur.png", type: "img" },
-            { id: 21, cat: 'ai', title: "E-com Banner Gen", desc: "Brown environment product banner.", goal: "Image & Banner design.", link: "#", tech: "Gen AI", media: "https://noorgee.pk/Web/img/us-ng-ecomerce.jpg", type: "img" },
-            { id: 22, cat: 'ai', title: "Blog NoorGee Com", desc: "English AI blog writing.", goal: "Writing automation.", link: "https://blog.noorgee.com", tech: "Automation", media: "https://noorgee.pk/Web/img/blog-com-ai.jpg", type: "img" },
-            { id: 23, cat: 'ai', title: "Blog NoorGee Pk", desc: "Urdu AI blog writing.", goal: "Auto Urdu content.", link: "https://blog.noorgee.pk", tech: "Urdu AI", media: "https://noorgee.pk/Web/img/blog-pk-ai.jpg", type: "img" },
-            { id: 24, cat: 'ai', title: "Social Media Automation", desc: "Zapier/Make automation.", goal: "Auto posting for clients.", link: "#", tech: "Zapier, API", media: "https://noorgee.pk/Web/img/fb-karsaziyan.jpg", type: "img" },
-            { id: 25, cat: 'ai', title: "Health FB Automation", desc: "SehNama page automation.", goal: "Daily automated health posts.", link: "https://www.facebook.com/SehtNama/", tech: "Make.com", media: "https://noorgee.pk/Web/img/fb-sehnama.jpg", type: "img" }
-        ];
-
         const galleryWrapper = document.getElementById('gallery-wrapper');
         const toggleBtn = document.getElementById('toggle-gallery');
-        const grid = document.getElementById('portfolio-grid');
+        const iframe = document.getElementById('masterpieces-frame');
 
         // Toggle Gallery Function
         toggleBtn.addEventListener('click', () => {
             if (galleryWrapper.classList.contains('hidden')) {
+                // Show Gallery and Load iframe
+                iframe.src = "https://noorgee.pk/Web/masterpieces.html"; // Load the absolute external URL
                 galleryWrapper.classList.remove('hidden');
                 gsap.to(galleryWrapper, { opacity: 1, y: 0, duration: 0.8 });
                 toggleBtn.innerHTML = '<span class="relative z-10 flex items-center gap-3"><i class="fas fa-door-closed"></i> گیلری بند کریں</span>';
                 toggleBtn.classList.replace('bg-amber-800', 'bg-red-800');
-                switchTab('ai');
             } else {
+                // Hide Gallery and Unload iframe
                 gsap.to(galleryWrapper, { opacity: 0, y: 20, duration: 0.5, onComplete: () => {
                     galleryWrapper.classList.add('hidden');
+                    iframe.src = ""; // Unload iframe to stop any media playing in the background
                 }});
                 toggleBtn.innerHTML = '<span class="relative z-10 flex items-center gap-3"><i class="fas fa-door-open"></i> تمام 25 پروجیکٹس دیکھیں</span>';
                 toggleBtn.classList.replace('bg-red-800', 'bg-amber-800');
             }
         });
-
-        function renderItems(filter) {
-            grid.innerHTML = '';
-            const filtered = filter === 'all' ? portfolioData : portfolioData.filter(i => i.cat === filter);
-            
-            filtered.forEach(item => {
-                const card = `
-                    <div class="glass-card rounded-3xl overflow-hidden group cursor-pointer" onclick="openModal(${item.id})">
-                        <div class="h-52 bg-slate-200 relative overflow-hidden flex items-center justify-center">
-                            ${item.type === 'video' 
-                                ? `<video src="${item.media}" class="w-full h-full object-cover" muted loop onmouseover="this.play()" onmouseout="this.pause()" onerror="this.outerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400\\'><i class=\\'fa-solid fa-video text-3xl\\'></i></div>'"></video>`
-                                : `<img src="${item.media}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" onerror="this.outerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400\\'><i class=\\'fa-solid fa-image text-3xl\\'></i></div>'">`
-                            }
-                            <div class="absolute top-4 left-4 bg-amber-800 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest">${item.cat}</div>
-                        </div>
-                        <div class="p-6 text-left">
-                            <h3 class="text-xl font-bold mb-2 text-slate-900">${item.title}</h3>
-                            <p class="text-slate-500 text-sm mb-4 line-clamp-2">${item.desc}</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[11px] font-bold text-amber-800">${item.tech}</span>
-                                <i class="fas fa-arrow-right text-slate-300 group-hover:text-amber-800 transition"></i>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                grid.innerHTML += card;
-            });
-        }
-
-        let currentTab = 'ai';
-
-        function switchTab(cat) {
-            currentTab = cat;
-            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
-            document.getElementById(`tab-${cat}`).classList.add('active');
-            renderSidebar(cat);
-            renderItems(cat);
-        }
-
-        function renderSidebar(cat) {
-            const sidebarList = document.getElementById('project-sidebar-list');
-            sidebarList.innerHTML = '';
-            const filtered = portfolioData.filter(i => i.cat === cat);
-            
-            filtered.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'sidebar-btn';
-                btn.innerHTML = `<i class="fas fa-chevron-right mr-2 text-[10px] opacity-50"></i> ${item.title}`;
-                btn.onclick = () => {
-                    document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    openModal(item.id);
-                };
-                sidebarList.appendChild(btn);
-            });
-        }
-
-        // Initialize with AI works
-        renderSidebar('ai');
-        renderItems('ai');
-
-        function filterGallery(cat) {
-            switchTab(cat);
-        }
-
-        function openModal(id) {
-            const item = portfolioData.find(i => i.id === id);
-            const modal = document.getElementById('portfolio-modal');
-            const content = document.getElementById('modal-content');
-
-            content.innerHTML = `
-                <div class="md:w-3/5 bg-slate-100 flex items-center justify-center">
-                    ${item.type === 'video' 
-                        ? `<video src="${item.media}" class="w-full h-full object-contain" controls autoplay></video>`
-                        : `<img src="${item.media}" class="w-full h-full object-contain" onerror="this.outerHTML='<div class=\\'text-slate-400\\'>No Image Preview</div>'">`
-                    }
-                </div>
-                <div class="md:w-2/5 p-8 md:p-12 flex flex-col justify-center text-left bg-white">
-                    <h2 class="text-3xl font-black text-slate-900 mb-4">${item.title}</h2>
-                    <p class="text-slate-600 mb-8 leading-relaxed">${item.desc}</p>
-                    <div class="mb-8">
-                        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-widest mb-2">Project Goal</h4>
-                        <p class="text-slate-700 font-medium">${item.goal}</p>
-                    </div>
-                    <div class="mb-8">
-                        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-widest mb-2">Technologies</h4>
-                        <div class="flex gap-2 flex-wrap">
-                            ${item.tech.split(',').map(t => `<span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-600">${t.trim()}</span>`).join('')}
-                        </div>
-                    </div>
-                    <a href="${item.link}" target="_blank" class="inline-block py-4 px-8 bg-slate-900 text-white font-bold rounded-2xl text-center shadow-lg hover:bg-amber-800 transition mt-auto">Visit Live Project <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i></a>
-                </div>
-            `;
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('portfolio-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Stop any playing videos when closing modal
-            const video = document.querySelector('#modal-content video');
-            if(video) {
-                video.pause();
-                video.currentTime = 0;
-            }
-        }
     </script>
 </body>
 </html>
