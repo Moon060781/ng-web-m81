@@ -1,285 +1,454 @@
-import { useState, useEffect } from 'react';
-import { ChevronRight, Play, X } from 'lucide-react';
-import '../styles/gallery.css';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoorGee WebMaster - Portfolio Gallery</title>
+    <!-- Tailwind CSS for Premium Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling on main body */
+        }
 
-interface PortfolioItem {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  image: string;
-  type: 'image' | 'video' | 'audio';
-  link?: string;
-  tags?: string[];
-}
+        /* --- Sliding Doors Animations --- */
+        .door {
+            transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .door-open-left {
+            transform: translateX(-100%);
+        }
+        .door-open-right {
+            transform: translateX(100%);
+        }
 
-const portfolioItems: PortfolioItem[] = [
-  // Portfolio Websites
-  {
-    id: 'web-1',
-    title: 'Corporate Website Redesign',
-    category: 'Portfolio Websites',
-    description: 'Modern responsive website for a tech startup with focus on user experience and conversion optimization.',
-    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop',
-    type: 'image',
-    link: '#',
-    tags: ['React', 'Tailwind CSS', 'Responsive'],
-  },
-  {
-    id: 'web-2',
-    title: 'E-Commerce Platform',
-    category: 'Portfolio Websites',
-    description: 'Full-featured e-commerce store with product catalog, shopping cart, and payment integration.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600https://images.unsplash.com/photo-1460925895917-adf4e565db18?w=600&h=400&fit=croph=400https://images.unsplash.com/photo-1460925895917-adf4e565db18?w=600&h=400&fit=cropfit=crop',
-    type: 'image',
-    link: '#',
-    tags: ['Next.js', 'Stripe', 'PostgreSQL'],
-  },
-  {
-    id: 'web-3',
-    title: 'SaaS Dashboard',
-    category: 'Portfolio Websites',
-    description: 'Analytics dashboard with real-time data visualization and user management system.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-    type: 'image',
-    link: '#',
-    tags: ['Vue.js', 'Chart.js', 'Node.js'],
-  },
-  // AI Works - Images
-  {
-    id: 'ai-img-1',
-    title: 'AI-Generated Product Visuals',
-    category: 'AI Works',
-    description: 'High-quality product images generated using advanced AI models for e-commerce and marketing.',
-    image: 'https://images.unsplash.com/photo-1611532736579-6b16e2b50449?w=600&h=400&fit=crop',
-    type: 'image',
-    tags: ['Stable Diffusion', 'DALL-E', 'Midjourney'],
-  },
-  {
-    id: 'ai-img-2',
-    title: 'Brand Identity Concepts',
-    category: 'AI Works',
-    description: 'Creative brand identity designs and logo concepts created with AI assistance.',
-    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop',
-    type: 'image',
-    tags: ['AI Design', 'Brand', 'Visual'],
-  },
-  // AI Works - Videos
-  {
-    id: 'ai-vid-1',
-    title: 'AI-Powered Video Production',
-    category: 'AI Works',
-    description: 'Professional marketing videos created with AI video generation and editing tools.',
-    image: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=600https://images.unsplash.com/photo-1533050487297-4d71bcdd2085?w=600&h=400&fit=croph=400https://images.unsplash.com/photo-1533050487297-4d71bcdd2085?w=600&h=400&fit=cropfit=crop',
-    type: 'video',
-    tags: ['RunwayML', 'D-ID', 'FFmpeg'],
-  },
-  {
-    id: 'ai-vid-2',
-    title: 'AI Avatar Presentations',
-    category: 'AI Works',
-    description: 'Engaging video presentations featuring AI-generated avatars for training and marketing.',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600https://images.unsplash.com/photo-1516321318423-f06f70504c8a?w=600&h=400&fit=croph=400https://images.unsplash.com/photo-1516321318423-f06f70504c8a?w=600&h=400&fit=cropfit=crop',
-    type: 'video',
-    tags: ['AI Avatar', 'Presentation', 'Video'],
-  },
-  // AI Works - Audio
-  {
-    id: 'ai-audio-1',
-    title: 'AI Voice Generation',
-    category: 'AI Works',
-    description: 'Natural-sounding voice-overs and audio content created with advanced text-to-speech technology.',
-    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
-    type: 'audio',
-    tags: ['ElevenLabs', 'TTS', 'Audio'],
-  },
-];
+        /* --- Gallery Reveal Animation --- */
+        .gallery-container {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            transition-delay: 0.3s;
+        }
+        .gallery-visible {
+            opacity: 1;
+            transform: scale(1);
+        }
 
-export default function Home() {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('Portfolio Websites');
-  const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
-  const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
+        /* --- Custom Scrollbar for Left Column --- */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
 
-  useEffect(() => {
-    const filtered = portfolioItems.filter(
-      item => item.category === selectedCategory
-    );
-    setFilteredItems(filtered);
-  }, [selectedCategory]);
+        /* --- Tabs Styling --- */
+        .tab-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #0f172a; /* Slate 900 */
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.3);
+        }
+        .tab-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
 
-  const categories = ['Portfolio Websites', 'AI Works'];
+        /* --- List Item Animation --- */
+        .list-item {
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+        .list-item:hover {
+            background-color: #f8fafc;
+            transform: translateX(4px);
+        }
+        .list-item.active {
+            background-color: #f1f5f9;
+            border-left-color: #2563eb; /* Blue 600 */
+        }
 
-  const getMediaIcon = (type: string) => {
-    if (type === 'video') return <Play className="w-12 h-12 text-white" />;
-    if (type === 'audio') return <div className="w-12 h-12 text-white text-2xl">🎵</div>;
-    return null;
-  };
+        /* --- Preview Area Fade --- */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 h-screen w-full relative">
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      {/* Header */}
-      <header className="py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="display-font text-4xl sm:text-5xl text-slate-900 mb-2">
-            M81 Portfolio
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Showcasing web projects and AI-powered creative works
-          </p>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Sliding Door Header */}
-        {!isExpanded && (
-          <div className="gallery-header mb-12">
-            <div className="door-container">
-              <div className="door door-left">
-                <div className="door-content">
-                  <h2 className="display-font text-3xl sm:text-4xl text-white">
-                    Our Masterpieces
-                  </h2>
-                </div>
-              </div>
-              <div className="door door-right">
-                <div className="door-content">
-                  <button
-                    onClick={() => setIsExpanded(true)}
-                    className="explore-btn"
-                  >
-                    <span>Explore Our Work</span>
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Expanded Gallery */}
-        {isExpanded && (
-          <div className="gallery-expanded animate-in fade-in duration-500">
-            {/* Category Tabs */}
-            <div className="category-tabs mb-12">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`tab ${selectedCategory === cat ? 'active' : ''}`}
-                >
-                  {cat}
+    <!-- ==========================================
+         INNER GALLERY PAGE (Hidden behind doors)
+    =========================================== -->
+    <div id="gallery" class="gallery-container absolute inset-0 w-full h-full bg-slate-50 z-10 flex flex-col pt-8 pb-8 px-4 md:px-12">
+        
+        <!-- Header & Tabs -->
+        <div class="text-center mb-8 shrink-0">
+            <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">Our Portfolio Gallery</h1>
+            <div class="flex justify-center gap-4 bg-white p-2 inline-flex rounded-full shadow-sm border border-slate-200">
+                <button id="tab-web" class="tab-btn active px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                    💻 Web Projects
                 </button>
-              ))}
+                <button id="tab-ai" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                    🤖 AI Works
+                </button>
             </div>
-
-            {/* Portfolio Grid */}
-            <div className="portfolio-grid mb-12">
-              {filteredItems.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="portfolio-card group cursor-pointer"
-                  onClick={() => setSelectedItem(item)}
-                  style={{
-                    animationDelay: `${index * 0.1}s`,
-                  }}
-                >
-                  <div className="portfolio-image-wrapper">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="portfolio-image"
-                    />
-                    <div className="media-overlay">
-                      {getMediaIcon(item.type)}
-                    </div>
-                  </div>
-                  <div className="portfolio-info">
-                    <h3 className="portfolio-title">{item.title}</h3>
-                    <p className="portfolio-category">{item.category}</p>
-                    {item.tags && (
-                      <div className="portfolio-tags">
-                        {item.tags.slice(0, 2).map(tag => (
-                          <span key={tag} className="tag">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Close Button */}
-            <div className="flex justify-center">
-              <button
-                onClick={() => setIsExpanded(false)}
-                className="close-btn"
-              >
-                Close Gallery
-              </button>
-            </div>
-          </div>
-        )}
-      </main>
-
-      {/* Detail Modal */}
-      {selectedItem && (
-        <div
-          className="modal-backdrop"
-          onClick={() => setSelectedItem(null)}
-        >
-          <div
-            className="modal-content"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedItem(null)}
-              className="modal-close"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            <div className="modal-body">
-              <div className="modal-image-wrapper">
-                <img
-                  src={selectedItem.image}
-                  alt={selectedItem.title}
-                  className="modal-image"
-                />
-                <div className="modal-media-overlay">
-                  {getMediaIcon(selectedItem.type)}
-                </div>
-              </div>
-
-              <div className="modal-info">
-                <h2 className="modal-title">{selectedItem.title}</h2>
-                <p className="modal-category">{selectedItem.category}</p>
-                <p className="modal-description">{selectedItem.description}</p>
-
-                {selectedItem.tags && (
-                  <div className="modal-tags">
-                    {selectedItem.tags.map(tag => (
-                      <span key={tag} className="modal-tag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {selectedItem.link && (
-                  <a href={selectedItem.link} className="modal-link">
-                    View Project
-                    <ChevronRight className="w-4 h-4" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
         </div>
-      )}
+
+        <!-- Layout: 2 Columns -->
+        <div class="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden max-w-7xl mx-auto w-full">
+            
+            <!-- Left Side: List Column -->
+            <div class="w-full md:w-1/3 h-full overflow-y-auto bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-3 custom-scrollbar" id="list-container">
+                <!-- Javascript will inject list items here -->
+            </div>
+
+            <!-- Right Side: Preview Box -->
+            <div class="w-full md:w-2/3 h-full bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 overflow-y-auto custom-scrollbar flex flex-col" id="preview-container">
+                <!-- Javascript will inject preview content here -->
+            </div>
+
+        </div>
     </div>
-  );
-}
+
+
+    <!-- ==========================================
+         INTRO SCREEN & SLIDING DOORS (Overlay)
+    =========================================== -->
+    <!-- Left Door -->
+    <div id="door-left" class="door absolute top-0 left-0 w-1/2 h-full bg-slate-900 border-r border-slate-800 z-30 flex justify-end items-center pr-2 md:pr-8 shadow-[10px_0_30px_rgba(0,0,0,0.5)]">
+        <div class="text-slate-700 text-6xl md:text-9xl font-bold tracking-tighter opacity-10" style="transform: translateX(50%);">NOOR</div>
+    </div>
+    
+    <!-- Right Door -->
+    <div id="door-right" class="door absolute top-0 right-0 w-1/2 h-full bg-slate-900 border-l border-slate-800 z-30 flex justify-start items-center pl-2 md:pl-8 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
+        <div class="text-slate-700 text-6xl md:text-9xl font-bold tracking-tighter opacity-10" style="transform: translateX(-50%);">GEE</div>
+    </div>
+
+    <!-- Main Entry Button -->
+    <div id="intro-center" class="absolute inset-0 flex flex-col justify-center items-center z-40 transition-opacity duration-500">
+        <div class="mb-8 text-center px-4">
+            <h2 class="text-white text-3xl md:text-4xl font-semibold mb-2">Welcome to NoorGee WebMaster</h2>
+            <p class="text-slate-400">Discover premium Web & AI solutions.</p>
+        </div>
+        <button id="open-btn" class="group relative px-10 py-5 bg-blue-600 text-white rounded-full text-xl font-bold tracking-wide hover:bg-blue-500 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(37,99,235,0.4)] focus:outline-none">
+            <span class="flex items-center gap-3">
+                Open Portfolio 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </span>
+        </button>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC & DATA
+    =========================================== -->
+    <script>
+        // 1. Data Extracted from your CSV Spreadsheet
+        const portfolioData = [
+            // --- WEB PROJECTS (Category A) ---
+            { 
+                id: 1, category: 'web', 
+                title: 'Business & IT Consultant', 
+                desc: 'A client offering business growth consultant, audit work, and I.T. solutions like CRM integration and digital audit reports.', 
+                goals: 'Make site to present their works to enterprise industrialists and service providers who are Non-Tech Savvy.', 
+                link: 'https://businessitc.com/', 
+                tech: ['Web Site', 'Business', 'Consultant']
+            },
+            { 
+                id: 2, category: 'web', 
+                title: 'NoorGee Main Hub', 
+                desc: 'Main site for my all works on the internet.', 
+                goals: 'Start to show my skills, works, and digital identity.', 
+                link: 'https://noorgee.com', 
+                tech: ['Main Site', 'Portfolio']
+            },
+            { 
+                id: 3, category: 'web', 
+                title: 'US NoorGee', 
+                desc: 'E-commerce store for the United States consumer.', 
+                goals: 'Develop in WordPress WooCommerce for US consumers. Working by dropshipping specially leather products.', 
+                link: 'https://us.noorgee.com', 
+                tech: ['WooCommerce', 'Dropshipping', 'US Market']
+            },
+            { 
+                id: 4, category: 'web', 
+                title: 'UK NoorGee', 
+                desc: 'E-commerce store in the United Kingdom.', 
+                goals: 'Develop in Shopify for UK consumers. Working by dropshipping leather products.', 
+                link: 'https://uk.noorgee.com', 
+                tech: ['Shopify', 'Store Site', 'UK Market']
+            },
+            { 
+                id: 5, category: 'web', 
+                title: 'UAE NoorGee', 
+                desc: 'E-commerce store in the United Arab Emirates.', 
+                goals: 'Develop in Shopify for UAE consumers. Working by dropshipping.', 
+                link: 'https://ae.noorgee.com', 
+                tech: ['Shopify', 'Store Site', 'UAE Market']
+            },
+            { 
+                id: 6, category: 'web', 
+                title: 'PK NoorGee E-Commerce', 
+                desc: 'E-commerce store in Pakistan.', 
+                goals: 'Develop in WordPress WooCommerce for Pakistani consumers. Dropshipping household items.', 
+                link: 'https://noorgee.pk', 
+                tech: ['WooCommerce', 'Local Market']
+            },
+            { 
+                id: 7, category: 'web', 
+                title: 'NoorGee Web Designing & AI Gen', 
+                desc: 'Web site designing service & AI service showcase.', 
+                goals: 'For earning by getting clients to make their static portfolios, personal promotion, and presentation.', 
+                link: 'https://noorgee.pk/Web', 
+                tech: ['Static Portfolios', 'AI Services']
+            },
+            { 
+                id: 8, category: 'web', 
+                title: 'NoorGee Advance Site Developer', 
+                desc: 'Advance web site development service.', 
+                goals: 'Develop dynamic sites in various languages & platforms.', 
+                link: 'https://noorgee.pk/Dev', 
+                tech: ['Dynamic Sites', 'Custom Dev']
+            },
+            { 
+                id: 9, category: 'web', 
+                title: 'NoorGee Gadgets & Tools', 
+                desc: 'Online gadgets and utility tools.', 
+                goals: 'Provide useful scripts and gadgets for daily online usage.', 
+                link: 'https://it.noorgee.com', 
+                tech: ['Web Tools', 'Utility']
+            },
+            { 
+                id: 10, category: 'web', 
+                title: 'Karsaian Welfare Association', 
+                desc: 'Pakistani NGO platform.', 
+                goals: 'Approach local & international donors to support our cause for human helping.', 
+                link: 'https://kwa.com.pk', 
+                tech: ['NGO Site', 'Donations']
+            },
+            { 
+                id: 11, category: 'web', 
+                title: 'Noor Media Solution', 
+                desc: 'Media Solution, videography & photography.', 
+                goals: 'Showcase event videography services, music production, digital albums & prints.', 
+                link: 'https://nm.noorgee.pk', 
+                tech: ['Media Portfolio', 'Photography']
+            },
+
+            // --- AI WORKS (Category B) ---
+            { 
+                id: 12, category: 'ai', 
+                title: 'Blog Writing NoorGee Com (US)', 
+                desc: 'English blog site for shopping guidance.', 
+                goals: 'English Blog writing completely automated by AI to drive international consumers to us.noorgee.com.', 
+                link: 'https://blog.noorgee.com', 
+                tech: ['AI Writing Automation', 'SEO']
+            },
+            { 
+                id: 13, category: 'ai', 
+                title: 'Blog Writing NoorGee Pk (Urdu)', 
+                desc: 'Urdu blog site for local consumer guidance.', 
+                goals: 'Urdu blog writing by AI automation to drive traffic to noorgee.pk.', 
+                link: 'https://blog.noorgee.pk', 
+                tech: ['AI Writing', 'Urdu NLP']
+            },
+            { 
+                id: 14, category: 'ai', 
+                title: 'Dynamic AI Image Generation', 
+                desc: 'Person NoorGee standing with text and graphic with Pakistani monuments.', 
+                goals: 'Showcase advanced image generation skills and prompt engineering.', 
+                link: '#', 
+                tech: ['AI Image Gen', 'Midjourney / DALL-E']
+            },
+            { 
+                id: 15, category: 'ai', 
+                title: 'Kids Moral Education Infograph', 
+                desc: 'Road map of lecture formatted as an infographic.', 
+                goals: 'Motivate kids for parents through visually engaging AI-generated posters.', 
+                link: '#', 
+                tech: ['Gen AI Poster', 'Infographics']
+            },
+            { 
+                id: 16, category: 'ai', 
+                title: 'Short AI Video UGC (Leather)', 
+                desc: 'Kangaroo playing with US.noorgee.com leather bag product.', 
+                goals: 'Show video generating service ability for dynamic E-Commerce marketing.', 
+                link: '#', 
+                tech: ['AI Video Gen', 'Animation']
+            }
+        ];
+
+        // 2. Elements references
+        const doorLeft = document.getElementById('door-left');
+        const doorRight = document.getElementById('door-right');
+        const introCenter = document.getElementById('intro-center');
+        const openBtn = document.getElementById('open-btn');
+        const gallery = document.getElementById('gallery');
+        
+        const tabWeb = document.getElementById('tab-web');
+        const tabAi = document.getElementById('tab-ai');
+        const listContainer = document.getElementById('list-container');
+        const previewContainer = document.getElementById('preview-container');
+
+        let currentCategory = 'web';
+        let activeProjectId = null;
+
+        // 3. Sliding Doors Logic
+        openBtn.addEventListener('click', () => {
+            // Fade out button
+            introCenter.style.opacity = '0';
+            introCenter.style.pointerEvents = 'none';
+            
+            // Slide doors
+            doorLeft.classList.add('door-open-left');
+            doorRight.classList.add('door-open-right');
+            
+            // Reveal Gallery
+            gallery.classList.add('gallery-visible');
+            
+            // Render default category (Web)
+            renderList('web');
+        });
+
+        // 4. Tab Switching Logic
+        tabWeb.addEventListener('click', () => {
+            currentCategory = 'web';
+            tabWeb.classList.add('active');
+            tabAi.classList.remove('active');
+            renderList('web');
+        });
+
+        tabAi.addEventListener('click', () => {
+            currentCategory = 'ai';
+            tabAi.classList.add('active');
+            tabWeb.classList.remove('active');
+            renderList('ai');
+        });
+
+        // 5. Render Left Column List
+        function renderList(category) {
+            listContainer.innerHTML = ''; // Clear previous
+            
+            const filteredProjects = portfolioData.filter(p => p.category === category);
+            
+            if (filteredProjects.length === 0) {
+                listContainer.innerHTML = '<p class="p-4 text-slate-500 text-center mt-10">No projects found.</p>';
+                return;
+            }
+
+            filteredProjects.forEach((project, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `list-item p-4 mb-2 rounded-xl cursor-pointer ${index === 0 ? 'active' : ''}`;
+                
+                // Icon selection based on category
+                const icon = category === 'web' ? '🌐' : '✨';
+
+                itemDiv.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="text-2xl mt-1">${icon}</div>
+                        <div>
+                            <h3 class="font-semibold text-slate-800 text-lg leading-tight">${project.title}</h3>
+                            <p class="text-sm text-slate-500 mt-1 line-clamp-1">${project.desc}</p>
+                        </div>
+                    </div>
+                `;
+
+                itemDiv.addEventListener('click', () => {
+                    // Remove active class from all
+                    document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
+                    // Add active class to clicked
+                    itemDiv.classList.add('active');
+                    renderPreview(project);
+                });
+
+                listContainer.appendChild(itemDiv);
+
+                // Auto render first item preview
+                if (index === 0) renderPreview(project);
+            });
+        }
+
+        // 6. Render Right Column Preview
+        function renderPreview(project) {
+            // Force animation reflow by removing and re-adding class
+            previewContainer.classList.remove('fade-in');
+            void previewContainer.offsetWidth; // trigger reflow
+            previewContainer.classList.add('fade-in');
+
+            const techBadges = project.tech.map(t => 
+                `<span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full border border-slate-200">${t}</span>`
+            ).join('');
+
+            // Generate a beautiful placeholder graphic with initials
+            const initials = project.title.substring(0, 2).toUpperCase();
+            const bgGradient = project.category === 'web' 
+                ? 'bg-gradient-to-br from-blue-500 to-indigo-600' 
+                : 'bg-gradient-to-br from-purple-500 to-pink-600';
+
+            // Check if link is valid or just a '#'
+            const linkButtonHTML = project.link !== '#' 
+                ? `<a href="${project.link}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-colors shadow-md">
+                    Live Preview Link 
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                   </a>`
+                : `<span class="inline-flex items-center px-6 py-3 bg-slate-200 text-slate-500 rounded-full font-medium">Demo Available Internally</span>`;
+
+            previewContainer.innerHTML = `
+                <!-- Graphic Header -->
+                <div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
+                    <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+                    <span class="text-5xl md:text-7xl font-bold text-white/80 tracking-widest">${initials}</span>
+                </div>
+
+                <!-- Content Area -->
+                <div class="p-6 md:p-8 flex-1 flex flex-col">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${techBadges}
+                    </div>
+                    
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">${project.title}</h2>
+                    
+                    <div class="prose prose-slate max-w-none">
+                        <div class="mb-6 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                            <h4 class="text-sm uppercase tracking-wider font-bold text-blue-600 mb-2">Short Description</h4>
+                            <p class="text-slate-700 leading-relaxed">${project.desc}</p>
+                        </div>
+
+                        <div class="mb-8 p-4 bg-amber-50/50 rounded-xl border border-amber-100">
+                            <h4 class="text-sm uppercase tracking-wider font-bold text-amber-600 mb-2">Project Goals</h4>
+                            <p class="text-slate-700 leading-relaxed">${project.goals}</p>
+                        </div>
+                    </div>
+
+                    <!-- Push button to bottom -->
+                    <div class="mt-auto pt-6 border-t border-slate-100">
+                        ${linkButtonHTML}
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
