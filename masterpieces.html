@@ -287,7 +287,8 @@
                 desc: 'Main site for my all works on the internet.', 
                 goals: 'Start to show my skills, works, and digital identity.', 
                 link: 'https://noorgee.com', 
-                tech: ['Main Site', 'Portfolio']
+                tech: ['Main Site', 'Portfolio'],
+                image: 'https://noorgee.pk/Web/img/noorgee_scroll.gif'
             },
             { 
                 id: 3, category: 'web', 
@@ -329,7 +330,8 @@
                 desc: 'Web site designing service & AI service showcase.', 
                 goals: 'For earning by getting clients to make their static portfolios, personal promotion, and presentation.', 
                 link: 'https://noorgee.pk/Web', 
-                tech: ['Static Portfolios', 'AI Services']
+                tech: ['Static Portfolios', 'AI Services'],
+                image: 'https://noorgee.pk/Web/img/noorgee_pk_Web.gif'
             },
             { 
                 id: 8, category: 'web', 
@@ -337,7 +339,8 @@
                 desc: 'Advance web site development service.', 
                 goals: 'Develop dynamic sites in various languages & platforms.', 
                 link: 'https://noorgee.pk/Dev', 
-                tech: ['Dynamic Sites', 'Custom Dev']
+                tech: ['Dynamic Sites', 'Custom Dev'],
+                image: 'https://noorgee.pk/Web/img/noorgee_pk_Dev_.gif'
             },
             { 
                 id: 9, category: 'web', 
@@ -363,7 +366,8 @@
                 desc: 'Media Solution, videography & photography.', 
                 goals: 'Showcase event videography services, music production, digital albums & prints.', 
                 link: 'https://nm.noorgee.pk', 
-                tech: ['Media Portfolio', 'Photography']
+                tech: ['Media Portfolio', 'Photography'],
+                image: 'https://noorgee.pk/Web/img/nm-noorgee_claud.gif'
             },
 
             // --- AI WORKS (Category B) ---
@@ -373,7 +377,17 @@
                 desc: 'English blog site for shopping guidance.', 
                 goals: 'English Blog writing completely automated by AI to drive international consumers to us.noorgee.com.', 
                 link: 'https://blog.noorgee.com', 
-                tech: ['AI Writing Automation', 'SEO']
+                tech: ['AI Writing Automation', 'SEO'],
+                image: 'https://noorgee.pk/Web/img/blog_noorgee_preview.gif'
+            },
+            { 
+                id: 19, category: 'ai', 
+                title: 'AI Image Gen 2', 
+                desc: 'Kids with cartoon character', 
+                goals: 'Show ai image generation.', 
+                link: 'https://noorgee.pk/Web/img/Hbiba-top-gerry-ai.png', 
+                tech: ['Ai image gen'],
+                image: 'https://noorgee.pk/Web/img/Hbiba-top-gerry-ai.png'
             },
             { 
                 id: 13, category: 'ai', 
@@ -381,7 +395,17 @@
                 desc: 'Urdu blog site for local consumer guidance.', 
                 goals: 'Urdu blog writing by AI automation to drive traffic to noorgee.pk.', 
                 link: 'https://blog.noorgee.pk', 
-                tech: ['AI Writing', 'Urdu NLP']
+                tech: ['AI Writing', 'Urdu NLP'],
+                image: 'https://noorgee.pk/Web/img/blog_noorgee_pk_preview.gif'
+            },
+            { 
+                id: 18, category: 'ai', 
+                title: 'Video for NoorGee Leather Product', 
+                desc: 'UGC NoorGee Leather.', 
+                goals: 'Commercially present a leather bag.', 
+                link: 'https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4', 
+                tech: ['Ai video gen'],
+                image: 'https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4'
             },
             { 
                 id: 14, category: 'ai', 
@@ -401,11 +425,20 @@
             },
             { 
                 id: 16, category: 'ai', 
-                title: 'Short AI Video UGC (Leather)', 
-                desc: 'Kangaroo playing with US.noorgee.com leather bag product.', 
-                goals: 'Show video generating service ability for dynamic E-Commerce marketing.', 
-                link: '#', 
-                tech: ['AI Video Gen', 'Animation']
+                title: 'Short UGC for Leather Product E-Commerce', 
+                desc: 'Kangaroo playing with US.noorgee.com product leather bag.', 
+                goals: 'Show video generating service ability.', 
+                link: 'https://noorgee.pk/Web/img/Perfume_bottle_on_202603181837.mp4', 
+                tech: ['Ai video gen']
+            },
+            { 
+                id: 17, category: 'web', 
+                title: 'Farooq Sarwar Khan', 
+                desc: 'IT Expert Person', 
+                goals: 'Approach local & international celebrities for show her works online.', 
+                link: 'https://noorgee.pk/Web/fsk', 
+                tech: ['Event Video Services'],
+                image: 'https://noorgee.pk/Web/img/fsk_claude_preview-1.gif'
             }
         ];
 
@@ -516,15 +549,24 @@
                 ? 'bg-gradient-to-br from-blue-500 to-indigo-600' 
                 : 'bg-gradient-to-br from-purple-500 to-pink-600';
 
-            // Check if project has a specific image, otherwise use the gradient placeholder
-            const headerGraphicHTML = project.image
-                ? `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-100 flex items-center justify-center">
-                     <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
-                   </div>`
-                : `<div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
+            // Check if project has a specific image or video, otherwise use the gradient placeholder
+            let headerGraphicHTML = '';
+            if (project.image) {
+                if (project.image.endsWith('.mp4')) {
+                    headerGraphicHTML = `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
+                         <video src="${project.image}" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
+                       </div>`;
+                } else {
+                    headerGraphicHTML = `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-100 flex items-center justify-center">
+                         <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
+                       </div>`;
+                }
+            } else {
+                headerGraphicHTML = `<div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
                     <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
                     <span class="text-5xl md:text-7xl font-bold text-white/80 tracking-widest">${initials}</span>
                 </div>`;
+            }
 
             // Check if link is valid or just a '#'
             const linkButtonHTML = project.link !== '#' 
