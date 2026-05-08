@@ -8,9 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@lucide/lucide@latest"></script>
     
-    <!-- Using the latest stable non-module version of Lenis from JSDelivr -->
     <script src="https://cdn.jsdelivr.net/npm/@darkroom.engineering/lenis@1.0.42/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -21,43 +19,23 @@
             --brand-brown-dark: #3e2723;
             --brand-brown-light: #8d6e63;
             --brand-gold: #d4af37;
-            --soft-shadow: rgba(0, 0, 0, 0.05);
         }
         
-        /* Lenis CSS Requirements */
-        html.lenis {
-            height: auto;
-        }
-        .lenis.lenis-smooth {
-            scroll-behavior: auto !important;
-        }
-        .lenis.lenis-smooth [data-lenis-prevent] {
-            overscroll-behavior: contain;
-        }
-        .lenis.lenis-stopped {
-            overflow: hidden;
-        }
-        .lenis.lenis-scrolling iframe {
-            pointer-events: none;
-        }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-stopped { overflow: hidden; }
 
         body { 
             font-family: 'Poppins', sans-serif; 
             overflow-x: hidden;
-            background-color: #fdfaf9; /* Warm off-white */
+            background-color: #fdfaf9;
         }
         
-        .font-inter { font-family: 'Inter', sans-serif; }
         .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; line-height: 2.2; }
 
         #interactive-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
             background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(93, 64, 55, 0.08) 0%, rgba(253, 250, 249, 0) 50%);
             transition: background 0.1s ease-out;
         }
@@ -68,157 +46,128 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Nav Animations */
         @keyframes slideFadeIn {
             from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
         }
-
-        .nav-animate {
-            animation: slideFadeIn 0.8s ease-out forwards;
-            opacity: 0;
-        }
-
-        .logo-animate {
-            animation: slideFadeIn 0.6s ease-out forwards;
-        }
+        .nav-animate { animation: slideFadeIn 0.8s ease-out forwards; opacity: 0; }
+        .logo-animate { animation: slideFadeIn 0.6s ease-out forwards; }
 
         .hero-bg {
             background: linear-gradient(rgba(253, 250, 249, 0.94), rgba(253, 250, 249, 0.85)), 
                         url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
         }
 
         .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #5d4037;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
-            z-index: 100;
-            transition: all 0.3s ease;
+            position: fixed; bottom: 30px; right: 30px;
+            background-color: #5d4037; color: white;
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
+            z-index: 100; transition: all 0.3s ease;
         }
-        .whatsapp-float:hover { 
-            transform: scale(1.1) rotate(10deg); 
-            background-color: #25d366; 
-        }
+        .whatsapp-float:hover { transform: scale(1.1) rotate(10deg); background-color: #25d366; }
 
-        .btn-brown {
-            background-color: #5d4037;
-            transition: all 0.3s ease;
-        }
-        .btn-brown:hover {
-            background-color: #3e2723;
-            transform: translateY(-2px);
-        }
+        .btn-brown { background-color: #5d4037; transition: all 0.3s ease; }
+        .btn-brown:hover { background-color: #3e2723; transform: translateY(-2px); }
 
-        /* Hero Animations */
         @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
             100% { transform: translateY(0px); }
         }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
         
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .hero-content-animate {
-            animation: fadeInUp 1s ease-out forwards;
-        }
+        .hero-content-animate { animation: fadeInUp 1s ease-out forwards; }
         
         .hero-shape {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s ease-in-out infinite;
+            position: absolute; border-radius: 50%; filter: blur(60px);
+            z-index: -1; opacity: 0.4; animation: float 10s ease-in-out infinite;
         }
 
-        /* Go to Top Button */
         #goToTopBtn {
-            display: none;
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            z-index: 99;
-            border: none;
-            outline: none;
-            background-color: #5d4037;
-            color: white;
-            cursor: pointer;
-            padding: 15px;
-            border-radius: 50%;
-            font-size: 18px;
-            width: 60px;
-            height: 60px;
-            box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
+            display: none; position: fixed; bottom: 100px; right: 30px; z-index: 99;
+            border: none; outline: none; background-color: #5d4037; color: white;
+            cursor: pointer; padding: 15px; border-radius: 50%; font-size: 18px;
+            width: 60px; height: 60px; box-shadow: 0 10px 25px rgba(93, 64, 55, 0.3);
             transition: all 0.3s ease;
         }
-        #goToTopBtn:hover {
-            background-color: #3e2723;
-            transform: translateY(-5px);
-        }
+        #goToTopBtn:hover { background-color: #3e2723; transform: translateY(-5px); }
 
-        /* Tooltip Popup Styles */
-        .service-item {
-            position: relative;
-            cursor: pointer;
-        }
+        /* Service tooltip popups */
+        .service-item { position: relative; cursor: pointer; }
         .service-popup {
-            visibility: hidden;
-            width: 280px;
-            background-color: #fff;
-            color: #333;
-            text-align: left;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            position: absolute;
-            z-index: 50;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -140px;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
+            visibility: hidden; width: 280px; background-color: #fff; color: #333;
+            text-align: left; border-radius: 1rem; padding: 1.5rem;
+            position: absolute; z-index: 50; bottom: 125%; left: 50%; margin-left: -140px;
+            opacity: 0; transition: opacity 0.3s, transform 0.3s;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             border: 1px solid rgba(93, 64, 55, 0.1);
-            transform: translateY(10px);
-            pointer-events: none;
+            transform: translateY(10px); pointer-events: none;
         }
         .service-popup::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -8px;
-            border-width: 8px;
-            border-style: solid;
-            border-color: #fff transparent transparent transparent;
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -8px;
+            border-width: 8px; border-style: solid; border-color: #fff transparent transparent transparent;
         }
-        .service-item:hover .service-popup {
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(0);
+        .service-item:hover .service-popup { visibility: visible; opacity: 1; transform: translateY(0); }
+        .service-popup img { width: 100%; border-radius: 0.5rem; margin-top: 0.5rem; border: 1px solid #eee; }
+
+        /* =============================================
+           INLINE PORTFOLIO GALLERY STYLES
+        ============================================= */
+        #portfolio-modal-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            align-items: center; justify-content: center;
         }
-        .service-popup img {
-            width: 100%;
-            border-radius: 0.5rem;
-            margin-top: 0.5rem;
-            border: 1px solid #eee;
+        #portfolio-modal-overlay.active { display: flex; }
+
+        #portfolio-modal {
+            width: 95vw; max-width: 1200px; height: 90vh;
+            background: #f8fafc; border-radius: 2rem;
+            overflow: hidden; display: flex; flex-direction: column;
+            animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            position: relative;
         }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-tab-btn {
+            padding: 10px 24px; border-radius: 9999px;
+            font-weight: 600; font-size: 14px; cursor: pointer;
+            transition: all 0.25s; color: #64748b; border: none; background: transparent;
+        }
+        .modal-tab-btn.active {
+            background: #0f172a; color: white;
+            box-shadow: 0 8px 20px rgba(15,23,42,0.25);
+        }
+        .modal-tab-btn:not(.active):hover { background: #e2e8f0; }
+
+        .modal-list-item {
+            transition: all 0.2s; border-left: 4px solid transparent;
+            cursor: pointer; padding: 14px 16px; border-radius: 12px; margin-bottom: 6px;
+        }
+        .modal-list-item:hover { background: #f1f5f9; transform: translateX(4px); }
+        .modal-list-item.active { background: #f1f5f9; border-left-color: #b45309; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        @keyframes previewFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .preview-fade { animation: previewFadeIn 0.35s ease forwards; }
     </style>
 </head>
 <body>
@@ -252,7 +201,7 @@
     <!-- Hero Section -->
     <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden hero-bg">
         <div class="hero-shape w-96 h-96 bg-amber-200 top-[-10%] right-[-5%]"></div>
-        <div class="hero-shape w-80 h-80 bg-brown-200 bottom-[10%] left-[-5%]" style="animation-delay: -2s"></div>
+        <div class="hero-shape w-80 h-80 bottom-[10%] left-[-5%]" style="background:#d5c0b8; animation-delay: -2s"></div>
         
         <div class="container mx-auto px-6 relative z-10">
             <div class="flex flex-col md:flex-row items-center gap-16">
@@ -313,7 +262,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Web & Hosting -->
                 <div class="p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-amber-800/30 transition duration-500 group">
                     <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-800 text-2xl shadow-sm mb-8 group-hover:scale-110 transition duration-500">
                         <i class="fa-solid fa-laptop-code"></i>
@@ -348,7 +296,6 @@
                     </ul>
                 </div>
 
-                <!-- AI & Automation -->
                 <div class="p-10 rounded-[2.5rem] bg-slate-900 text-white border border-slate-800 hover:border-amber-800/30 transition duration-500 group">
                     <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center text-amber-500 text-2xl shadow-sm mb-8 group-hover:scale-110 transition duration-500">
                         <i class="fa-solid fa-robot"></i>
@@ -429,20 +376,91 @@
         </div>
     </section>
 
-    <!-- Portfolio Section -->
+    <!-- =============================================
+         PORTFOLIO SECTION — Inline Gallery
+    ============================================= -->
     <section id="portfolio" class="py-24 bg-slate-100">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-5xl font-bold mb-4 text-slate-900">Find your inspiration in NG Port Folio</h2>
-            <p class="text-gray-500 mb-12">ایکسپلوور کریں ہمارے تمام ویب اور اے آئی پروجیکٹس کا مجموعہ</p>
+            <h2 class="text-5xl font-bold mb-4 text-slate-900">Find your inspiration in NG Portfolio</h2>
+            <p class="text-gray-500 mb-10 font-urdu text-lg">ایکسپلوور کریں ہمارے تمام ویب اور اے آئی پروجیکٹس کا مجموعہ</p>
 
-            <!-- Direct Link Button to Masterpieces -->
-            <a href="https://noorgee.pk/Web/masterpieces.html" class="inline-block group relative px-12 py-5 bg-amber-800 text-white font-bold rounded-full overflow-hidden transition-all hover:scale-105 shadow-2xl z-20">
-                <span class="relative z-10 flex items-center gap-3">
-                    <i class="fas fa-door-open"></i> تمام 25 پروجیکٹس دیکھیں
-                </span>
-            </a>
+            <!-- Open Gallery Button -->
+            <button id="open-gallery-btn" class="inline-flex items-center gap-3 px-12 py-5 bg-amber-800 text-white font-bold rounded-full hover:bg-amber-900 hover:scale-105 transition-all shadow-2xl shadow-amber-800/30 text-lg">
+                <i class="fas fa-door-open"></i>
+                <span>تمام 25 پروجیکٹس دیکھیں</span>
+            </button>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-3xl mx-auto">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="text-3xl font-black text-amber-800 mb-1">11+</div>
+                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Web Projects</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="text-3xl font-black text-amber-800 mb-1">14+</div>
+                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">AI Works</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="text-3xl font-black text-amber-800 mb-1">4</div>
+                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Markets Served</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="text-3xl font-black text-amber-800 mb-1">99.9%</div>
+                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Uptime</div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- =============================================
+         PORTFOLIO MODAL (Full-screen Overlay)
+    ============================================= -->
+    <div id="portfolio-modal-overlay">
+        <div id="portfolio-modal">
+
+            <!-- Modal Header -->
+            <div class="shrink-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-amber-800 rounded-lg flex items-center justify-center text-white">
+                        <i class="fa-solid fa-n text-sm"></i>
+                    </div>
+                    <span class="font-black text-slate-900 tracking-tight text-lg">NoorGee Portfolio Gallery</span>
+                </div>
+                <button id="close-gallery-btn" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition text-slate-600 text-lg font-bold">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="shrink-0 px-6 py-4 bg-white border-b border-slate-100 flex items-center justify-center">
+                <div class="inline-flex bg-slate-100 p-1.5 rounded-full gap-1">
+                    <button id="modal-tab-web" class="modal-tab-btn active">💻 Web Projects</button>
+                    <button id="modal-tab-ai" class="modal-tab-btn">🤖 AI Works</button>
+                </div>
+            </div>
+
+            <!-- Body: List + Preview -->
+            <div class="flex-1 flex overflow-hidden">
+
+                <!-- Left: Project List -->
+                <div id="modal-list" class="w-72 shrink-0 overflow-y-auto custom-scrollbar bg-white border-r border-slate-100 p-3">
+                    <!-- JS injects items here -->
+                </div>
+
+                <!-- Right: Project Preview -->
+                <div id="modal-preview" class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50">
+                    <!-- JS injects preview here -->
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="shrink-0 bg-white border-t border-slate-100 px-6 py-3 flex justify-between items-center text-xs text-slate-400">
+                <span>&copy; 2026 NoorGee WebMaster. All rights reserved.</span>
+                <a href="mailto:admin@noorgee.pk" class="hover:text-amber-600 transition">admin@noorgee.pk</a>
+            </div>
+        </div>
+    </div>
 
     <!-- Team -->
     <section id="team" class="py-24 bg-white">
@@ -487,7 +505,7 @@
                         <input type="text" name="subject" placeholder="Subject" class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
                     <textarea name="message" rows="5" placeholder="Tell us about your project... (Mandatory)" required class="w-full px-6 py-4 rounded-2xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-                    <button type="submit" id="submitBtn" class="w-full py-4 btn-brown text-white font-bold rounded-2xl shadow-xl shadow-brown-600/30">Send Message</button>
+                    <button type="submit" id="submitBtn" class="w-full py-4 btn-brown text-white font-bold rounded-2xl shadow-xl">Send Message</button>
                 </form>
             </div>
         </div>
@@ -497,16 +515,14 @@
     <footer class="bg-slate-950 text-slate-400 py-20">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div class="col-span-1 md:col-span-1">
+                <div class="col-span-1">
                     <div class="flex items-center gap-3 mb-8">
                         <div class="w-8 h-8 bg-amber-800 rounded-lg flex items-center justify-center text-white">
                             <i class="fa-solid fa-n text-sm"></i>
                         </div>
                         <span class="text-xl font-black tracking-tighter text-white">NoorGee<span class="text-amber-800">.</span></span>
                     </div>
-                    <p class="text-sm leading-relaxed">
-                        Mastering the digital frontier with premium web architecture and AI-driven solutions.
-                    </p>
+                    <p class="text-sm leading-relaxed">Mastering the digital frontier with premium web architecture and AI-driven solutions.</p>
                 </div>
                 
                 <div>
@@ -532,18 +548,14 @@
                 <div class="flex flex-col justify-between">
                     <div>
                         <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">About NoorGee</h4>
-                        <p class="text-xs leading-relaxed mb-6">
-                            NoorGee WebMaster providing premium web architectures for businesses across USA, UAE & Pakistan.
-                        </p>
+                        <p class="text-xs leading-relaxed mb-6">NoorGee WebMaster providing premium web architectures for businesses across USA, UAE & Pakistan.</p>
                         <div class="flex gap-4 text-xl mb-6">
                             <a href="https://facebook.com/NoorGeeWebMaster" target="_blank" class="hover:text-blue-500 transition"><i class="fa-brands fa-facebook"></i></a>
                             <a href="https://wa.me/923323320369" target="_blank" class="hover:text-green-500 transition"><i class="fa-brands fa-whatsapp"></i></a>
                             <a href="mailto:admin@noorgee.pk" class="hover:text-amber-500 transition"><i class="fa-solid fa-envelope"></i></a>
                         </div>
                     </div>
-                    <div class="text-[10px] uppercase tracking-[0.2em] font-medium text-slate-600">
-                        &copy; 2026 NoorGee WebMaster | All Rights Reserved
-                    </div>
+                    <div class="text-[10px] uppercase tracking-[0.2em] font-medium text-slate-600">&copy; 2026 NoorGee WebMaster | All Rights Reserved</div>
                 </div>
             </div>
 
@@ -555,7 +567,7 @@
             </div>
         </div>
     </footer>
-    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: May 3, 2026, 9:30 PM</p>
+    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: May 8, 2026</p>
 
     <!-- Floating Elements -->
     <a href="https://wa.me/923323320369" target="_blank" class="whatsapp-float">
@@ -565,47 +577,160 @@
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
+    <!-- =============================================
+         SCRIPTS
+    ============================================= -->
     <script>
-        window.addEventListener('load', () => {
-            let lenisInstance = null;
+    // ---- Lenis Smooth Scroll ----
+    window.addEventListener('load', () => {
+        if (typeof Lenis !== 'undefined') {
+            const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+        }
 
-            // Initialize Lenis
-            if (typeof Lenis !== 'undefined') {
-                lenisInstance = new Lenis({
-                    duration: 1.2,
-                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                    smoothWheel: true
-                });
-                function raf(time) {
-                    lenisInstance.raf(time);
-                    requestAnimationFrame(raf);
-                }
-                requestAnimationFrame(raf);
-            }
-
-            // Interactive Background
-            const bg = document.getElementById('interactive-bg');
-            document.addEventListener('mousemove', (e) => {
-                const x = (e.clientX / window.innerWidth) * 100;
-                const y = (e.clientY / window.innerHeight) * 100;
-                bg.style.setProperty('--x', `${x}%`);
-                bg.style.setProperty('--y', `${y}%`);
-            });
-
-            // Go to Top Button
-            let mybutton = document.getElementById("goToTopBtn");
-            window.addEventListener('scroll', () => {
-                if (window.pageYOffset > 300) {
-                    mybutton.style.display = "block";
-                } else {
-                    mybutton.style.display = "none";
-                }
-            });
+        // Interactive Background
+        const bg = document.getElementById('interactive-bg');
+        document.addEventListener('mousemove', (e) => {
+            bg.style.setProperty('--x', `${(e.clientX / window.innerWidth) * 100}%`);
+            bg.style.setProperty('--y', `${(e.clientY / window.innerHeight) * 100}%`);
         });
 
-        function topFunction() {
-            window.scrollTo({top: 0, behavior: 'smooth'});
+        // Go to Top
+        window.addEventListener('scroll', () => {
+            document.getElementById('goToTopBtn').style.display = window.pageYOffset > 300 ? 'block' : 'none';
+        });
+    });
+
+    function topFunction() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    // =============================================
+    // PORTFOLIO GALLERY DATA & LOGIC
+    // =============================================
+    const portfolioData = [
+        { id: 1, category: 'web', title: 'Business & IT Consultant', desc: 'A client offering business growth consultant, audit work, and I.T. solutions like CRM integration and digital audit reports.', goals: 'Make site to present their works to enterprise industrialists and service providers who are Non-Tech Savvy.', link: 'https://businessitc.com/', tech: ['Web Site', 'Business', 'Consultant'], image: 'https://noorgee.pk/Web/img/bic-screen.gif' },
+        { id: 2, category: 'web', title: 'NoorGee Main Hub', desc: 'Main site for my all works on the internet.', goals: 'Start to show my skills, works, and digital identity.', link: 'https://noorgee.com', tech: ['Main Site', 'Portfolio'], image: 'https://noorgee.pk/Web/img/noorgee_scroll.gif' },
+        { id: 3, category: 'web', title: 'US NoorGee', desc: 'E-commerce store for the United States consumer.', goals: 'Develop in WordPress WooCommerce for US consumers. Working by dropshipping specially leather products.', link: 'https://us.noorgee.com', tech: ['WooCommerce', 'Dropshipping', 'US Market'], image: 'https://noorgee.pk/Web/img/ng-us_claud.gif' },
+        { id: 4, category: 'web', title: 'UK NoorGee', desc: 'E-commerce store in the United Kingdom.', goals: 'Develop in Shopify for UK consumers. Working by dropshipping leather products.', link: 'https://uk.noorgee.com', tech: ['Shopify', 'Store Site', 'UK Market'] },
+        { id: 5, category: 'web', title: 'UAE NoorGee', desc: 'E-commerce store in the United Arab Emirates.', goals: 'Develop in Shopify for UAE consumers. Working by dropshipping.', link: 'https://ae.noorgee.com', tech: ['Shopify', 'Store Site', 'UAE Market'] },
+        { id: 6, category: 'web', title: 'PK NoorGee E-Commerce', desc: 'E-commerce store in Pakistan.', goals: 'Develop in WordPress WooCommerce for Pakistani consumers. Dropshipping household items.', link: 'https://noorgee.pk', tech: ['WooCommerce', 'Local Market'], image: 'https://noorgee.pk/Web/img/ng-pk_claud.gif' },
+        { id: 7, category: 'web', title: 'NoorGee Web Designing & AI Gen', desc: 'Web site designing service & AI service showcase.', goals: 'For earning by getting clients to make their static portfolios, personal promotion, and presentation.', link: 'https://noorgee.pk/Web', tech: ['Static Portfolios', 'AI Services'], image: 'https://noorgee.pk/Web/img/noorgee_pk_Web.gif' },
+        { id: 8, category: 'web', title: 'NoorGee Advance Site Developer', desc: 'Advance web site development service.', goals: 'Develop dynamic sites in various languages & platforms.', link: 'https://noorgee.pk/Dev', tech: ['Dynamic Sites', 'Custom Dev'], image: 'https://noorgee.pk/Web/img/noorgee_pk_Dev_.gif' },
+        { id: 9, category: 'web', title: 'NoorGee Gadgets & Tools', desc: 'Online gadgets and utility tools.', goals: 'Provide useful scripts and gadgets for daily online usage.', link: 'https://it.noorgee.com', tech: ['Web Tools', 'Utility'], image: 'https://noorgee.pk/Web/img/it-ng-site-tool-screen.gif' },
+        { id: 10, category: 'web', title: 'Karsaian Welfare Association', desc: 'Pakistani NGO platform.', goals: 'Approach local & international donors to support our cause for human helping.', link: 'https://kwa.com.pk', tech: ['NGO Site', 'Donations'], image: 'https://noorgee.pk/Web/img/kwa-screen.gif' },
+        { id: 11, category: 'web', title: 'Noor Media Solution', desc: 'Media Solution, videography & photography.', goals: 'Showcase event videography services, music production, digital albums & prints.', link: 'https://nm.noorgee.pk', tech: ['Media Portfolio', 'Photography'], image: 'https://noorgee.pk/Web/img/nm-noorgee_claud.gif' },
+        { id: 17, category: 'web', title: 'Farooq Sarwar Khan', desc: 'IT Expert Person.', goals: 'Approach local & international celebrities for show her works online.', link: 'https://noorgee.pk/Web/fsk', tech: ['Event Video Services'], image: 'https://noorgee.pk/Web/img/fsk_claude_preview-1.gif' },
+        { id: 12, category: 'ai', title: 'Blog Writing NoorGee Com (US)', desc: 'English blog site for shopping guidance.', goals: 'English Blog writing completely automated by AI to drive international consumers to us.noorgee.com.', link: 'https://blog.noorgee.com', tech: ['AI Writing Automation', 'SEO'], image: 'https://noorgee.pk/Web/img/blog_noorgee_preview.gif' },
+        { id: 13, category: 'ai', title: 'Blog Writing NoorGee Pk (Urdu)', desc: 'Urdu blog site for local consumer guidance.', goals: 'Urdu blog writing by AI automation to drive traffic to noorgee.pk.', link: 'https://blog.noorgee.pk', tech: ['AI Writing', 'Urdu NLP'], image: 'https://noorgee.pk/Web/img/blog_noorgee_pk_preview.gif' },
+        { id: 14, category: 'ai', title: 'Dynamic Image Gen', desc: 'Person NoorGee standing with text and text graphic with Pakistani monuments: Image of new year stylish avatar.', goals: 'Show advance image generation skill.', link: 'https://noorgee.pk/Web/img/NG2026.jpg', tech: ['AI Image Gen'], image: 'https://noorgee.pk/Web/img/NG2026.jpg' },
+        { id: 15, category: 'ai', title: 'Kids Moral Education Infograph', desc: 'Road map of lecture formatted as an infographic.', goals: 'Motivate kids for parents through visually engaging AI-generated posters.', link: '#', tech: ['Gen AI Poster', 'Infographics'] },
+        { id: 16, category: 'ai', title: 'Short UGC for Leather Product', desc: 'Kangaroo playing with US.noorgee.com product leather bag.', goals: 'Show video generating service ability.', link: 'https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4', tech: ['AI Video Gen'], image: 'https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4' },
+        { id: 18, category: 'ai', title: 'Video for NoorGee Leather Product', desc: 'UGC NoorGee Leather.', goals: 'Commercially present a leather bag.', link: 'https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4', tech: ['AI Video Gen'], image: 'https://noorgee.pk/Web/img/NG-ugc-Wan_Avatar_CharacterSwap.mp4' },
+        { id: 19, category: 'ai', title: 'AI Image Gen — Kids with Cartoon', desc: 'Kids with cartoon character.', goals: 'Show AI image generation.', link: 'https://noorgee.pk/Web/img/Hbiba-top-gerry-ai.png', tech: ['AI Image Gen'], image: 'https://noorgee.pk/Web/img/Hbiba-top-gerry-ai.png' },
+        { id: 20, category: 'ai', title: 'Short UGC for Perfume', desc: 'Perfume bottle US.noorgee.com product.', goals: 'Show video generating service ability.', link: 'https://noorgee.pk/Web/img/Perfume_bottle_on_202603181837.mp4', tech: ['AI Video Gen'], image: 'https://noorgee.pk/Web/img/Perfume_bottle_on_202603181837.mp4' },
+    ];
+
+    const overlay = document.getElementById('portfolio-modal-overlay');
+    const modalList = document.getElementById('modal-list');
+    const modalPreview = document.getElementById('modal-preview');
+    const tabWeb = document.getElementById('modal-tab-web');
+    const tabAi = document.getElementById('modal-tab-ai');
+
+    // Open / Close
+    document.getElementById('open-gallery-btn').addEventListener('click', () => {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        renderList('web');
+    });
+    document.getElementById('close-gallery-btn').addEventListener('click', closeGallery);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeGallery(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGallery(); });
+
+    function closeGallery() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Tabs
+    tabWeb.addEventListener('click', () => { tabWeb.classList.add('active'); tabAi.classList.remove('active'); renderList('web'); });
+    tabAi.addEventListener('click', () => { tabAi.classList.add('active'); tabWeb.classList.remove('active'); renderList('ai'); });
+
+    function renderList(category) {
+        modalList.innerHTML = '';
+        const items = portfolioData.filter(p => p.category === category);
+        items.forEach((project, i) => {
+            const div = document.createElement('div');
+            div.className = `modal-list-item ${i === 0 ? 'active' : ''}`;
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <span class="text-xl mt-0.5">${category === 'web' ? '🌐' : '💡'}</span>
+                    <div>
+                        <div class="font-semibold text-slate-800 text-sm leading-snug">${project.title}</div>
+                        <div class="text-xs text-slate-400 mt-1 line-clamp-1">${project.desc}</div>
+                    </div>
+                </div>`;
+            div.addEventListener('click', () => {
+                document.querySelectorAll('.modal-list-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+                renderPreview(project);
+            });
+            modalList.appendChild(div);
+            if (i === 0) renderPreview(project);
+        });
+    }
+
+    function renderPreview(project) {
+        modalPreview.classList.remove('preview-fade');
+        void modalPreview.offsetWidth;
+        modalPreview.classList.add('preview-fade');
+
+        const badges = project.tech.map(t =>
+            `<span class="px-3 py-1 bg-white text-slate-600 text-xs font-semibold rounded-full border border-slate-200 shadow-sm">${t}</span>`
+        ).join('');
+
+        let mediaHTML = '';
+        if (project.image) {
+            if (project.image.endsWith('.mp4')) {
+                mediaHTML = `<div class="w-full h-52 rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                    <video src="${project.image}" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
+                </div>`;
+            } else {
+                mediaHTML = `<div class="w-full h-52 rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center">
+                    <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
+                </div>`;
+            }
+        } else {
+            const grad = project.category === 'web'
+                ? 'from-blue-500 to-indigo-600'
+                : 'from-purple-500 to-pink-600';
+            mediaHTML = `<div class="w-full h-52 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center">
+                <span class="text-6xl font-black text-white/70 tracking-widest">${project.title.substring(0,2).toUpperCase()}</span>
+            </div>`;
         }
+
+        const linkHTML = project.link !== '#'
+            ? `<a href="${project.link}" target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full font-semibold text-sm hover:bg-amber-800 transition shadow-md">
+                Live Preview <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+               </a>`
+            : `<span class="px-6 py-3 bg-slate-200 text-slate-400 rounded-full font-medium text-sm">Demo Available Internally</span>`;
+
+        modalPreview.innerHTML = `
+            <div class="p-6">
+                ${mediaHTML}
+                <div class="flex flex-wrap gap-2 mt-5 mb-3">${badges}</div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-4">${project.title}</h2>
+                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 mb-4">
+                    <div class="text-xs font-black text-blue-600 uppercase tracking-wider mb-1">Description</div>
+                    <p class="text-slate-700 text-sm leading-relaxed">${project.desc}</p>
+                </div>
+                <div class="p-4 bg-amber-50 rounded-xl border border-amber-100 mb-6">
+                    <div class="text-xs font-black text-amber-600 uppercase tracking-wider mb-1">Project Goals</div>
+                    <p class="text-slate-700 text-sm leading-relaxed">${project.goals}</p>
+                </div>
+                <div class="border-t border-slate-200 pt-5">${linkHTML}</div>
+            </div>`;
+    }
     </script>
 </body>
 </html>
