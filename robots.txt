@@ -1,0 +1,10 @@
+## FILE 1: robots.txt
+## Location: web.noorgee.pk/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /admin_panel.php
+Disallow: /deploy.php
+Disallow: /.env
+Disallow: /.git/
+Sitemap: https://web.noorgee.pk/sitemap.xml
