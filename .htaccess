@@ -1,14 +1,14 @@
 ## FILE 2: .htaccess
-## Location: web.noorgee.pk/.htaccess
-
-
+## Location: noorgee.pk/Web/.htaccess
+## (یہی file web.noorgee.pk پر بھی apply ہوگی اگر document root same ہے)
+ 
 Options -Indexes
-
+ 
 # Gzip Compression
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
 </IfModule>
-
+ 
 # Browser Caching
 <IfModule mod_expires.c>
   ExpiresActive On
@@ -19,12 +19,17 @@ Options -Indexes
   ExpiresByType text/css "access plus 1 week"
   ExpiresByType application/javascript "access plus 1 week"
 </IfModule>
-
-# Force HTTPS (uncomment if SSL active)
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
+ 
+# Force HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+ 
+# 301 Redirect: noorgee.pk/Web/* → web.noorgee.pk/*
+RewriteCond %{HTTP_HOST} ^noorgee\.pk$ [NC]
+RewriteCond %{REQUEST_URI} ^/Web/(.*)$
+RewriteRule ^Web/(.*)$ https://web.noorgee.pk/$1 [R=301,L]
+ 
 # Protect sensitive files
 <FilesMatch "\.(env|gitignore|log)$">
   Order deny,allow
