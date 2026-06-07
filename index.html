@@ -122,6 +122,58 @@
         .service-popup img { width: 100%; border-radius: 0.5rem; margin-top: 0.5rem; border: 1px solid #eee; }
 
         /* =============================================
+           GALLERY STYLES (from masterpieces.html)
+        ============================================= */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .tab-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #0f172a;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.3);
+        }
+        .tab-btn:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+
+        .list-item {
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+        .list-item:hover {
+            background-color: #f8fafc;
+            transform: translateX(4px);
+        }
+        .list-item.active {
+            background-color: #f1f5f9;
+            border-left-color: #2563eb;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =============================================
            INLINE PORTFOLIO GALLERY STYLES
         ============================================= */
         #portfolio-modal-overlay {
@@ -508,36 +560,50 @@ Last Update: Tue 02-Jun-2026 | deploy.php
     <!-- =============================================
          PORTFOLIO SECTION — Inline Gallery
     ============================================= -->
-    <section id="portfolio" class="py-24 bg-slate-100">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-5xl font-bold mb-4 text-slate-900">Find your inspiration in NG Portfolio</h2>
-            <p class="text-gray-500 mb-10 font-urdu text-lg">ایکسپلوور کریں ہمارے تمام ویب اور اے آئی پروجیکٹس کا مجموعہ</p>
-
-            <!-- Open Gallery Button -->
-            <button id="open-gallery-btn" class="inline-flex items-center gap-3 px-12 py-5 bg-amber-800 text-white font-bold rounded-full hover:bg-amber-900 hover:scale-105 transition-all shadow-2xl shadow-amber-800/30 text-lg">
-                <i class="fas fa-door-open"></i>
-                <span> پروجیکٹس </span>
-            </button>
-
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-3xl mx-auto">
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                    <div class="text-3xl font-black text-amber-800 mb-1">11+</div>
-                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Web Projects</div>
-                </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                    <div class="text-3xl font-black text-amber-800 mb-1">14+</div>
-                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">AI Works</div>
-                </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                    <div class="text-3xl font-black text-amber-800 mb-1">4</div>
-                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Markets Served</div>
-                </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                    <div class="text-3xl font-black text-amber-800 mb-1">99.9%</div>
-                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Uptime</div>
+    <!-- ==========================================
+         PORTFOLIO GALLERY SECTION (Embedded from masterpieces.html)
+    =========================================== -->
+    <section id="portfolio" class="py-0 bg-slate-50">
+        <!-- Gallery Container -->
+        <div id="gallery" class="w-full bg-slate-50 flex flex-col pt-6 pb-4 px-4 md:px-12 min-h-screen">
+            
+            <!-- Header & Tabs -->
+            <div class="text-center mb-6 shrink-0 mt-6 md:mt-0">
+                <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">Our Portfolio Gallery</h1>
+                <div class="flex justify-center gap-4 bg-white p-2 inline-flex rounded-full shadow-sm border border-slate-200">
+                    <button id="tab-web" class="tab-btn active px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                        💻 Web Projects
+                    </button>
+                    <button id="tab-ai" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                        🤖 AI Works
+                    </button>
                 </div>
             </div>
+
+            <!-- Layout: 2 Columns -->
+            <div class="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden max-w-7xl mx-auto w-full">
+                
+                <!-- Left Side: List Column -->
+                <div class="w-full md:w-1/3 h-full overflow-y-auto bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-3 custom-scrollbar" id="list-container">
+                    <!-- Javascript will inject list items here -->
+                </div>
+
+                <!-- Right Side: Preview Box -->
+                <div class="w-full md:w-2/3 h-full bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 overflow-y-auto custom-scrollbar flex flex-col" id="preview-container">
+                    <!-- Javascript will inject preview content here -->
+                </div>
+
+            </div>
+
+            <!-- Footer Section -->
+            <footer class="mt-4 shrink-0 border-t border-slate-200 pt-3 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-slate-500 max-w-7xl mx-auto w-full">
+                <p>&copy; 2026 NoorGee WebMaster. All rights reserved.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-blue-600 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Contact Us</a>
+                </div>
+            </footer>
         </div>
     </section>
 
@@ -734,7 +800,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
     function topFunction() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
     // =============================================
-    // PORTFOLIO GALLERY DATA & LOGIC
+    // PORTFOLIO GALLERY DATA & LOGIC (Embedded from masterpieces.html)
     // =============================================
     const portfolioData = [
         { id: 1, category: 'web', title: 'Business & IT Consultant', desc: 'A client who offering business growth consultant , audit work , and I.T. solution like CRM integration and digital audit report etc.', goals: 'Make site for Presnet thier works to enterprise industrialest and services providrs who Non-Tech Savvy', link: 'https://businessitc.com/', tech: ['Web Site', 'Bussiness', 'consultant'] },
@@ -764,106 +830,140 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         { id: 112, category: 'ai', title: 'SehNama - FB Page', desc: 'Health Awernase', goals: 'Fb post writing and post image by ai automation make.com', link: 'https://www.facebook.com/SehtNama/', tech: ['Ai Social media automation'] },
     ];
 
-    const overlay = document.getElementById('portfolio-modal-overlay');
-    const modalList = document.getElementById('modal-list');
-    const modalPreview = document.getElementById('modal-preview');
-    const tabWeb = document.getElementById('modal-tab-web');
-    const tabAi = document.getElementById('modal-tab-ai');
+    // Gallery DOM elements
+    const listContainer = document.getElementById('list-container');
+    const previewContainer = document.getElementById('preview-container');
+    const tabWeb = document.getElementById('tab-web');
+    const tabAi = document.getElementById('tab-ai');
+    let currentCategory = 'web';
 
-    // Open / Close
-    document.getElementById('open-gallery-btn').addEventListener('click', () => {
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // Initialize gallery on page load
+    document.addEventListener('DOMContentLoaded', () => {
         renderList('web');
     });
-    document.getElementById('close-gallery-btn').addEventListener('click', closeGallery);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeGallery(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGallery(); });
 
-    function closeGallery() {
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+    // Tab switching
+    tabWeb.addEventListener('click', () => {
+        currentCategory = 'web';
+        tabWeb.classList.add('active');
+        tabAi.classList.remove('active');
+        renderList('web');
+    });
 
-    // Tabs
-    tabWeb.addEventListener('click', () => { tabWeb.classList.add('active'); tabAi.classList.remove('active'); renderList('web'); });
-    tabAi.addEventListener('click', () => { tabAi.classList.add('active'); tabWeb.classList.remove('active'); renderList('ai'); });
+    tabAi.addEventListener('click', () => {
+        currentCategory = 'ai';
+        tabAi.classList.add('active');
+        tabWeb.classList.remove('active');
+        renderList('ai');
+    });
 
+    // Render list items
     function renderList(category) {
-        modalList.innerHTML = '';
-        const items = portfolioData.filter(p => p.category === category);
-        items.forEach((project, i) => {
-            const div = document.createElement('div');
-            div.className = `modal-list-item ${i === 0 ? 'active' : ''}`;
-            div.innerHTML = `
+        listContainer.innerHTML = '';
+        
+        const filteredProjects = portfolioData.filter(p => p.category === category);
+        
+        if (filteredProjects.length === 0) {
+            listContainer.innerHTML = '<p class="p-4 text-slate-500 text-center mt-10">No projects found.</p>';
+            return;
+        }
+
+        filteredProjects.forEach((project, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = `list-item p-4 mb-2 rounded-xl cursor-pointer ${index === 0 ? 'active' : ''}`;
+            
+            const icon = category === 'web' ? '🌐' : '💡';
+
+            itemDiv.innerHTML = `
                 <div class="flex items-start gap-3">
-                    <span class="text-xl mt-0.5">${category === 'web' ? '🌐' : '💡'}</span>
+                    <div class="text-2xl mt-1">${icon}</div>
                     <div>
-                        <div class="font-semibold text-slate-800 text-sm leading-snug">${project.title}</div>
-                        <div class="text-xs text-slate-400 mt-1 line-clamp-1">${project.desc}</div>
+                        <h3 class="font-semibold text-slate-800 text-lg leading-tight">${project.title}</h3>
+                        <p class="text-sm text-slate-500 mt-1 line-clamp-1">${project.desc}</p>
                     </div>
-                </div>`;
-            div.addEventListener('click', () => {
-                document.querySelectorAll('.modal-list-item').forEach(el => el.classList.remove('active'));
-                div.classList.add('active');
+                </div>
+            `;
+
+            itemDiv.addEventListener('click', () => {
+                document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
+                itemDiv.classList.add('active');
                 renderPreview(project);
             });
-            modalList.appendChild(div);
-            if (i === 0) renderPreview(project);
+
+            listContainer.appendChild(itemDiv);
+
+            if (index === 0) renderPreview(project);
         });
     }
 
+    // Render preview
     function renderPreview(project) {
-        modalPreview.classList.remove('preview-fade');
-        void modalPreview.offsetWidth;
-        modalPreview.classList.add('preview-fade');
+        previewContainer.classList.remove('fade-in');
+        void previewContainer.offsetWidth;
+        previewContainer.classList.add('fade-in');
 
-        const badges = project.tech.map(t =>
-            `<span class="px-3 py-1 bg-white text-slate-600 text-xs font-semibold rounded-full border border-slate-200 shadow-sm">${t}</span>`
+        const techBadges = project.tech.map(t => 
+            `<span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full border border-slate-200">${t}</span>`
         ).join('');
 
-        let mediaHTML = '';
+        const initials = project.title.substring(0, 2).toUpperCase();
+        const bgGradient = project.category === 'web' 
+            ? 'bg-gradient-to-br from-blue-500 to-indigo-600' 
+            : 'bg-gradient-to-br from-purple-500 to-pink-600';
+
+        let headerGraphicHTML = '';
         if (project.image) {
             if (project.image.endsWith('.mp4')) {
-                mediaHTML = `<div class="w-full h-52 rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center">
-                    <video src="${project.image}" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
-                </div>`;
+                headerGraphicHTML = `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
+                     <video src="${project.image}" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
+                   </div>`;
             } else {
-                mediaHTML = `<div class="w-full h-52 rounded-2xl overflow-hidden bg-slate-100 flex items-center justify-center">
-                    <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
-                </div>`;
+                headerGraphicHTML = `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-100 flex items-center justify-center">
+                     <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
+                   </div>`;
             }
         } else {
-            const grad = project.category === 'web'
-                ? 'from-blue-500 to-indigo-600'
-                : 'from-purple-500 to-pink-600';
-            mediaHTML = `<div class="w-full h-52 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center">
-                <span class="text-6xl font-black text-white/70 tracking-widest">${project.title.substring(0,2).toUpperCase()}</span>
+            headerGraphicHTML = `<div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
+                <span class="text-5xl md:text-7xl font-bold text-white/80 tracking-widest">${initials}</span>
             </div>`;
         }
 
-        const linkHTML = project.link !== '#'
-            ? `<a href="${project.link}" target="_blank" rel="noopener"
-                class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full font-semibold text-sm hover:bg-amber-800 transition shadow-md">
-                Live Preview <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+        const linkButtonHTML = project.link !== '#' 
+            ? `<a href="${project.link}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-colors shadow-md">
+                Live Preview Link 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
                </a>`
-            : `<span class="px-6 py-3 bg-slate-200 text-slate-400 rounded-full font-medium text-sm">Demo Available Internally</span>`;
+            : `<span class="inline-flex items-center px-6 py-3 bg-slate-200 text-slate-500 rounded-full font-medium">Demo Available Internally</span>`;
 
-        modalPreview.innerHTML = `
-            <div class="p-6">
-                ${mediaHTML}
-                <div class="flex flex-wrap gap-2 mt-5 mb-3">${badges}</div>
-                <h2 class="text-2xl font-bold text-slate-900 mb-4">${project.title}</h2>
-                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 mb-4">
-                    <div class="text-xs font-black text-blue-600 uppercase tracking-wider mb-1">Description</div>
-                    <p class="text-slate-700 text-sm leading-relaxed">${project.desc}</p>
+        previewContainer.innerHTML = `
+            ${headerGraphicHTML}
+
+            <div class="p-6 md:p-8 flex-1 flex flex-col">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    ${techBadges}
                 </div>
-                <div class="p-4 bg-amber-50 rounded-xl border border-amber-100 mb-6">
-                    <div class="text-xs font-black text-amber-600 uppercase tracking-wider mb-1">Project Goals</div>
-                    <p class="text-slate-700 text-sm leading-relaxed">${project.goals}</p>
+                
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">${project.title}</h2>
+                
+                <div class="prose prose-slate max-w-none">
+                    <div class="mb-6 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                        <h4 class="text-sm uppercase tracking-wider font-bold text-blue-600 mb-2">Short Description</h4>
+                        <p class="text-slate-700 leading-relaxed">${project.desc}</p>
+                    </div>
+
+                    <div class="mb-8 p-4 bg-amber-50/50 rounded-xl border border-amber-100">
+                        <h4 class="text-sm uppercase tracking-wider font-bold text-amber-600 mb-2">Project Goals</h4>
+                        <p class="text-slate-700 leading-relaxed">${project.goals}</p>
+                    </div>
                 </div>
-                <div class="border-t border-slate-200 pt-5">${linkHTML}</div>
-            </div>`;
+                
+                <div class="mt-auto pt-6 border-t border-slate-100">
+                    ${linkButtonHTML}
+                </div>
+            </div>
+        `;
     }
     </script>
 
