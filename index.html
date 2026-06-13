@@ -571,10 +571,9 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         <!-- Gallery Container -->
         <div id="gallery" class="w-full bg-slate-50 flex flex-col pt-6 pb-4 px-4 md:px-12 min-h-screen">
             
-            <!-- Header & Tabs -->
+            <!-- Tabs & Header -->
             <div class="text-center mb-6 shrink-0 mt-6 md:mt-0">
-                <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">Our Portfolio Gallery</h1>
-                <div class="flex justify-center gap-4 bg-white p-2 inline-flex rounded-full shadow-sm border border-slate-200">
+                <div class="flex justify-center gap-4 bg-white p-2 inline-flex rounded-full shadow-sm border border-slate-200 mb-6">
                     <button id="tab-web" class="tab-btn active px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
                         💻 Web Projects
                     </button>
@@ -582,10 +581,11 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                         🤖 AI Works
                     </button>
                 </div>
+                <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight">Our Portfolio Gallery</h1>
             </div>
 
             <!-- Layout: 2 Columns -->
-            <div class="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden max-w-7xl mx-auto w-full">
+            <div class="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden max-w-7xl mx-auto w-full min-h-[700px]">
                 
                 <!-- Left Side: List Column -->
                 <div class="w-full md:w-1/3 h-full overflow-y-auto bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-3 custom-scrollbar" id="list-container">
@@ -593,7 +593,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                 </div>
 
                 <!-- Right Side: Preview Box -->
-                <div class="w-full md:w-2/3 h-full bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 overflow-y-auto custom-scrollbar flex flex-col" id="preview-container">
+                <div class="w-full md:w-2/3 h-full bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 overflow-y-auto custom-scrollbar flex flex-col min-h-[700px]" id="preview-container">
                     <!-- Javascript will inject preview content here -->
                 </div>
 
@@ -832,6 +832,11 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         { id: 110, category: 'ai', title: 'Blog NoorGee Pk', desc: 'Urdu blogsite', goals: 'Urdu blog writing by ai automation', link: 'blog.noorgee.pk', tech: ['Ai writing automation'] },
         { id: 111, category: 'ai', title: 'Karsaziyan - FB Page', desc: 'Welfare NGO website', goals: 'Fb post writing and post image by ai automation zap', link: 'https://www.facebook.com/karsaziyan.org/', tech: ['A Social media automation'] },
         { id: 112, category: 'ai', title: 'SehNama - FB Page', desc: 'Health Awernase', goals: 'Fb post writing and post image by ai automation make.com', link: 'https://www.facebook.com/SehtNama/', tech: ['Ai Social media automation'] },
+        { id: 113, category: 'ai', title: 'Perfume reel - Al Asad', desc: 'Professional AI-generated perfume advertisement reel.', goals: 'Showcase luxury product presentation using AI video generation.', link: 'https://www.youtube.com/watch?v=7YQ8YiNL_Us', tech: ['AI Video', 'Luxury Brand'] },
+        { id: 114, category: 'ai', title: 'Next-Gen AI Fertilizer Commercial', desc: 'Innovative commercial for agricultural products.', goals: 'Demonstrate AI capability in industrial and agricultural marketing.', link: 'https://youtu.be/SdCfjgnQByo', tech: ['AI Commercial', 'Agriculture'] },
+        { id: 115, category: 'ai', title: 'Personal Branding Intro', desc: 'Engaging AI intro for personal branding.', goals: 'Create a powerful first impression for personal brands.', link: 'https://youtu.be/KFdsdEfuR1o', tech: ['AI Intro', 'Personal Branding'] },
+        { id: 116, category: 'ai', title: 'The Ultimate Leather Bag Unboxing', desc: 'AI-simulated unboxing experience for leather products.', goals: 'Showcase product details through AI-driven unboxing videos.', link: 'https://youtube.com/shorts/v-PB5v4W2i8', tech: ['AI Unboxing', 'Leather Product'] },
+        { id: 117, category: 'ai', title: 'Perfume UGC Luxury Review', desc: 'AI-generated user-generated content (UGC) style review.', goals: 'Demonstrate authentic-looking AI reviews for luxury brands.', link: 'https://youtu.be/CxIVzNrmuGg', tech: ['AI UGC', 'Luxury Review'] },
     ];
 
     // Gallery DOM elements
@@ -916,18 +921,32 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             : 'bg-gradient-to-br from-purple-500 to-pink-600';
 
         let headerGraphicHTML = '';
-        if (project.image) {
+        const isYouTube = project.link && (project.link.includes('youtube.com') || project.link.includes('youtu.be'));
+        
+        if (isYouTube) {
+            let videoId = '';
+            if (project.link.includes('v=')) {
+                videoId = project.link.split('v=')[1].split('&')[0];
+            } else if (project.link.includes('shorts/')) {
+                videoId = project.link.split('shorts/')[1].split('?')[0];
+            } else {
+                videoId = project.link.split('/').pop();
+            }
+            headerGraphicHTML = `<div class="w-full h-[400px] rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
+                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+               </div>`;
+        } else if (project.image) {
             if (project.image.endsWith('.mp4')) {
-                headerGraphicHTML = `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
+                headerGraphicHTML = `<div class="w-full h-[400px] rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
                      <video src="${project.image}" autoplay loop muted playsinline class="w-full h-full object-contain"></video>
                    </div>`;
             } else {
-                headerGraphicHTML = `<div class="w-full h-48 md:h-64 rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-100 flex items-center justify-center">
+                headerGraphicHTML = `<div class="w-full h-[400px] rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-100 flex items-center justify-center">
                      <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover">
                    </div>`;
             }
         } else {
-            headerGraphicHTML = `<div class="w-full h-48 md:h-64 ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
+            headerGraphicHTML = `<div class="w-full h-[400px] ${bgGradient} rounded-2xl shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
                 <span class="text-5xl md:text-7xl font-bold text-white/80 tracking-widest">${initials}</span>
             </div>`;
         }
