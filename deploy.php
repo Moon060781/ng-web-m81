@@ -58,8 +58,9 @@ if ($is_authenticated && isset($_POST['action'])) {
                 if (!$has_identity) {
                     $output = "Identity missing.";
                 } else {
-                    $msg = !empty($_POST['commit_msg']) ? $_POST['commit_msg'] : "Update: " . date('Y-m-d H:i:s');
-                    $desc = !empty($_POST['commit_desc']) ? $_POST['commit_desc'] : "";
+                    $msg = !empty($_POST['commit_msg']) ? trim($_POST['commit_msg']) : "Update: " . date('Y-m-d H:i:s');
+                    $desc = !empty($_POST['commit_desc']) ? trim($_POST['commit_desc']) : "";
+                    // Ensure the message follows conventional format if possible, otherwise use as is
                     $safe_msg = escapeshellarg($msg . ($desc ? "\n\n" . $desc : ""));
                     $output = shell_exec("git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1");
                 }
@@ -222,11 +223,11 @@ if ($is_authenticated) {
                                     <span>Commit Highlight</span>
                                     <span id="time-remaining" class="text-slate-500 lowercase font-normal"></span>
                                 </label>
-                                <textarea name="commit_msg" rows="2" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_title); ?></textarea>
+                                <textarea name="commit_msg" rows="2" placeholder="e.g., feat: add new feature" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"></textarea>
                             </div>
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-blue-400 uppercase ml-1">Extended Description</label>
-                                <textarea name="commit_desc" rows="8" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
+                                <textarea name="commit_desc" rows="8" placeholder="Provide more details about the changes..." class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"></textarea>
                             </div>
                         </div>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
