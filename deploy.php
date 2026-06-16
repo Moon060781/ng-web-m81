@@ -189,19 +189,31 @@ if ($is_authenticated) {
                                 <button type="submit" class="text-[11px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">Revert Last</button>
                             </form>
                         </div>
-                        <form method="POST" class="space-y-2">
-                            <input type="hidden" name="action" value="restore_commit">
-                            <select name="commit_hash" class="w-full input-field rounded-lg px-2 py-1.5 text-xs outline-none" onchange="document.getElementById('c_desc').innerText = this.options[this.selectedIndex].getAttribute('data-body') || 'No extended description.'">
+                        <div class="space-y-2">
+                            <select id="commit_select" class="w-full input-field rounded-lg px-2 py-1.5 text-xs outline-none" onchange="handleCommitSelect()">
                                 <option value="">Select commit...</option>
                                 <?php foreach ($commit_history as $c): ?>
-                                    <option value="<?php echo $c['hash']; ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>">
+                                    <option value="<?php echo $c['hash']; ?>" data-subject="<?php echo htmlspecialchars($c['subject']); ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>" data-date="<?php echo $c['date']; ?>">
                                         [<?php echo substr($c['hash'], 0, 7); ?>] <?php echo $c['date']; ?> - <?php echo htmlspecialchars($c['subject']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <div id="c_desc" class="text-xs text-slate-400 italic h-20 overflow-y-auto px-1 leading-relaxed whitespace-pre-wrap">Select a commit to see details.</div>
-                            <button type="submit" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 py-2 rounded-lg text-xs font-bold uppercase border border-blue-500/30">Restore Version</button>
-                        </form>
+                            <div id="c_preview" class="hidden bg-slate-800/50 border border-slate-600/50 rounded-lg p-2 space-y-2">
+                                <div class="text-xs text-slate-300">
+                                    <div class="font-bold text-blue-400 mb-1" id="c_subject"></div>
+                                    <div class="text-slate-400 text-[10px] mb-2" id="c_date"></div>
+                                    <div class="text-slate-400 italic h-16 overflow-y-auto whitespace-pre-wrap leading-relaxed" id="c_desc"></div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="cancelRestore()" class="flex-1 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 py-1.5 rounded text-xs font-bold uppercase border border-slate-600/30">Cancel</button>
+                                    <form method="POST" class="flex-1" id="restore_form">
+                                        <input type="hidden" name="action" value="restore_commit">
+                                        <input type="hidden" name="commit_hash" id="restore_hash">
+                                        <button type="submit" onclick="return confirm('Are you sure you want to restore this commit?')" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 py-1.5 rounded text-xs font-bold uppercase border border-red-600/30">Confirm Restore</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Footer Links -->
@@ -269,6 +281,35 @@ if ($is_authenticated) {
         }
         setInterval(updateTime, 10000);
         updateTime();
+        
+        // Restore commit preview logic
+        function handleCommitSelect() {
+            const select = document.getElementById('commit_select');
+            const preview = document.getElementById('c_preview');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (!selectedOption.value) {
+                preview.classList.add('hidden');
+                return;
+            }
+            
+            const subject = selectedOption.getAttribute('data-subject');
+            const body = selectedOption.getAttribute('data-body');
+            const date = selectedOption.getAttribute('data-date');
+            const hash = selectedOption.value;
+            
+            document.getElementById('c_subject').innerText = subject;
+            document.getElementById('c_date').innerText = 'Date: ' + date + ' | Hash: ' + hash.substring(0, 7);
+            document.getElementById('c_desc').innerText = body || 'No extended description.';
+            document.getElementById('restore_hash').value = hash;
+            
+            preview.classList.remove('hidden');
+        }
+        
+        function cancelRestore() {
+            document.getElementById('commit_select').value = '';
+            document.getElementById('c_preview').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
