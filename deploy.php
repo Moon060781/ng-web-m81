@@ -235,11 +235,11 @@ if ($is_authenticated) {
                                     <span>Commit Highlight</span>
                                     <span id="time-remaining" class="text-slate-500 lowercase font-normal"></span>
                                 </label>
-                                <textarea name="commit_msg" rows="2" placeholder="e.g., feat: add new feature" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"></textarea>
+                                <textarea name="commit_msg" rows="2" placeholder="e.g., feat: add new feature" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_title); ?></textarea>
                             </div>
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-blue-400 uppercase ml-1">Extended Description</label>
-                                <textarea name="commit_desc" rows="8" placeholder="Provide more details about the changes..." class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"></textarea>
+                                <textarea name="commit_desc" rows="8" placeholder="Provide more details about the changes..." class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_desc); ?></textarea>
                             </div>
                         </div>
                         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
