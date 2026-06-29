@@ -74,13 +74,6 @@ ng-web-m81/
 ├── .gitignore
 ├── img/                    # Project screenshots, GIFs, AI images, UGC videos
 │   └── thumbnails/         # Compressed thumbnails for grid views
-├── SKILL.md                # Skill manifesto (internal metadata)
-├── DEPLOYMENT.md           # GitHub Pages deployment guide
-├── MASTERPIECES_GUIDE.md   # Integration guide for the portfolio component
-├── IMAGE_MAPPING.md        # Audit of which images exist / are missing
-├── GITHUB_PAGES_SETUP.txt
-├── error_log               # cPanel PHP error log (dev reference)
-├── bk-wb-index.html        # Backup of a previous index.html revision
 └── README.md               # This file
 ```
 
@@ -169,7 +162,7 @@ DB credentials live in `send_message.php` and `admin_panel.php` and are read fro
 
 ## Image / Media Assets
 
-All media lives under `img/`. A full audit is in `IMAGE_MAPPING.md`.
+All media lives under `img/`.
 
 **Present (used by portfolio):**
 - Screenshots / GIFs: `bic-screen.gif`, `noorgee_scroll.gif`, `ng-us_claud.gif`, `ng-pk_claud.gif`, `noorgee_pk_Web.gif`, `noorgee_pk_Dev_.gif`, `it-ng-site-tool-screen.gif`, `kwa-screen.gif`, `nm-noorgee_claud.gif`, `blog_noorgee_preview.gif`, `blog_noorgee_pk_preview.gif`, `fsk_claude_preview-1.gif`, `businessitc-site-screenshot-Animation.gif`, `ng-pk-anim-gif-design.gif`, `portfolio-ng-pk-02.gif`, `noorgee_pk_claude.gif`
@@ -219,19 +212,39 @@ Create the `messages` table (see [Backend](#backend-php--mysql)) and update the 
 - Pages URL: `https://moon060781-bot.github.io/ng-web-m81`.
 - Pages only serves the static front-end; PHP endpoints (`send_message.php`, `admin_panel.php`, `deploy.php`) do not run on Pages.
 
-See `DEPLOYMENT.md` and `GITHUB_PAGES_SETUP.txt` for the full Pages walkthrough.
+See `_config.yml` for the Pages build settings.
 
 ---
 
 ## Known Issues & Notes
 
-- **`error_log`** shows two recurring production failures:
-  1. `mysqli` access denied for `noorgeec_pf@localhost` — caused by a stale password in an older revision of `send_message.php`. The current PDO version uses `noorgeec_wb` and should resolve this.
-  2. `Call to undefined function mail()` — the `mail()` PHP extension is disabled on the host. The contact form now stores to MySQL instead of emailing; the legacy `bk-wb-index.html` still references `mail()` and is kept only as a backup.
+- **Production PHP errors (historical):** the host previously logged `mysqli` access-denied errors (stale password in an older `send_message.php` revision) and `Call to undefined function mail()` (the `mail()` extension is disabled on the host). The current `send_message.php` uses PDO with the correct MySQL user and stores submissions to MySQL instead of emailing, so both issues are resolved at the source.
 - **Hardcoded passwords** in `admin_panel.php` and `deploy.php` (`"123"`). Rotate before exposing the repo.
 - **`index.html`** has a duplicate JSON-LD schema block (one in `<head>`, one after the gallery script). The second block is wrapped in JS-style comments and is ignored by browsers; it should be removed in a future cleanup.
 - **`masterpieces.html`** references a Gemini API key left blank (`const apiKey = ""`) — the AI pitch generator will fail until a key is injected at runtime.
 - **`faq.html`** has a syntax issue: the JSON-LD `<script>` block is placed after `</body>` and uses JS-style `//` comments inside HTML, which can render as text. Move it inside `<body>` and remove the comment lines.
+
+---
+
+## Commit Convention
+
+Every change applied to this repository follows this shape:
+
+**1. Commit message** — roughly 10 words, summarizing what the change does.
+
+> Example: `Remove unused backup and doc files from repo`
+
+**2. Extended description** — required. Short, complete bullet points covering the what and why of the change.
+
+> Example:
+> - Dropped `bk-wb-index.html` and `index.html.backup` (stale homepage backups, not linked anywhere).
+> - Removed `SKILL.md`, `MASTERPIECES_GUIDE.md`, `DEPLOYMENT.md`, `GITHUB_PAGES_SETUP.txt`, `IMAGE_MAPPING.md` (internal docs not consumed by the site or build).
+> - Removed `error_log` (cPanel runtime log, not source) and empty `package-lock.json` (no `package.json` exists).
+> - Updated README structure tree and Known Issues to match.
+
+**3. Footer** — required, on its own line at the end of the description:
+
+> `This update occurred via bolt.new id G247`
 
 ---
 
