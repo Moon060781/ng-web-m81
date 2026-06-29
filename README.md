@@ -228,23 +228,39 @@ See `_config.yml` for the Pages build settings.
 
 ## Commit Convention
 
-Every change applied to this repository follows this shape:
+Every change applied to this repository follows this shape. The **Extended Description** field in `deploy.php` must never be left empty — it has three required parts:
 
 **1. Commit message** — roughly 10 words, summarizing what the change does.
 
 > Example: `Remove unused backup and doc files from repo`
 
-**2. Extended description** — required. Short, complete bullet points covering the what and why of the change.
+**2. Extended description** — required, three parts inside the description box:
 
-> Example:
-> - Dropped `bk-wb-index.html` and `index.html.backup` (stale homepage backups, not linked anywhere).
-> - Removed `SKILL.md`, `MASTERPIECES_GUIDE.md`, `DEPLOYMENT.md`, `GITHUB_PAGES_SETUP.txt`, `IMAGE_MAPPING.md` (internal docs not consumed by the site or build).
-> - Removed `error_log` (cPanel runtime log, not source) and empty `package-lock.json` (no `package.json` exists).
-> - Updated README structure tree and Known Issues to match.
+- **Part A — Page URL / path:** the file or page that was changed, written first.
+  > Example: `Page: README.md`
+- **Part B — Detail summary about the changes:** short, complete bullet points covering the what and why.
+  > Example:
+  > - Dropped `bk-wb-index.html` and `index.html.backup` (stale homepage backups, not linked anywhere).
+  > - Removed `SKILL.md`, `MASTERPIECES_GUIDE.md`, `DEPLOYMENT.md`, `GITHUB_PAGES_SETUP.txt`, `IMAGE_MAPPING.md` (internal docs not consumed by the site or build).
+  > - Removed `error_log` (cPanel runtime log, not source) and empty `package-lock.json` (no `package.json` exists).
+  > - Updated README structure tree and Known Issues to match.
+- **Part C — Platform footer:** the last line, always the working platform reference.
+  > Example: `Updated via: bolt.new/grapheart247`
 
-**3. Footer** — required, on its own line at the end of the description:
+**3. Full example of a filled Extended Description box:**
 
-> `This update occurred via bolt.new id G247`
+```
+Page: README.md
+
+- Dropped bk-wb-index.html and index.html.backup (stale homepage backups, not linked anywhere).
+- Removed SKILL.md, MASTERPIECES_GUIDE.md, DEPLOYMENT.md, GITHUB_PAGES_SETUP.txt, IMAGE_MAPPING.md (internal docs not consumed by the site or build).
+- Removed error_log (cPanel runtime log, not source) and empty package-lock.json (no package.json exists).
+- Updated README structure tree and Known Issues to match.
+
+Updated via: bolt.new/grapheart247
+```
+
+> **Reminder for the deployer:** when pushing from `https://web.noorgee.pk/deploy.php`, never leave the "Extended Description" textarea empty. Always fill Part A (page path), Part B (change summary bullets), and Part C (platform footer `Updated via: bolt.new/grapheart247`).
 
 ---
 
