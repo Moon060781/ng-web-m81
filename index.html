@@ -727,9 +727,10 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                 <div>
                     <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-sm">Support & Legal</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="#" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-file-contract text-xs"></i> Terms & Conditions</a></li>
-                        <li><a href="#" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-circle-question text-xs"></i> FAQ</a></li>
-                        <li><a href="#contact-form" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-paper-plane text-xs"></i> Contact</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-file-contract text-xs"></i> Terms &amp; Conditions</a></li>
+                        <li><a href="faq.html" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-circle-question text-xs"></i> FAQ</a></li>
+                        <li><a href="help.html" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-life-ring text-xs"></i> Help</a></li>
+                        <li><a href="#contact-form" class="hover:text-amber-500 transition flex items-center gap-2"><i class="fa-solid fa-paper-plane text-xs"></i> Write Message Us</a></li>
                     </ul>
                 </div>
 
@@ -766,15 +767,63 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             </div>
         </div>
     </footer>
-    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: July 15, 2026 11:35 AM by AntiGravity</p>
+    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: July 17, 2026 12:58 PM by AntiGravity</p>
 
-    <!-- Floating Elements -->
-    <a href="https://wa.me/923323320369" target="_blank" class="whatsapp-float">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+    <!-- Go to Top Button -->
     <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
+
+    <!-- Multi-Chat Widget -->
+    <div id="chatWidget" style="position:fixed;bottom:30px;right:30px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+        <!-- Chat Options (hidden by default) -->
+        <div id="chatOptions" style="display:none;flex-direction:column;align-items:flex-end;gap:10px;">
+            <!-- WhatsApp -->
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="background:#1b1b2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.3);">WhatsApp</span>
+                <a href="https://wa.me/923323320369" target="_blank"
+                   style="width:50px;height:50px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 6px 18px rgba(37,211,102,0.45);text-decoration:none;transition:transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+            <!-- Facebook Messenger -->
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="background:#1b1b2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.3);">Messenger</span>
+                <a href="https://m.me/NoorGeeWebMaster" target="_blank"
+                   style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#0078ff,#a033ff);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 6px 18px rgba(0,120,255,0.4);text-decoration:none;transition:transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-brands fa-facebook-messenger"></i>
+                </a>
+            </div>
+            <!-- Telegram -->
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="background:#1b1b2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.3);">Telegram</span>
+                <a href="https://t.me/NoorGeeWebMaster" target="_blank"
+                   style="width:50px;height:50px;border-radius:50%;background:#229ed9;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 6px 18px rgba(34,158,217,0.45);text-decoration:none;transition:transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-brands fa-telegram"></i>
+                </a>
+            </div>
+        </div>
+        <!-- Main Toggle Button -->
+        <button id="chatToggleBtn" onclick="toggleChat()"
+                style="width:60px;height:60px;border-radius:50%;background:#5d4037;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 10px 25px rgba(93,64,55,0.4);transition:all 0.3s ease;"
+                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <i id="chatToggleIcon" class="fa-solid fa-comments"></i>
+        </button>
+    </div>
+    <script>
+        function toggleChat() {
+            const opts = document.getElementById('chatOptions');
+            const icon = document.getElementById('chatToggleIcon');
+            const btn  = document.getElementById('chatToggleBtn');
+            const open = opts.style.display === 'flex';
+            opts.style.display = open ? 'none' : 'flex';
+            icon.className = open ? 'fa-solid fa-comments' : 'fa-solid fa-xmark';
+            btn.style.background = open ? '#5d4037' : '#1b1b2f';
+        }
+    </script>
 
     <!-- =============================================
          SCRIPTS
