@@ -368,8 +368,33 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             
             <div class="hidden md:flex items-center gap-10">
                 <a href="#home" class="text-sm font-bold text-slate-900 hover:text-amber-800 transition nav-animate" style="animation-delay: 0.1s">Home</a>
-                <a href="#services" class="text-sm font-bold text-slate-600 hover:text-amber-800 transition nav-animate" style="animation-delay: 0.2s">Services</a>
-                <a href="#portfolio" class="text-sm font-bold text-slate-600 hover:text-amber-800 transition nav-animate" style="animation-delay: 0.3s">Portfolio</a>
+                
+                <!-- Services Dropdown -->
+                <div class="relative group nav-animate" style="animation-delay: 0.2s">
+                    <a href="#services" class="text-sm font-bold text-slate-600 hover:text-amber-800 transition flex items-center gap-1 py-2 cursor-pointer">
+                        Services <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
+                    </a>
+                    <div class="absolute top-full left-0 mt-1 w-64 bg-white border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-3 z-50">
+                        <a href="#services" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">🌐 Web &amp; Hosting Solutions</a>
+                        <a href="#services" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">🤖 AI &amp; Automation</a>
+                        <a href="#services" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">✍️ Writing &amp; Humanize Service</a>
+                        <a href="#services" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">💳 Tools Subscription</a>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Dropdown -->
+                <div class="relative group nav-animate" style="animation-delay: 0.3s">
+                    <a href="#portfolio" class="text-sm font-bold text-slate-600 hover:text-amber-800 transition flex items-center gap-1 py-2 cursor-pointer">
+                        Portfolio <i class="fa-solid fa-chevron-down text-[10px] ml-0.5"></i>
+                    </a>
+                    <div class="absolute top-full left-0 mt-1 w-64 bg-white border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-3 z-50">
+                        <a href="#portfolio" onclick="selectPortfolioTab('web')" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">💻 Web Projects</a>
+                        <a href="#portfolio" onclick="selectPortfolioTab('ai')" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">🤖 AI Works</a>
+                        <a href="#portfolio" onclick="selectPortfolioTab('tools')" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">💳 Tools Subscription</a>
+                        <a href="#portfolio" onclick="selectPortfolioTab('writing')" class="block px-6 py-2 text-xs font-bold text-slate-600 hover:text-amber-800 hover:bg-slate-50 transition">✍️ Writing &amp; Humanize</a>
+                    </div>
+                </div>
+
                 <a href="#team" class="text-sm font-bold text-slate-600 hover:text-amber-800 transition nav-animate" style="animation-delay: 0.4s">Team</a>
                 <a href="#contact-form" class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-amber-800 transition shadow-lg shadow-slate-900/10 nav-animate" style="animation-delay: 0.5s">Hire Us</a>
             </div>
@@ -444,6 +469,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1: Web & Hosting Solutions -->
                 <div class="p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-amber-800/30 transition duration-500 group">
                     <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-800 text-2xl shadow-sm mb-8 group-hover:scale-110 transition duration-500">
                         <i class="fa-solid fa-laptop-code"></i>
@@ -478,6 +504,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                     </ul>
                 </div>
 
+                <!-- Card 2: AI & Automation -->
                 <div class="p-10 rounded-[2.5rem] bg-slate-900 text-white border border-slate-800 hover:border-amber-800/30 transition duration-500 group">
                     <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center text-amber-500 text-2xl shadow-sm mb-8 group-hover:scale-110 transition duration-500">
                         <i class="fa-solid fa-robot"></i>
@@ -515,6 +542,100 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                             <div class="service-popup">
                                 <p class="text-sm font-bold text-amber-800 mb-1">AI Automation</p>
                                 <img src="img/ng-ai-automat.jpg" alt="AI Automation Preview" onerror="this.src='https://via.placeholder.com/280x150?text=AI+Automation'">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Writing & Humanize Service -->
+                <div class="p-10 rounded-[2.5rem] bg-slate-50 border border-slate-100 hover:border-amber-800/30 transition duration-500 group">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-800 text-2xl shadow-sm mb-8 group-hover:scale-110 transition duration-500">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Writing &amp; Humanize Service</h3>
+                    <p class="text-gray-500 mb-8 leading-relaxed">Professional assistance for academic research projects, thesis formatting, data analysis, and Turnitin similarity reduction.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Research Report &amp; Formatting</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Research Report &amp; Formatting</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Assistance with semester projects, thesis, dissertation, and manuscript formatting.</p>
+                                <img src="img/ng-ai-content.jpg" alt="Research Formatting" onerror="this.src='https://via.placeholder.com/280x150?text=Research'">
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Turnitin Plagiarism &amp; AI Analysis</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Turnitin Plagiarism &amp; AI Analysis</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Official Turnitin checks, AI detection audits, and similarity index reports.</p>
+                                <img src="img/ng-ai-content.jpg" alt="Plagiarism Check" onerror="this.src='https://via.placeholder.com/280x150?text=Plagiarism'">
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>AI Content Humanization</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">AI Content Humanization</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Rewriting and humanizing AI-generated copy to bypass detection algorithms.</p>
+                                <img src="img/ng-ai-content.jpg" alt="AI Humanizer" onerror="this.src='https://via.placeholder.com/280x150?text=AI+Humanizer'">
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-600 service-item">
+                            <i class="fa-solid fa-check text-amber-600"></i>
+                            <span>Statistical &amp; Econometric Analysis</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Statistical &amp; Econometric Analysis</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Expert regressions, thematic coding &amp; analyses via SPSS, Gretl, Stata, R, Python, EViews, NVivo.</p>
+                                <img src="img/ng-ai-automat.jpg" alt="Data Analysis" onerror="this.src='https://via.placeholder.com/280x150?text=Data+Analysis'">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: Tools Subscription -->
+                <div class="p-10 rounded-[2.5rem] bg-slate-900 text-white border border-slate-800 hover:border-amber-800/30 transition duration-500 group">
+                    <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center text-amber-500 text-2xl shadow-sm mb-8 group-hover:scale-110 transition duration-500">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Tools Subscription</h3>
+                    <p class="text-slate-400 mb-8 leading-relaxed">Genuine access to premium tools including ChatGPT Pro, Claude Pro, Gemini Pro, Canva Pro, Netflix, and more.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4 text-slate-300 service-item">
+                            <i class="fa-solid fa-check text-amber-500"></i>
+                            <span>Premium AI Accounts</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Premium AI Accounts</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Genuine, paid access to ChatGPT Pro, Claude Pro, Gemini Pro, and Grok Premium.</p>
+                                <img src="img/ng-ai-img.jpg" alt="AI Accounts" onerror="this.src='https://via.placeholder.com/280x150?text=AI+Accounts'">
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-4 text-slate-300 service-item">
+                            <i class="fa-solid fa-check text-amber-500"></i>
+                            <span>Creative &amp; Editing Tools</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Creative &amp; Editing Tools</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Full subscription setups for Canva Pro, CapCut Pro, and other creator assets.</p>
+                                <img src="img/ng-ai-vid.jpg" alt="Creative Tools" onerror="this.src='https://via.placeholder.com/280x150?text=Creative+Tools'">
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-4 text-slate-300 service-item">
+                            <i class="fa-solid fa-check text-amber-500"></i>
+                            <span>Streaming &amp; Utilities</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Streaming &amp; Utilities</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Secure credentials for Netflix, Amazon Prime, and NordVPN subscriptions.</p>
+                                <img src="img/ng-ai-automat.jpg" alt="Utilities" onerror="this.src='https://via.placeholder.com/280x150?text=Utilities'">
+                            </div>
+                        </li>
+                        <li class="flex items-center gap-4 text-slate-300 service-item">
+                            <i class="fa-solid fa-check text-amber-500"></i>
+                            <span>Academic Pro Tools</span>
+                            <div class="service-popup">
+                                <p class="text-sm font-bold text-amber-800 mb-1">Academic Pro Tools</p>
+                                <p class="text-xs text-slate-600 leading-relaxed">Turnitin Similarity Check, AI Detection, and Plagiarism Reports on demand.</p>
+                                <img src="img/ng-ai-content.jpg" alt="Academic Tools" onerror="this.src='https://via.placeholder.com/280x150?text=Academic+Tools'">
                             </div>
                         </li>
                     </ul>
@@ -570,12 +691,18 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             
             <!-- Tabs & Header -->
             <div class="text-center mb-6 shrink-0 mt-6 md:mt-0">
-                <div class="flex justify-center gap-4 bg-white p-2 inline-flex rounded-full shadow-sm border border-slate-200 mb-6">
+                <div class="flex flex-wrap justify-center gap-3 bg-white p-2 inline-flex rounded-[2rem] shadow-sm border border-slate-200 mb-6">
                     <button id="tab-web" class="tab-btn active px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
                         💻 Web Projects
                     </button>
                     <button id="tab-ai" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
                         🤖 AI Works
+                    </button>
+                    <button id="tab-tools" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                        💳 Tools Subscription
+                    </button>
+                    <button id="tab-writing" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                        ✍️ Writing &amp; Humanize
                     </button>
                 </div>
                 <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight">Our Portfolio Gallery</h1>
@@ -632,6 +759,8 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                 <div class="inline-flex bg-slate-100 p-1.5 rounded-full gap-1">
                     <button id="modal-tab-web" class="modal-tab-btn active">💻 Web Projects</button>
                     <button id="modal-tab-ai" class="modal-tab-btn">🤖 AI Works</button>
+                    <button id="modal-tab-tools" class="modal-tab-btn">💳 Tools Subscription</button>
+                    <button id="modal-tab-writing" class="modal-tab-btn">✍️ Writing &amp; Humanize</button>
                 </div>
             </div>
 
@@ -761,7 +890,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             </div>
         </div>
     </footer>
-    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: July 18, 2026 6:10 PM by AntiGravity</p>
+    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: July 18, 2026 7:20 PM by AntiGravity</p>
 
     <!-- Go to Top Button -->
     <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
@@ -888,6 +1017,16 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         { id: 115, category: 'ai', title: 'Personal Branding Intro', desc: 'Engaging AI intro for personal branding.', goals: 'Create a powerful first impression for personal brands.', link: 'https://youtu.be/KFdsdEfuR1o', tech: ['AI Intro', 'Personal Branding'] },
         { id: 116, category: 'ai', title: 'The Ultimate Leather Bag Unboxing', desc: 'AI-simulated unboxing experience for leather products.', goals: 'Showcase product details through AI-driven unboxing videos.', link: 'https://youtube.com/shorts/v-PB5v4W2i8', tech: ['AI Unboxing', 'Leather Product'] },
         { id: 117, category: 'ai', title: 'Perfume UGC Luxury Review', desc: 'AI-generated user-generated content (UGC) style review.', goals: 'Demonstrate authentic-looking AI reviews for luxury brands.', link: 'https://youtu.be/CxIVzNrmuGg', tech: ['AI UGC', 'Luxury Review'] },
+        
+        // --- TOOLS SUBSCRIPTIONS (Service#3) ---
+        { id: 201, category: 'tools', title: 'Athar Premium Subscriptions', desc: 'Genuine access to paid pro tools including ChatGPT Pro, Claude Pro, Canva Pro, Netflix, Amazon Prime, CapCut Pro, Grok Premium, NordVPN, and Turnitin similarity reports.', goals: 'Get premium accounts with secure login, instant activation, and friendly customer support. All tools paid. WhatsApp: 03410235886.', link: 'https://wa.me/923410235886', tech: ['Premium Accounts', 'Genuine Access', 'Instant Setup'], image: 'https://noorgee.pk/Web/img/ng-ai-automat.jpg' },
+        { id: 202, category: 'tools', title: 'AI & Creative Premium Suite', desc: 'Pro access setups for ChatGPT Pro, Claude Pro, Gemini Pro, and Canva Pro template library.', goals: 'Empower writing, programming, and graphic designs with cutting-edge AI and creator templates.', link: 'https://wa.me/923410235886', tech: ['ChatGPT Pro', 'Claude Pro', 'Canva Pro'], image: 'https://noorgee.pk/Web/img/ng-ai-img.jpg' },
+        { id: 203, category: 'tools', title: 'Academic Reports & Subscriptions', desc: 'Official Turnitin Similarity Check, AI Detection, and Plagiarism Reports on-demand.', goals: 'Verify document integrity, check plagiarism levels, and analyze AI scoring index instantly.', link: 'https://wa.me/923410235886', tech: ['Turnitin', 'AI Detection', 'Plagiarism Check'], image: 'https://noorgee.pk/Web/img/ng-ai-content.jpg' },
+
+        // --- WRITING & HUMANIZE SERVICES (Service#4) ---
+        { id: 301, category: 'writing', title: 'Academic Research & Dissertation Support', desc: 'Professional support for semester projects, thesis drafting, research papers, and manuscript publications.', goals: 'Receive confidential, reliable formatting and structure styling support tailored for undergraduate to PhD students.', link: '#', tech: ['Academic Writing', 'Formatting', 'Thesis Help'], image: 'https://noorgee.pk/Web/img/ng-ai-content.jpg' },
+        { id: 302, category: 'writing', title: 'AI Content Humanization & Paraphrasing', desc: 'Plagiarism reduction, similarity percentage optimization, and humanizing of AI-generated content.', goals: 'Ensure AI texts flow naturally, retain factual accuracy, and pass Turnitin checks with clean percentages.', link: '#', tech: ['Plagiarism Reduction', 'Content Humanizer', 'Paraphrasing'], image: 'https://noorgee.pk/Web/img/ng-ai-content.jpg' },
+        { id: 303, category: 'writing', title: 'Statistical & Quantitative Data Analysis', desc: 'Expert econometric models, statistical testing, qualitative coding, and results interpretation.', goals: 'Data computation using professional tools: SPSS, Gretl, Stata, R, Python, EViews, NVivo, and Atlas.ti.', link: '#', tech: ['SPSS', 'Stata', 'R & Python', 'Data Analytics'], image: 'https://noorgee.pk/Web/img/ng-ai-automat.jpg' }
     ];
 
     // Gallery DOM elements
@@ -895,27 +1034,47 @@ Last Update: Tue 02-Jun-2026 | deploy.php
     const previewContainer = document.getElementById('preview-container');
     const tabWeb = document.getElementById('tab-web');
     const tabAi = document.getElementById('tab-ai');
+    const tabTools = document.getElementById('tab-tools');
+    const tabWriting = document.getElementById('tab-writing');
     let currentCategory = 'web';
+
+    // Global helper for external selection
+    window.selectPortfolioTab = function(category) {
+        currentCategory = category;
+        const tabs = {
+            'web': tabWeb,
+            'ai': tabAi,
+            'tools': tabTools,
+            'writing': tabWriting
+        };
+        Object.keys(tabs).forEach(cat => {
+            if (tabs[cat]) {
+                if (cat === category) {
+                    tabs[cat].classList.add('active');
+                } else {
+                    tabs[cat].classList.remove('active');
+                }
+            }
+        });
+        renderList(category);
+        
+        // Scroll to portfolio section smooth
+        const target = document.getElementById('portfolio');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     // Initialize gallery on page load
     document.addEventListener('DOMContentLoaded', () => {
         renderList('web');
     });
 
-    // Tab switching
-    tabWeb.addEventListener('click', () => {
-        currentCategory = 'web';
-        tabWeb.classList.add('active');
-        tabAi.classList.remove('active');
-        renderList('web');
-    });
-
-    tabAi.addEventListener('click', () => {
-        currentCategory = 'ai';
-        tabAi.classList.add('active');
-        tabWeb.classList.remove('active');
-        renderList('ai');
-    });
+    // Tab switching event listeners
+    if (tabWeb) tabWeb.addEventListener('click', () => selectPortfolioTab('web'));
+    if (tabAi) tabAi.addEventListener('click', () => selectPortfolioTab('ai'));
+    if (tabTools) tabTools.addEventListener('click', () => selectPortfolioTab('tools'));
+    if (tabWriting) tabWriting.addEventListener('click', () => selectPortfolioTab('writing'));
 
     // Render list items
     function renderList(category) {
@@ -932,7 +1091,10 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             const itemDiv = document.createElement('div');
             itemDiv.className = `list-item p-4 mb-2 rounded-xl cursor-pointer ${index === 0 ? 'active' : ''}`;
             
-            const icon = category === 'web' ? '🌐' : '💡';
+            let icon = '🌐';
+            if (category === 'ai') icon = '🤖';
+            if (category === 'tools') icon = '💳';
+            if (category === 'writing') icon = '✍️';
 
             itemDiv.innerHTML = `
                 <div class="flex items-start gap-3">
@@ -967,9 +1129,14 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         ).join('');
 
         const initials = project.title.substring(0, 2).toUpperCase();
-        const bgGradient = project.category === 'web' 
-            ? 'bg-gradient-to-br from-blue-500 to-indigo-600' 
-            : 'bg-gradient-to-br from-purple-500 to-pink-600';
+        let bgGradient = 'bg-gradient-to-br from-blue-500 to-indigo-600';
+        if (project.category === 'ai') {
+            bgGradient = 'bg-gradient-to-br from-purple-500 to-pink-600';
+        } else if (project.category === 'tools') {
+            bgGradient = 'bg-gradient-to-br from-amber-500 to-orange-600';
+        } else if (project.category === 'writing') {
+            bgGradient = 'bg-gradient-to-br from-emerald-500 to-teal-600';
+        }
 
         let headerGraphicHTML = '';
         const isYouTube = project.link && (project.link.includes('youtube.com') || project.link.includes('youtu.be'));
@@ -986,7 +1153,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             headerGraphicHTML = `<div class="w-full h-[400px] rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
                  <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                </div>`;
-        } else if (project.image) {
+        } else if (project.image && project.image !== 'sampleurl') {
             if (project.image.endsWith('.mp4')) {
                 headerGraphicHTML = `<div class="w-full h-[400px] rounded-2xl shrink-0 relative overflow-hidden shadow-inner border border-slate-200 bg-slate-900 flex items-center justify-center">
                      <video src="${project.image}" autoplay loop muted playsinline class="w-full h-full object-contain"></video>

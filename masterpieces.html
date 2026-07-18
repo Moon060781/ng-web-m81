@@ -111,12 +111,18 @@
         <!-- Header & Tabs -->
         <div class="text-center mb-6 shrink-0 mt-12 md:mt-0">
             <h1 class="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">Our Portfolio Gallery</h1>
-            <div class="flex justify-center gap-4 bg-white p-2 inline-flex rounded-full shadow-sm border border-slate-200">
+            <div class="flex flex-wrap justify-center gap-3 bg-white p-2 inline-flex rounded-[2rem] shadow-sm border border-slate-200">
                 <button id="tab-web" class="tab-btn active px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
                     💻 Web Projects
                 </button>
                 <button id="tab-ai" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
                     🤖 AI Works
+                </button>
+                <button id="tab-tools" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                    💳 Tools Subscription
+                </button>
+                <button id="tab-writing" class="tab-btn px-6 md:px-8 py-3 rounded-full font-medium text-sm md:text-base text-slate-600 focus:outline-none">
+                    ✍️ Writing &amp; Humanize
                 </button>
             </div>
         </div>
@@ -446,6 +452,15 @@
                 image: 'https://noorgee.pk/Web/img/Perfume_bottle_on_202603181837.mp4'
             },
             { 
+                id: 117, category: 'ai', 
+                title: 'Perfume UGC Luxury Review', 
+                desc: 'AI-generated user-generated content (UGC) style review.', 
+                goals: 'Demonstrate authentic-looking AI reviews for luxury brands.', 
+                link: 'https://youtu.be/CxIVzNrmuGg', 
+                tech: ['AI UGC', 'Luxury Review'], 
+                image: 'https://youtu.be/CxIVzNrmuGg' 
+            },
+            { 
                 id: 21, category: 'ai', 
                 title: 'AI Brand', 
                 desc: 'Show ai image generation: NoorGee as Brand Personality.', 
@@ -462,7 +477,17 @@
                 link: 'https://noorgee.pk/Web/fsk', 
                 tech: ['Event Video Services'],
                 image: 'https://noorgee.pk/Web/img/fsk_claude_preview-1.gif'
-            }
+            },
+
+            // --- TOOLS SUBSCRIPTIONS (Service#3) ---
+            { id: 201, category: 'tools', title: 'Athar Premium Subscriptions', desc: 'Genuine access to paid pro tools including ChatGPT Pro, Claude Pro, Canva Pro, Netflix, Amazon Prime, CapCut Pro, Grok Premium, NordVPN, and Turnitin similarity reports.', goals: 'Get premium accounts with secure login, instant activation, and friendly customer support. All tools paid. WhatsApp: 03410235886.', link: 'https://wa.me/923410235886', tech: ['Premium Accounts', 'Genuine Access', 'Instant Setup'], image: 'https://noorgee.pk/Web/img/ng-ai-automat.jpg' },
+            { id: 202, category: 'tools', title: 'AI & Creative Premium Suite', desc: 'Pro access setups for ChatGPT Pro, Claude Pro, Gemini Pro, and Canva Pro template library.', goals: 'Empower writing, programming, and graphic designs with cutting-edge AI and creator templates.', link: 'https://wa.me/923410235886', tech: ['ChatGPT Pro', 'Claude Pro', 'Canva Pro'], image: 'https://noorgee.pk/Web/img/ng-ai-img.jpg' },
+            { id: 203, category: 'tools', title: 'Academic Reports & Subscriptions', desc: 'Official Turnitin Similarity Check, AI Detection, and Plagiarism Reports on-demand.', goals: 'Verify document integrity, check plagiarism levels, and analyze AI scoring index instantly.', link: 'https://wa.me/923410235886', tech: ['Turnitin', 'AI Detection', 'Plagiarism Check'], image: 'https://noorgee.pk/Web/img/ng-ai-content.jpg' },
+
+            // --- WRITING & HUMANIZE SERVICES (Service#4) ---
+            { id: 301, category: 'writing', title: 'Academic Research & Dissertation Support', desc: 'Professional support for semester projects, thesis drafting, research papers, and manuscript publications.', goals: 'Receive confidential, reliable formatting and structure styling support tailored for undergraduate to PhD students.', link: '#', tech: ['Academic Writing', 'Formatting', 'Thesis Help'], image: 'https://noorgee.pk/Web/img/ng-ai-content.jpg' },
+            { id: 302, category: 'writing', title: 'AI Content Humanization & Paraphrasing', desc: 'Plagiarism reduction, similarity percentage optimization, and humanizing of AI-generated content.', goals: 'Ensure AI texts flow naturally, retain factual accuracy, and pass Turnitin checks with clean percentages.', link: '#', tech: ['Plagiarism Reduction', 'Content Humanizer', 'Paraphrasing'], image: 'https://noorgee.pk/Web/img/ng-ai-content.jpg' },
+            { id: 303, category: 'writing', title: 'Statistical & Quantitative Data Analysis', desc: 'Expert econometric models, statistical testing, qualitative coding, and results interpretation.', goals: 'Data computation using professional tools: SPSS, Gretl, Stata, R, Python, EViews, NVivo, and Atlas.ti.', link: '#', tech: ['SPSS', 'Stata', 'R & Python', 'Data Analytics'], image: 'https://noorgee.pk/Web/img/ng-ai-automat.jpg' }
         ];
 
         // 2. Elements references
@@ -474,6 +499,8 @@
         
         const tabWeb = document.getElementById('tab-web');
         const tabAi = document.getElementById('tab-ai');
+        const tabTools = document.getElementById('tab-tools');
+        const tabWriting = document.getElementById('tab-writing');
         const listContainer = document.getElementById('list-container');
         const previewContainer = document.getElementById('preview-container');
 
@@ -502,6 +529,8 @@
             currentCategory = 'web';
             tabWeb.classList.add('active');
             tabAi.classList.remove('active');
+            if (tabTools) tabTools.classList.remove('active');
+            if (tabWriting) tabWriting.classList.remove('active');
             renderList('web');
         });
 
@@ -509,8 +538,32 @@
             currentCategory = 'ai';
             tabAi.classList.add('active');
             tabWeb.classList.remove('active');
+            if (tabTools) tabTools.classList.remove('active');
+            if (tabWriting) tabWriting.classList.remove('active');
             renderList('ai');
         });
+
+        if (tabTools) {
+            tabTools.addEventListener('click', () => {
+                currentCategory = 'tools';
+                tabTools.classList.add('active');
+                tabWeb.classList.remove('active');
+                tabAi.classList.remove('active');
+                if (tabWriting) tabWriting.classList.remove('active');
+                renderList('tools');
+            });
+        }
+
+        if (tabWriting) {
+            tabWriting.addEventListener('click', () => {
+                currentCategory = 'writing';
+                tabWriting.classList.add('active');
+                tabWeb.classList.remove('active');
+                tabAi.classList.remove('active');
+                if (tabTools) tabTools.classList.remove('active');
+                renderList('writing');
+            });
+        }
 
         // 5. Render Left Column List
         function renderList(category) {
@@ -528,7 +581,10 @@
                 itemDiv.className = `list-item p-4 mb-2 rounded-xl cursor-pointer ${index === 0 ? 'active' : ''}`;
                 
                 // Icon selection based on category
-                const icon = category === 'web' ? '🌐' : '💡';
+                let icon = '🌐';
+                if (category === 'ai') icon = '🤖';
+                if (category === 'tools') icon = '💳';
+                if (category === 'writing') icon = '✍️';
 
                 itemDiv.innerHTML = `
                     <div class="flex items-start gap-3">
@@ -568,9 +624,14 @@
 
             // Generate a beautiful placeholder graphic with initials
             const initials = project.title.substring(0, 2).toUpperCase();
-            const bgGradient = project.category === 'web' 
-                ? 'bg-gradient-to-br from-blue-500 to-indigo-600' 
-                : 'bg-gradient-to-br from-purple-500 to-pink-600';
+            let bgGradient = 'bg-gradient-to-br from-blue-500 to-indigo-600';
+            if (project.category === 'ai') {
+                bgGradient = 'bg-gradient-to-br from-purple-500 to-pink-600';
+            } else if (project.category === 'tools') {
+                bgGradient = 'bg-gradient-to-br from-amber-500 to-orange-600';
+            } else if (project.category === 'writing') {
+                bgGradient = 'bg-gradient-to-br from-emerald-500 to-teal-600';
+            }
 
             // Check if project has a specific image or video, otherwise use the gradient placeholder
             let headerGraphicHTML = '';
