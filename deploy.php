@@ -28,8 +28,8 @@ if (isset($_POST['password'])) {
 
 $is_authenticated = isset($_SESSION['auth']) && $_SESSION['auth'] === true;
 
-$git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
-$git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
+$git_user_name = trim(shell_exec("git -c safe.directory=* config user.name 2>/dev/null") ?? "");
+$git_user_email = trim(shell_exec("git -c safe.directory=* config user.email 2>/dev/null") ?? "");
 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
 
 $output = "";
@@ -40,19 +40,19 @@ if ($is_authenticated && isset($_POST['action'])) {
     } else {
         switch ($action) {
             case 'setup_git':
-                $new_name = escapeshellarg($_POST['git_name'] ?? 'Nooruddin');
+                $new_name = escapeshellarg($_POST['git_name'] ?? 'antigravity ng web');
                 $new_email = escapeshellarg($_POST['git_email'] ?? 'admin@noorgee.pk');
-                shell_exec("git config --local user.name $new_name 2>&1 && git config --local user.email $new_email 2>&1");
+                shell_exec("git -c safe.directory=* config --local user.name $new_name 2>&1 && git -c safe.directory=* config --local user.email $new_email 2>&1");
                 $output = "Identity updated.";
-                $git_user_name = trim(shell_exec("git config user.name 2>/dev/null") ?? "");
-                $git_user_email = trim(shell_exec("git config user.email 2>/dev/null") ?? "");
+                $git_user_name = trim(shell_exec("git -c safe.directory=* config user.name 2>/dev/null") ?? "");
+                $git_user_email = trim(shell_exec("git -c safe.directory=* config user.email 2>/dev/null") ?? "");
                 $has_identity = (!empty($git_user_name) && !empty($git_user_email));
                 break;
             case 'pull':
-                $output = shell_exec("git fetch origin 2>&1 && git checkout $TARGET_BRANCH 2>&1 && git pull origin $TARGET_BRANCH 2>&1");
+                $output = shell_exec("git -c safe.directory=* fetch origin 2>&1 && git -c safe.directory=* checkout $TARGET_BRANCH 2>&1 && git -c safe.directory=* pull origin $TARGET_BRANCH 2>&1");
                 break;
             case 'force_pull':
-                $output = shell_exec("git fetch origin 2>&1 && git reset --hard origin/$TARGET_BRANCH 2>&1 && git clean -fd 2>&1");
+                $output = shell_exec("git -c safe.directory=* fetch origin 2>&1 && git -c safe.directory=* reset --hard origin/$TARGET_BRANCH 2>&1 && git -c safe.directory=* clean -fd 2>&1");
                 break;
             case 'push':
                 if (!$has_identity) {
@@ -60,20 +60,19 @@ if ($is_authenticated && isset($_POST['action'])) {
                 } else {
                     $msg = !empty($_POST['commit_msg']) ? trim($_POST['commit_msg']) : "Update: " . date('Y-m-d H:i:s');
                     $desc = !empty($_POST['commit_desc']) ? trim($_POST['commit_desc']) : "";
-                    // Ensure the message follows conventional format if possible, otherwise use as is
                     $safe_msg = escapeshellarg($msg . ($desc ? "\n\n" . $desc : ""));
-                    $output = shell_exec("git add . 2>&1 && git commit -m $safe_msg 2>&1 && git push origin $TARGET_BRANCH 2>&1");
+                    $output = shell_exec("git -c safe.directory=* add . 2>&1 && git -c safe.directory=* commit -m $safe_msg 2>&1 && git -c safe.directory=* push origin $TARGET_BRANCH 2>&1");
                 }
                 break;
             case 'revert_last':
-                $output = shell_exec("git revert --no-edit HEAD 2>&1 && git push origin $TARGET_BRANCH 2>&1");
+                $output = shell_exec("git -c safe.directory=* revert --no-edit HEAD 2>&1 && git -c safe.directory=* push origin $TARGET_BRANCH 2>&1");
                 break;
             case 'restore_commit':
                 $hash = escapeshellarg($_POST['commit_hash'] ?? '');
-                if (!empty($hash)) $output = shell_exec("git reset --hard $hash 2>&1 && git push origin $TARGET_BRANCH --force 2>&1");
+                if (!empty($hash)) $output = shell_exec("git -c safe.directory=* reset --hard $hash 2>&1 && git -c safe.directory=* push origin $TARGET_BRANCH --force 2>&1");
                 break;
             case 'undo_local':
-                $output = shell_exec("git reset --hard HEAD 2>&1 && git clean -fd 2>&1");
+                $output = shell_exec("git -c safe.directory=* reset --hard HEAD 2>&1 && git -c safe.directory=* clean -fd 2>&1");
                 break;
         }
     }
@@ -81,22 +80,26 @@ if ($is_authenticated && isset($_POST['action'])) {
 
 $commit_history = [];
 if ($is_authenticated) {
+    shell_exec("git config --global --add safe.directory '*' 2>/dev/null");
     $delimiter = "|||";
     $record_delimiter = "===END_COMMIT===";
-    // Format: Hash | Subject | Date | Body | UnixTimestamp
-    $history_raw = shell_exec("git log -10 --format='%H$delimiter%s$delimiter%ad$delimiter%b$delimiter%at$record_delimiter' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null");
-    if ($history_raw) {
+    // Format: Hash | Subject | Date | Body | UnixTimestamp | Author
+    $history_raw = shell_exec("git -c safe.directory=* log -15 --format=\"%H{$delimiter}%s{$delimiter}%ad{$delimiter}%b{$delimiter}%at{$delimiter}%an{$record_delimiter}\" --date=format:\"%Y-%m-%d %H:%M\" 2>&1");
+    if ($history_raw && !str_contains($history_raw, 'fatal:')) {
         foreach (explode($record_delimiter, trim($history_raw)) as $line) {
             $line = trim($line);
             if (empty($line)) continue;
             $parts = explode($delimiter, $line);
-            $commit_history[] = [
-                'hash' => $parts[0] ?? '',
-                'subject' => $parts[1] ?? '',
-                'date' => $parts[2] ?? '',
-                'body' => trim($parts[3] ?? ''),
-                'timestamp' => $parts[4] ?? 0
-            ];
+            if (count($parts) >= 4) {
+                $commit_history[] = [
+                    'hash' => $parts[0] ?? '',
+                    'subject' => $parts[1] ?? '',
+                    'date' => $parts[2] ?? '',
+                    'body' => trim($parts[3] ?? ''),
+                    'timestamp' => intval($parts[4] ?? 0),
+                    'author' => $parts[5] ?? 'Unknown'
+                ];
+            }
         }
     }
 }
@@ -108,10 +111,10 @@ $last_commit_time = $commit_history[0]['timestamp'] ?? 0;
 $status_message = "Unknown";
 $status_color = "text-slate-400";
 if ($is_authenticated) {
-    shell_exec("git fetch origin 2>/dev/null");
-    $local_hash = trim(shell_exec("git rev-parse HEAD 2>/dev/null"));
-    $remote_hash = trim(shell_exec("git rev-parse origin/$TARGET_BRANCH 2>/dev/null"));
-    if ($local_hash === $remote_hash) {
+    shell_exec("git -c safe.directory=* fetch origin 2>/dev/null");
+    $local_hash = trim(shell_exec("git -c safe.directory=* rev-parse HEAD 2>/dev/null"));
+    $remote_hash = trim(shell_exec("git -c safe.directory=* rev-parse origin/$TARGET_BRANCH 2>/dev/null"));
+    if ($local_hash && $remote_hash && $local_hash === $remote_hash) {
         $status_message = "Applied";
         $status_color = "text-green-400";
     } else {
@@ -165,7 +168,7 @@ if ($is_authenticated) {
             </form>
         <?php else: ?>
             <div class="grid grid-cols-12 gap-4">
-                <!-- Left Column: Actions -->
+                <!-- Left Column: Actions & Commit History -->
                 <div class="col-span-5 space-y-3">
                     <!-- Pull Actions -->
                     <div class="grid grid-cols-2 gap-2">
@@ -181,17 +184,56 @@ if ($is_authenticated) {
                         </form>
                     </div>
 
-                    <!-- Restore/Revert -->
-                    <div class="bg-slate-900/40 border border-slate-700/50 p-3 rounded-xl space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-blue-400 uppercase">Restore History</span>
-                            <form method="POST" onsubmit="return confirm('Revert last?')"><input type="hidden" name="action" value="revert_last">
-                                <button type="submit" class="text-[11px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">Revert Last</button>
-                            </form>
+                    <!-- Commit History Visual Box -->
+                    <div class="bg-slate-900/40 border border-slate-700/50 p-2.5 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-xs font-bold text-blue-400 uppercase flex items-center gap-1.5">
+                                <i class="fas fa-history text-xs"></i> Recent Commits
+                            </span>
+                            <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full font-mono">
+                                <?php echo count($commit_history); ?> Listed
+                            </span>
                         </div>
-                        <div class="space-y-2">
+
+                        <!-- Scrollable Commit Cards -->
+                        <div class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                            <?php if (empty($commit_history)): ?>
+                                <div class="text-xs text-slate-500 p-3 text-center bg-slate-950/40 rounded-lg border border-slate-800">
+                                    No commits found or Git unavailable.
+                                </div>
+                            <?php else: ?>
+                                <?php foreach ($commit_history as $idx => $c): ?>
+                                    <div class="p-2 bg-slate-950/60 hover:bg-slate-800/80 rounded-lg border border-slate-800/80 transition-all text-xs space-y-1 cursor-pointer" onclick="selectCommitForRestore('<?php echo $c['hash']; ?>')">
+                                        <div class="flex justify-between items-center text-[10px]">
+                                            <span class="font-mono bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-bold">
+                                                <?php echo substr($c['hash'], 0, 7); ?>
+                                            </span>
+                                            <span class="text-slate-400 font-mono"><?php echo $c['date']; ?></span>
+                                        </div>
+                                        <div class="font-semibold text-slate-200 text-xs leading-snug truncate">
+                                            <?php echo htmlspecialchars($c['subject']); ?>
+                                        </div>
+                                        <div class="flex justify-between items-center text-[10px] text-slate-400 pt-0.5">
+                                            <span class="text-slate-500 truncate max-w-[130px]"><i class="fas fa-user-edit mr-1 text-[9px]"></i><?php echo htmlspecialchars($c['author']); ?></span>
+                                            <?php if ($idx === 0): ?>
+                                                <span class="text-[9px] bg-green-500/20 text-green-300 font-bold px-1.5 py-0.2 rounded shrink-0">HEAD</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Restore / Revert Dropdown -->
+                        <div class="pt-1.5 border-t border-slate-800 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase">Rollback Tools</span>
+                                <form method="POST" onsubmit="return confirm('Revert last?')"><input type="hidden" name="action" value="revert_last">
+                                    <button type="submit" class="text-[10px] bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30 font-bold">Revert Last</button>
+                                </form>
+                            </div>
                             <select id="commit_select" class="w-full input-field rounded-lg px-2 py-1.5 text-xs outline-none" onchange="handleCommitSelect()">
-                                <option value="">Select commit...</option>
+                                <option value="">Select commit to restore...</option>
                                 <?php foreach ($commit_history as $c): ?>
                                     <option value="<?php echo $c['hash']; ?>" data-subject="<?php echo htmlspecialchars($c['subject']); ?>" data-body="<?php echo htmlspecialchars($c['body']); ?>" data-date="<?php echo $c['date']; ?>">
                                         [<?php echo substr($c['hash'], 0, 7); ?>] <?php echo $c['date']; ?> - <?php echo htmlspecialchars($c['subject']); ?>
@@ -202,14 +244,14 @@ if ($is_authenticated) {
                                 <div class="text-xs text-slate-300">
                                     <div class="font-bold text-blue-400 mb-1" id="c_subject"></div>
                                     <div class="text-slate-400 text-[10px] mb-2" id="c_date"></div>
-                                    <div class="text-slate-400 italic h-16 overflow-y-auto whitespace-pre-wrap leading-relaxed" id="c_desc"></div>
+                                    <div class="text-slate-400 italic h-14 overflow-y-auto whitespace-pre-wrap leading-relaxed text-[11px]" id="c_desc"></div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <button type="button" onclick="cancelRestore()" class="flex-1 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 py-1.5 rounded text-xs font-bold uppercase border border-slate-600/30">Cancel</button>
+                                    <button type="button" onclick="cancelRestore()" class="flex-1 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 py-1 rounded text-xs font-bold uppercase border border-slate-600/30">Cancel</button>
                                     <form method="POST" class="flex-1" id="restore_form">
                                         <input type="hidden" name="action" value="restore_commit">
                                         <input type="hidden" name="commit_hash" id="restore_hash">
-                                        <button type="submit" onclick="return confirm('Are you sure you want to restore this commit?')" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 py-1.5 rounded text-xs font-bold uppercase border border-red-600/30">Confirm Restore</button>
+                                        <button type="submit" onclick="return confirm('Are you sure you want to restore this commit?')" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 py-1 rounded text-xs font-bold uppercase border border-red-600/30">Confirm Restore</button>
                                     </form>
                                 </div>
                             </div>
@@ -304,6 +346,14 @@ if ($is_authenticated) {
             document.getElementById('restore_hash').value = hash;
             
             preview.classList.remove('hidden');
+        }
+        
+        function selectCommitForRestore(hash) {
+            const select = document.getElementById('commit_select');
+            if (select) {
+                select.value = hash;
+                handleCommitSelect();
+            }
         }
         
         function cancelRestore() {
