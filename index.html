@@ -99,13 +99,13 @@
         }
 
         #goToTopBtn {
-            display: none; position: fixed; bottom: 32px; right: 100px; z-index: 180;
-            border: 1px solid rgba(245, 158, 11, 0.4); outline: none;
-            background-color: rgba(15, 23, 42, 0.9); color: #f59e0b;
+            display: none; position: fixed; bottom: 32px; right: 96px; z-index: 250;
+            border: 1px solid rgba(245, 158, 11, 0.5); outline: none;
+            background-color: rgba(15, 23, 42, 0.95); color: #f59e0b;
             cursor: pointer; border-radius: 50%; font-size: 18px;
-            width: 48px; height: 48px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            width: 48px; height: 48px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease; backdrop-filter: blur(8px);
-            align-items: center; justify-content: center;
+            align-items: center; justify-content: center; pointer-events: auto;
         }
         #goToTopBtn:hover { background-color: #d97706; color: white; transform: translateY(-4px) scale(1.08); }
 
@@ -1409,26 +1409,39 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             bg.style.setProperty('--y', `${(e.clientY / window.innerHeight) * 100}%`);
         });
 
-        // Go to Top Visibility Listener
-        window.addEventListener('scroll', () => {
-            const scrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        // Go to Top Visibility Listener & Event Bind
+        const updateGoToTop = () => {
+            const scrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
             const btn = document.getElementById('goToTopBtn');
             if (btn) {
-                if (scrollPos > 250) {
-                    btn.style.display = 'flex';
-                } else {
-                    btn.style.display = 'none';
-                }
+                btn.style.display = scrollPos > 200 ? 'flex' : 'none';
             }
-        });
+        };
+
+        window.addEventListener('scroll', updateGoToTop);
+        document.addEventListener('scroll', updateGoToTop);
+        if (window.lenisApp) {
+            window.lenisApp.on('scroll', updateGoToTop);
+        }
+
+        const topBtn = document.getElementById('goToTopBtn');
+        if (topBtn) {
+            topBtn.addEventListener('click', (e) => {
+                topFunction(e);
+            });
+        }
     });
 
-    function topFunction() {
-        if (window.lenisApp) {
-            window.lenisApp.scrollTo(0);
-        } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    function topFunction(e) {
+        if (e) e.preventDefault();
+        try {
+            if (window.lenisApp) {
+                window.lenisApp.scrollTo(0, { immediate: false });
+            }
+        } catch(err) { console.error(err); }
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
     }
 
     // =============================================
