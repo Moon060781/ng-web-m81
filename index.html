@@ -905,6 +905,59 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         </div>
     </footer>
 
+    <!-- =============================================
+         TERMS & CONDITIONS MODAL
+    ============================================= -->
+    <div id="termsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4 md:p-6 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-10 shadow-2xl relative">
+            <button onclick="closeTermsModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-file-contract"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-white">Terms &amp; Conditions</h2>
+            </div>
+            <p class="text-xs text-amber-500 font-semibold mb-6">Last Updated: January 22, 2026</p>
+            <p class="text-sm text-slate-300 mb-6 leading-relaxed">Welcome to <strong class="text-amber-400">NoorGee WebMaster</strong>. By accessing our services, you agree to be bound by the following terms and conditions.</p>
+            
+            <div class="space-y-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800 pt-6">
+                <div>
+                    <h3 class="text-base font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2"><span class="text-amber-500">1.</span> Services &amp; Scope</h3>
+                    <p>We offer professional website development services, including our signature <strong>20k PKR Freelancer Package</strong>. Additional services such as SEO optimization and digital marketing are available; rates for these will be quoted separately based on project requirements. All project scopes, timelines, and deliverables will be clearly outlined in the initial proposal.</p>
+                </div>
+                <div class="bg-amber-950/30 p-5 rounded-2xl border-l-4 border-amber-500">
+                    <h3 class="text-base font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2"><span class="text-amber-500">2.</span> Payment Terms</h3>
+                    <ul class="list-disc ml-5 space-y-1.5">
+                        <li><strong>Deposit:</strong> A non-refundable <strong>75% upfront deposit</strong> is required before design or development work commences.</li>
+                        <li><strong>Final Payment:</strong> The remaining <strong>25% balance</strong> is due upon project completion and must be cleared prior to handover or "Go Live".</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2"><span class="text-amber-500">3.</span> Liability &amp; Data Protection</h3>
+                    <p class="mb-2">At <strong>NoorGee WebMaster</strong>, we prioritize the integrity of your digital assets and maintain regular backups.</p>
+                    <ul class="list-disc ml-5 space-y-1">
+                        <li>We can be held liable for loss of data/profits only if proven to be a direct result of our failure to maintain backups as per internal agreement.</li>
+                        <li>We are not liable for website downtime or data loss caused by third-party hosting providers, domain registrars, or external cyber-attacks.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2"><span class="text-amber-500">4.</span> Client Obligations</h3>
+                    <p>Clients are responsible for providing all text, images, and branding assets required for the project in a timely manner. Failure to provide these materials may result in project delays for which NoorGee WebMaster is not responsible.</p>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2"><span class="text-amber-500">5.</span> Portfolio Rights</h3>
+                    <p>NoorGee WebMaster reserves the right to display completed projects in our professional portfolio and marketing materials unless agreed otherwise in writing.</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-slate-800 flex justify-end">
+                <button onclick="closeTermsModal()" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl transition text-sm">Close</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Go to Top Button -->
     <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
@@ -1037,6 +1090,37 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             }
             toggleChat(); // close chat widget after clicking
         }
+
+        function openTermsModal(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('termsModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeTermsModal() {
+            const modal = document.getElementById('termsModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href*="terms-and-conditions.html"]');
+            if (link) {
+                e.preventDefault();
+                openTermsModal();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#terms' || window.location.hash === '#terms-and-conditions') {
+                openTermsModal();
+            }
+        });
     </script>
 
     <!-- =============================================
