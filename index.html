@@ -356,25 +356,6 @@ Last Update: Tue 02-Jun-2026 | deploy.php
 </script>
 </head>
 <body>
-    <div id="global-spinner" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="animate-spin rounded-full border-4 border-t-amber-500 border-b-amber-200 h-16 w-16"></div>
-    </div>
-    <script>
-    // Hide spinner on DOMContentLoaded (don't wait for slow/broken images)
-    (function(){
-        function hideSpinner(){
-            var s = document.getElementById('global-spinner');
-            if(s) s.remove();
-        }
-        document.addEventListener('DOMContentLoaded', function(){
-            // Give JS libs ~800ms to init, then hide
-            setTimeout(hideSpinner, 800);
-        });
-        // Absolute fallback: hide after 3 seconds no matter what
-        setTimeout(hideSpinner, 3000);
-    })();
-    </script>
-
     <div id="interactive-bg"></div>
 
     <!-- Navigation -->
