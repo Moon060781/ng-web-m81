@@ -962,73 +962,47 @@ Last Update: Tue 02-Jun-2026 | deploy.php
          FAQ MODAL
     ============================================= -->
     <div id="faqModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4 md:p-6 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-10 shadow-2xl relative">
+        <div id="faqModalCard" class="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-10 shadow-2xl relative">
             <button onclick="closeFaqModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div class="flex items-center gap-3 mb-2 pr-12">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-circle-question"></i>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-white">Frequently Asked Questions</h2>
-            </div>
-            <p class="text-xs text-amber-500 font-semibold mb-6">عام طور پر پوچھے گئے سوالات — Transparent &amp; Professional Web Services</p>
-            
-            <div class="space-y-4 text-sm text-slate-300 border-t border-slate-800 pt-6">
-                <!-- FAQ Item 1 -->
-                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaqAccordion(1)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
-                        <span>❓ 20 ہزار والے ویب سائٹ پیکیج کی تفصیل کیا ہے؟ / What is 20k Package breakdown?</span>
-                        <i id="faqIcon-1" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
-                    </button>
-                    <div id="faqContent-1" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
-                        <p class="mb-2"><strong>اردو:</strong> کل خرچہ 20,000 روپے ہے: ہوسٹنگ (10 ہزار)، ڈومین (5 ہزار)، اور ڈیولپمنٹ (5 ہزار)۔</p>
-                        <p><strong>English:</strong> The total cost is 20,000 PKR: Hosting (10k), Domain (5k), and Development (5k).</p>
-                    </div>
-                </div>
 
-                <!-- FAQ Item 2 -->
-                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaqAccordion(2)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
-                        <span>❓ کیا ماہانہ دیکھ بھال کے اخراجات ہیں؟ / Is there a monthly maintenance fee?</span>
-                        <i id="faqIcon-2" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
-                    </button>
-                    <div id="faqContent-2" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
-                        <p class="mb-2"><strong>اردو:</strong> جی ہاں، دیکھ بھال اور میسجز مانیٹر کرنے کے لیے ماہانہ 5,000 روپے فیس ہے۔</p>
-                        <p><strong>English:</strong> Yes, we charge 5,000 PKR per month for ongoing maintenance and monitoring.</p>
+            <!-- Language Switcher & Title Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pr-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <div>
+                        <h2 id="modalFaqTitle" class="text-2xl md:text-3xl font-bold text-white">عام طور پر پوچھے گئے سوالات</h2>
+                        <p id="modalFaqSubtitle" class="text-xs text-amber-500 font-semibold mt-1">آپ کے کاروبار کے لیے پیشہ ورانہ اور شفاف ویب سروسز۔</p>
                     </div>
                 </div>
-
-                <!-- FAQ Item 3 -->
-                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaqAccordion(3)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
-                        <span>❓ ویب سائٹ لائیو ہونے میں کتنا وقت لگتا ہے؟ / How long does it take to go live?</span>
-                        <i id="faqIcon-3" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
-                    </button>
-                    <div id="faqContent-3" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
-                        <p class="mb-2"><strong>اردو:</strong> تمام تفصیلات ملنے کے بعد صرف 2 سے 10 گھنٹے کے اندر ویب سائٹ لائیو ہو جائے گی۔</p>
-                        <p><strong>English:</strong> Your website will be live within 2 to 10 hours once we have all details.</p>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 4 -->
-                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
-                    <button onclick="toggleFaqAccordion(4)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
-                        <span>❓ ویب سائٹ کے لیے ہمیں آپ کو کیا فراہم کرنا ہوگا؟ / What do you need to start?</span>
-                        <i id="faqIcon-4" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
-                    </button>
-                    <div id="faqContent-4" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
-                        <p class="mb-2"><strong>اردو:</strong> ہمیں آپ کا لوگو، کام کی تحریر، تصاویر اور رابطہ کی معلومات درکار ہوں گی۔</p>
-                        <p><strong>English:</strong> We need your logo, business text, images, and contact details.</p>
-                    </div>
-                </div>
+                <button onclick="toggleModalFaqLang()" class="self-start md:self-auto bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                    <i class="fa-solid fa-language"></i>
+                    <span id="modalFaqLangBtnText">Switch to English</span>
+                </button>
             </div>
             
-            <div class="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between flex-wrap gap-4">
-                <a href="https://wa.me/923323320369" target="_blank" class="text-xs text-green-400 hover:text-green-300 font-bold flex items-center gap-2">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Need more help? Chat on WhatsApp
-                </a>
-                <button onclick="closeFaqModal()" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl transition text-sm">Close</button>
+            <!-- Accordion Container -->
+            <div id="modalFaqContainer" class="space-y-4 text-sm text-slate-300 border-t border-slate-800 pt-6">
+                <!-- FAQs will be injected by JavaScript -->
+            </div>
+            
+            <!-- Contact CTA Footer -->
+            <div class="mt-8 pt-6 border-t border-slate-800">
+                <p id="modalFaqCtaTitle" class="text-sm font-bold text-white mb-4 text-center">ابھی بھی کوئی سوال ہے؟ ہم آپ کی مدد کے لیے حاضر ہیں</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <a href="https://wa.me/923323320369" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-green-950/40 border border-green-800/50 hover:bg-green-900/50 rounded-xl text-green-400 text-xs font-bold transition">
+                        <i class="fa-brands fa-whatsapp text-base"></i> <span id="modalFaqBtnWA">واٹس ایپ پر چیٹ کریں</span>
+                    </a>
+                    <a href="https://facebook.com/NoorGeeWebMaster" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-blue-950/40 border border-blue-800/50 hover:bg-blue-900/50 rounded-xl text-blue-400 text-xs font-bold transition">
+                        <i class="fa-brands fa-facebook text-base"></i> <span id="modalFaqBtnFB">فیس بک پر میسج کریں</span>
+                    </a>
+                    <a href="#contact-form" onclick="closeFaqModal(); scrollToContactForm(event)" class="flex items-center justify-center gap-2 p-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-xl text-slate-200 text-xs font-bold transition">
+                        <i class="fa-solid fa-paper-plane text-base"></i> <span id="modalFaqBtnMsg">آن لائن پیغام بھیجیں</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1183,10 +1157,76 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             }
         }
 
+        let modalFaqLang = 'ur';
+        const modalFaqData = {
+            en: {
+                heroTitle: "Frequently Asked Questions",
+                heroSubtitle: "Professional and transparent web services for your business.",
+                ctaTitle: "Still have questions? We are here to help!",
+                btnWA: "Chat on WhatsApp",
+                btnFB: "Message on Facebook",
+                btnMsg: "Send Message",
+                langBtn: "اردو میں دیکھیں",
+                faqs: [
+                    { q: "What is the 20k Website Package breakdown?", a: "The total cost is 20,000 PKR, which includes: Hosting (10k), Domain (5k), and Development (5k)." },
+                    { q: "Is there a monthly maintenance fee?", a: "Yes, we charge 5,000 PKR per month for ongoing maintenance and monitoring." },
+                    { q: "How long does it take to go live?", a: "Your website will be live within 2 to 10 hours once we have all details." },
+                    { q: "What do you need from me to start?", a: "We need your logo, business text, images, and contact details." }
+                ]
+            },
+            ur: {
+                heroTitle: "عام طور پر پوچھے گئے سوالات",
+                heroSubtitle: "آپ کے کاروبار کے لیے پیشہ ورانہ اور شفاف ویب سروسز۔",
+                ctaTitle: "ابھی بھی کوئی سوال ہے؟ ہم آپ کی مدد کے لیے حاضر ہیں",
+                btnWA: "واٹس ایپ پر چیٹ کریں",
+                btnFB: "فیس بک پر میسج کریں",
+                btnMsg: "آن لائن پیغام بھیجیں",
+                langBtn: "Switch to English",
+                faqs: [
+                    { q: "20 ہزار والے ویب سائٹ پیکیج کی تفصیل کیا ہے؟", a: "کل خرچہ 20,000 روپے ہے: ہوسٹنگ (10 ہزار)، ڈومین (5 ہزار)، اور ڈیولپمنٹ (5 ہزار)۔" },
+                    { q: "کیا ماہانہ دیکھ بھال کے اخراجات ہیں؟", a: "جی ہاں، دیکھ بھال اور میسجز مانیٹر کرنے کے لیے ماہانہ 5,000 روپے فیس ہے۔" },
+                    { q: "ویب سائٹ لائیو ہونے میں کتنا وقت لگتا ہے؟", a: "تمام تفصیلات ملنے کے بعد صرف 2 سے 10 گھنٹے کے اندر ویب سائٹ لائیو ہو جائے گی۔" },
+                    { q: "ویب سائٹ کے لیے ہمیں آپ کو کیا فراہم کرنا ہوگا؟", a: "ہمیں آپ کا لوگو، کام کی تحریر، تصاویر اور رابطہ کی معلومات درکار ہوں گی۔" }
+                ]
+            }
+        };
+
+        function renderModalFAQs() {
+            const container = document.getElementById('modalFaqContainer');
+            if (!container) return;
+            const data = modalFaqData[modalFaqLang];
+            
+            document.getElementById('modalFaqTitle').innerText = data.heroTitle;
+            document.getElementById('modalFaqSubtitle').innerText = data.heroSubtitle;
+            document.getElementById('modalFaqCtaTitle').innerText = data.ctaTitle;
+            document.getElementById('modalFaqBtnWA').innerText = data.btnWA;
+            document.getElementById('modalFaqBtnFB').innerText = data.btnFB;
+            document.getElementById('modalFaqBtnMsg').innerText = data.btnMsg;
+            document.getElementById('modalFaqLangBtnText').innerText = data.langBtn;
+
+            container.innerHTML = data.faqs.map((faq, i) => `
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
+                    <button onclick="toggleFaqAccordion(${i})" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition ${modalFaqLang === 'ur' ? 'flex-row-reverse text-right' : ''}">
+                        <span class="text-sm md:text-base">${faq.q}</span>
+                        <i id="faqIcon-${i}" class="fa-solid fa-chevron-down text-amber-500 transition-transform duration-300"></i>
+                    </button>
+                    <div id="faqContent-${i}" class="hidden px-6 pb-5 pt-2 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm ${modalFaqLang === 'ur' ? 'text-right' : ''}">
+                        ${faq.a}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleModalFaqLang() {
+            modalFaqLang = modalFaqLang === 'en' ? 'ur' : 'en';
+            renderModalFAQs();
+        }
+
         function openFaqModal(e) {
             if (e) e.preventDefault();
             const modal = document.getElementById('faqModal');
             if (modal) {
+                renderModalFAQs();
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             }
