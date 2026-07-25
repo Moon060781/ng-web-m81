@@ -958,6 +958,81 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         </div>
     </div>
 
+    <!-- =============================================
+         FAQ MODAL
+    ============================================= -->
+    <div id="faqModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4 md:p-6 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-10 shadow-2xl relative">
+            <button onclick="closeFaqModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-2 pr-12">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-circle-question"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-white">Frequently Asked Questions</h2>
+            </div>
+            <p class="text-xs text-amber-500 font-semibold mb-6">عام طور پر پوچھے گئے سوالات — Transparent &amp; Professional Web Services</p>
+            
+            <div class="space-y-4 text-sm text-slate-300 border-t border-slate-800 pt-6">
+                <!-- FAQ Item 1 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
+                    <button onclick="toggleFaqAccordion(1)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
+                        <span>❓ 20 ہزار والے ویب سائٹ پیکیج کی تفصیل کیا ہے؟ / What is 20k Package breakdown?</span>
+                        <i id="faqIcon-1" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
+                    </button>
+                    <div id="faqContent-1" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
+                        <p class="mb-2"><strong>اردو:</strong> کل خرچہ 20,000 روپے ہے: ہوسٹنگ (10 ہزار)، ڈومین (5 ہزار)، اور ڈیولپمنٹ (5 ہزار)۔</p>
+                        <p><strong>English:</strong> The total cost is 20,000 PKR: Hosting (10k), Domain (5k), and Development (5k).</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
+                    <button onclick="toggleFaqAccordion(2)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
+                        <span>❓ کیا ماہانہ دیکھ بھال کے اخراجات ہیں؟ / Is there a monthly maintenance fee?</span>
+                        <i id="faqIcon-2" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
+                    </button>
+                    <div id="faqContent-2" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
+                        <p class="mb-2"><strong>اردو:</strong> جی ہاں، دیکھ بھال اور میسجز مانیٹر کرنے کے لیے ماہانہ 5,000 روپے فیس ہے۔</p>
+                        <p><strong>English:</strong> Yes, we charge 5,000 PKR per month for ongoing maintenance and monitoring.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
+                    <button onclick="toggleFaqAccordion(3)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
+                        <span>❓ ویب سائٹ لائیو ہونے میں کتنا وقت لگتا ہے؟ / How long does it take to go live?</span>
+                        <i id="faqIcon-3" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
+                    </button>
+                    <div id="faqContent-3" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
+                        <p class="mb-2"><strong>اردو:</strong> تمام تفصیلات ملنے کے بعد صرف 2 سے 10 گھنٹے کے اندر ویب سائٹ لائیو ہو جائے گی۔</p>
+                        <p><strong>English:</strong> Your website will be live within 2 to 10 hours once we have all details.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
+                    <button onclick="toggleFaqAccordion(4)" class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-white hover:bg-slate-800 transition">
+                        <span>❓ ویب سائٹ کے لیے ہمیں آپ کو کیا فراہم کرنا ہوگا؟ / What do you need to start?</span>
+                        <i id="faqIcon-4" class="fa-solid fa-chevron-down text-amber-500 transition-transform"></i>
+                    </button>
+                    <div id="faqContent-4" class="hidden px-6 pb-5 pt-1 text-slate-300 leading-relaxed border-t border-slate-700/40 text-xs md:text-sm">
+                        <p class="mb-2"><strong>اردو:</strong> ہمیں آپ کا لوگو، کام کی تحریر، تصاویر اور رابطہ کی معلومات درکار ہوں گی۔</p>
+                        <p><strong>English:</strong> We need your logo, business text, images, and contact details.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between flex-wrap gap-4">
+                <a href="https://wa.me/923323320369" target="_blank" class="text-xs text-green-400 hover:text-green-300 font-bold flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Need more help? Chat on WhatsApp
+                </a>
+                <button onclick="closeFaqModal()" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl transition text-sm">Close</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Go to Top Button -->
     <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
@@ -1108,17 +1183,52 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             }
         }
 
+        function openFaqModal(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('faqModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeFaqModal() {
+            const modal = document.getElementById('faqModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function toggleFaqAccordion(id) {
+            const content = document.getElementById(`faqContent-${id}`);
+            const icon = document.getElementById(`faqIcon-${id}`);
+            if (content) {
+                content.classList.toggle('hidden');
+            }
+            if (icon) {
+                icon.classList.toggle('rotate-180');
+            }
+        }
+
         document.addEventListener('click', function(e) {
-            const link = e.target.closest('a[href*="terms-and-conditions.html"]');
-            if (link) {
+            const termsLink = e.target.closest('a[href*="terms-and-conditions.html"]');
+            if (termsLink) {
                 e.preventDefault();
                 openTermsModal();
+            }
+            const faqLink = e.target.closest('a[href*="faq.html"]');
+            if (faqLink) {
+                e.preventDefault();
+                openFaqModal();
             }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
             if (window.location.hash === '#terms' || window.location.hash === '#terms-and-conditions') {
                 openTermsModal();
+            } else if (window.location.hash === '#faq' || window.location.hash === '#faqs') {
+                openFaqModal();
             }
         });
     </script>
