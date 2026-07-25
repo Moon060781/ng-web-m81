@@ -107,6 +107,9 @@ $last_commit_title = $commit_history[0]['subject'] ?? "";
 $last_commit_desc = $commit_history[0]['body'] ?? "";
 $last_commit_time = $commit_history[0]['timestamp'] ?? 0;
 
+$local_hash = "";
+$pkt_date = "";
+
 // Status logic: Check if local matches remote
 $status_message = "Unknown";
 $status_color = "text-slate-400";
@@ -120,6 +123,16 @@ if ($is_authenticated) {
     } else {
         $status_message = "Pending / Not Applied";
         $status_color = "text-orange-400";
+    }
+    
+    if ($last_commit_time) {
+        try {
+            $dt = new DateTime("@$last_commit_time");
+            $dt->setTimezone(new DateTimeZone('Asia/Karachi'));
+            $pkt_date = $dt->format('d M Y, h:i A');
+        } catch (Exception $e) {
+            $pkt_date = date('d M Y, h:i A', $last_commit_time);
+        }
     }
 }
 ?>
@@ -273,10 +286,16 @@ if ($is_authenticated) {
                         <input type="hidden" name="action" value="push">
                         <div class="grid grid-cols-1 gap-2">
                             <div class="space-y-1">
-                                <label class="text-xs font-bold text-blue-400 uppercase ml-1 flex justify-between">
+                                <?php if (!empty($local_hash)): ?>
+                                    <div class="text-[11px] text-slate-500 font-mono ml-1 mb-1">
+                                        HEAD Commit: <span class="text-blue-400 font-bold"><?php echo htmlspecialchars($local_hash); ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <label class="text-xs font-bold text-blue-400 uppercase ml-1 flex justify-between items-start">
                                     <span>Commit Highlight</span>
-                                    <span id="time-remaining" class="text-slate-500 lowercase font-normal"></span>
+                                    <span id="time-remaining" class="text-slate-500 lowercase font-normal text-right"></span>
                                 </label>
+                                <div class="text-xs text-slate-400 mb-1">Commit: <?php echo substr($commit_history[0]['hash'] ?? '', 0, 7); ?></div>
                                 <textarea name="commit_msg" rows="2" placeholder="e.g., feat: add new feature" class="w-full input-field rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500 resize-none"><?php echo htmlspecialchars($last_commit_title); ?></textarea>
                             </div>
                             <div class="space-y-1">
@@ -307,6 +326,7 @@ if ($is_authenticated) {
     </div>
     <script>
         const lastUpdate = <?php echo $last_commit_time; ?>;
+        const pktDate = <?php echo json_encode($pkt_date); ?>;
         function updateTime() {
             if (!lastUpdate) return;
             const now = Math.floor(Date.now() / 1000);
@@ -319,7 +339,13 @@ if ($is_authenticated) {
             else timeStr = Math.floor(diff / 86400) + "d ago";
             
             const el = document.getElementById('time-remaining');
-            if (el) el.innerText = "Last update: " + timeStr;
+            if (el) {
+                let html = "Last update: " + timeStr;
+                if (pktDate) {
+                    html += "<br><span class='text-[10px] text-slate-500 normal-case block mt-0.5'>" + pktDate + " (PKT)</span>";
+                }
+                el.innerHTML = html;
+            }
         }
         setInterval(updateTime, 10000);
         updateTime();
