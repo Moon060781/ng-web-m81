@@ -1009,6 +1009,96 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         </div>
     </div>
 
+    <!-- =============================================
+         HELP & CUSTOMER GUIDANCE MODAL
+    ============================================= -->
+    <div id="helpModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4 md:p-6 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-4xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-10 shadow-2xl relative">
+            <button onclick="closeHelpModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="flex items-center gap-3 mb-2 pr-12">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-life-ring"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">How to Work with Us (Help &amp; Guidance)</h2>
+                    <p class="text-xs text-amber-500 font-semibold mt-1">Follow this step-by-step guide to get your professional website running.</p>
+                </div>
+            </div>
+
+            <!-- Step by Step Cards -->
+            <div class="grid md:grid-cols-2 gap-4 border-t border-slate-800 pt-6 mt-4">
+                <!-- Step 1 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
+                    <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center font-bold text-lg mb-4">1</div>
+                    <h3 class="text-base font-bold text-white mb-2">Initial Inquiry</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">Contact us via our website form or WhatsApp. Tell us about your business, your goals, and if you are interested in the <strong>20k PKR Freelancer Package</strong> or a custom solution.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
+                    <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center font-bold text-lg mb-4">2</div>
+                    <h3 class="text-base font-bold text-white mb-2">Proposal &amp; Approval</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">We will send you a project proposal outlining the scope, timeline, and deliverables. Once you approve, we move to the payment phase.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-800/60 border-l-4 border-amber-500 p-6 rounded-2xl">
+                    <div class="w-10 h-10 bg-amber-500 text-slate-900 rounded-full flex items-center justify-center font-bold text-lg mb-4">3</div>
+                    <h3 class="text-base font-bold text-white mb-2">75% Deposit</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">To secure your spot and begin development, a <strong>75% upfront deposit</strong> is required. This allows us to allocate resources and start the design process immediately.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-slate-800/60 border border-slate-700/60 p-6 rounded-2xl">
+                    <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center font-bold text-lg mb-4">4</div>
+                    <h3 class="text-base font-bold text-white mb-2">Design &amp; Development</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">We build your site! During this phase, you will provide the content (text/images), and we will keep you updated on progress until final launch.</p>
+                </div>
+            </div>
+
+            <!-- Quick FAQ Guidance -->
+            <div class="bg-slate-800/40 border border-slate-700/40 rounded-2xl p-6 mt-6">
+                <h4 class="text-sm font-bold text-amber-400 mb-4 uppercase tracking-wider">Quick Key Information</h4>
+                <div class="grid md:grid-cols-2 gap-4 text-xs text-slate-300">
+                    <div>
+                        <strong class="text-white block mb-1">💼 20k Package:</strong>
+                        Complete website for freelancers (Domain, Hosting &amp; Development included).
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">⏱️ Timeline:</strong>
+                        Standard package site goes live within 2 to 10 hours after receiving details.
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">🔍 SEO Support:</strong>
+                        Basic SEO included in all builds. Advanced packages available on request.
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">💾 Backups:</strong>
+                        We maintain regular automated backups for all client websites.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact CTA -->
+            <div class="mt-8 pt-6 border-t border-slate-800 text-center">
+                <h3 class="text-base font-bold text-white mb-2">Ready to get started?</h3>
+                <p class="text-xs text-slate-400 mb-6">Send us a message and we will get back to you within 24 hours.</p>
+                <div class="flex items-center justify-center gap-4 flex-wrap">
+                    <a href="#contact-form" onclick="closeHelpModal(); scrollToContactForm(event)" class="px-8 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs transition shadow-lg">
+                        Write Message to Us
+                    </a>
+                    <a href="https://wa.me/923323320369" target="_blank" class="px-8 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-xs transition shadow-lg flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Go to Top Button -->
     <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
@@ -1253,6 +1343,23 @@ Last Update: Tue 02-Jun-2026 | deploy.php
             }
         }
 
+        function openHelpModal(e) {
+            if (e) e.preventDefault();
+            const modal = document.getElementById('helpModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeHelpModal() {
+            const modal = document.getElementById('helpModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
         document.addEventListener('click', function(e) {
             const termsLink = e.target.closest('a[href*="terms-and-conditions.html"]');
             if (termsLink) {
@@ -1264,6 +1371,11 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                 e.preventDefault();
                 openFaqModal();
             }
+            const helpLink = e.target.closest('a[href*="help.html"]');
+            if (helpLink) {
+                e.preventDefault();
+                openHelpModal();
+            }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1271,6 +1383,8 @@ Last Update: Tue 02-Jun-2026 | deploy.php
                 openTermsModal();
             } else if (window.location.hash === '#faq' || window.location.hash === '#faqs') {
                 openFaqModal();
+            } else if (window.location.hash === '#help' || window.location.hash === '#guidance') {
+                openHelpModal();
             }
         });
     </script>
