@@ -1,26 +1,24 @@
 # EXTENDED DESCRIPTION GUIDELINES
 
-**قابِلِ اطلاق ہدایت نامہ برائے ہر کمٹ**
+جب بھی ویب سائٹ / رپو (`web_ng`) میں کوئی بھی تبدیلی کی جائے، تو کمٹ میسج (Commit Message / Extended Description) میں درج ذیل فارمیٹ کی لازمی پابندی کریں:
 
-ہر بار جب بھی اس رپو (`Moon060781/ng-web-m81`) میں کوئی فائل، فنکشن یا UI/UX میں تبدیلی کی جاتی ہے تو **EXTENDED DESCRIPTION** لازمی طور پر تیار کرنی ہوگی۔ یہ دستاویز `git commit` کے ساتھ `-m` اور `-e` (یا `--author`) استعمال کرتے ہوئے شامل کی جائے گی۔
+### 📋 **فرمیٹ کا طریقہ کار (Commit Message Format)**
 
-### فارمیٹ
-1. **پاتھ** – وہ فائل یا صفحے کا رشتہ دار پاتھ جہاں تبدیلی کی گئی (مثال: `deploy.php`، `index.html`). 
-2. **تبدیلی کے نکات** – تبدیلی کے اہم نکات کی فہرست (بُلڈ پوائنٹس یا سادہ جملے).
-3. **دستخط** – آخر میں درج کریں:
-   ```
-   change commit by Antigravity (Geo PC)
-   ```
-   جہاں `Geo PC` اس اینٹی‑گریویٹی لاگ‑ان کے نام یا شناخت ہے (آپ کے جیو کے آفس پر نصب شدہ PC کا نام)۔
+1. **فائل / صفحے کا پاتھ**: سب سے پہلے اس صفحے یا فائل کا پاتھ لکھیں جس میں تبدیلی کی گئی ہے۔
+2. **تبدیلی کے نکات**: تبدیلی کے تمام اہم نکات (Bullet Points) ترتیب سے تحریر کریں۔
+3. **آخری لائن (Signature)**: آخر میں درج ذیل سطر لکھیں:
+   `change commit by Antigravity (<Conversation ID or Logged-in User ID>)`
 
-### مثال
+---
+
+### 📝 **مثال (Example)**:
+
+```text
+Path: index.html
+
+- Corrected logo image source to NG_Web_logo-b.png
+- Added subtle rotation and scale pulse animation CSS (.logo-anim)
+- Updated footer copyright timestamp
+
+change commit by Antigravity (a0bb12a5-edf7-4c65-9613-7a710160fc38)
 ```
-Path: deploy.php
-
-- Added commit hash display above "Commit Highlight".
-- Enhanced PKT time display using JavaScript.
-
-change commit by Antigravity (Geo PC)
-```
-
-یہ گائیڈ لائنز رپو کی جڑ (root) میں `EXTENDED_DESCRIPTION_GUIDELINES.md` کے نام سے محفوظ کی گئی ہیں۔
