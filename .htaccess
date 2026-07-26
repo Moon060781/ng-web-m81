@@ -35,3 +35,8 @@ RewriteRule ^Web/(.*)$ https://web.noorgee.pk/$1 [R=301,L]
   Order deny,allow
   Deny from all
 </FilesMatch>
+
+# Block error_log file
+<Files "error_log">
+    Require all denied
+</Files>
