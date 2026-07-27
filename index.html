@@ -90,16 +90,16 @@
         .logo-svg-animated {
             animation: slideFadeIn 0.6s ease-out forwards, logoFloatGlow 4s ease-in-out infinite 0.6s;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.06));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
             cursor: pointer;
         }
         .logo-svg-animated:hover {
-            transform: translateY(-3px) scale(1.04);
-            filter: drop-shadow(0 8px 20px rgba(212, 175, 55, 0.4));
+            transform: translateY(-4px) scale(1.05);
+            filter: drop-shadow(0 10px 24px rgba(212, 175, 55, 0.5));
         }
         @keyframes logoFloatGlow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.06)); }
-            50% { transform: translateY(-4px) rotate(0.5deg); filter: drop-shadow(0 10px 22px rgba(93, 64, 55, 0.3)); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12)); }
+            50% { transform: translateY(-3px) rotate(0.5deg); filter: drop-shadow(0 12px 24px rgba(93, 64, 55, 0.35)); }
         }
 
         .hero-bg {
@@ -402,10 +402,12 @@ Last Update: Tue 02-Jun-2026 | deploy.php
     <div id="interactive-bg"></div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div class="container mx-auto px-6 py-1 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="img/NG_Web_logo-f.svg" alt="NoorGee WebMaster" class="w-[240px] h-auto logo-svg-animated">
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 h-14">
+        <div class="container mx-auto px-6 h-full flex justify-between items-center relative">
+            <div class="relative w-[240px] shrink-0">
+                <a href="#home" class="absolute top-1/2 -translate-y-1/2 left-0 z-20 block">
+                    <img src="img/NG_Web_logo-f.svg" alt="NoorGee WebMaster" class="w-[240px] max-w-none h-auto logo-svg-animated">
+                </a>
             </div>
             
             <div class="hidden md:flex items-center gap-10">
@@ -1141,7 +1143,7 @@ Last Update: Tue 02-Jun-2026 | deploy.php
         </div>
     </div>
 
-    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: July 27, 2026 2:02 PM by AntiGravity</p>
+    <p class="text-center text-[9px] text-slate-500 py-2">Last updated: July 27, 2026 2:09 PM by AntiGravity</p>
 
     <!-- Go to Top Button -->
     <button onclick="topFunction()" id="goToTopBtn" title="Go to top">
